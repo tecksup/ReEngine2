@@ -5,8 +5,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
-import com.thecubecast.ReEngine.Data.Common;
-import com.thecubecast.ReEngine.mainclass;
+import com.thecubecast.reengine.data.Common;
+import com.thecubecast.reengine.MainClass;
 
 public class DesktopLauncher {
     public static void main(String[] args) {
@@ -85,8 +85,8 @@ public class DesktopLauncher {
             }
         }
         config.setWindowIcon("icon.png");
-        config.setTitle("ReEngine");
+        config.setTitle("reengine");
         config.useVsync(true);
-        new Lwjgl3Application(new mainclass(), config);
+        new Lwjgl3Application(new MainClass(), config);
     }
 }
