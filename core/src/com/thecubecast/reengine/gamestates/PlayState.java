@@ -33,7 +33,6 @@ import static com.thecubecast.reengine.data.GameStateManager.AudioM;
 public class PlayState extends DialogStateExtention {
 
     //GUI
-    UIFSM UI;
     boolean MenuOpen = true;
 
     //Camera
@@ -104,9 +103,9 @@ public class PlayState extends DialogStateExtention {
         GuiCam.setToOrtho(false, GameStateManager.UIWidth, GameStateManager.UIHeight);
         shaker = new ScreenShakeCameraController(camera);
 
-        UI = new UIFSM(GuiCam, gsm);
-        UI.inGame = true;
-        UI.setState(UI_state.INGAMEUI);
+        gsm.UI.stage.getViewport().setCamera(GuiCam);
+        gsm.UI.inGame = true;
+        gsm.UI.setState(UI_state.INGAMEUI);
 
         //Particles
         Particles = new ParticleHandler();
@@ -376,22 +375,21 @@ public class PlayState extends DialogStateExtention {
         g.begin();
 
         if(MenuOpen) {
-            if (!UI.getState().equals(UI_state.INGAMEUI))
-                UI.setState(UI_state.INGAMEUI);
+            if (!gsm.UI.getState().equals(UI_state.INGAMEUI))
+                gsm.UI.setState(UI_state.INGAMEUI);
         } else {
-            if (!UI.getState().equals(UI_state.InGameHome))
-                UI.setState(UI_state.InGameHome);
+            if (!gsm.UI.getState().equals(UI_state.InGameHome))
+                gsm.UI.setState(UI_state.InGameHome);
         }
 
         MenuDraw(g, Gdx.graphics.getDeltaTime());
         g.end();
-        UI.Draw(g);
+        gsm.UI.Draw();
     }
 
     private void handleInput() {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            System.out.println(MenuOpen);
             MenuOpen = !MenuOpen;
         }
 

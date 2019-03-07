@@ -61,7 +61,7 @@ public class KryoClient {
     int MapID;
 
     public boolean established = false;
-    ReentrantLock lock = new ReentrantLock();
+    ReentrantLock lock;
 
     public Client client;
 
@@ -117,7 +117,6 @@ public class KryoClient {
                             //User temp = GetClient();
                             Users = null;
                             Users = response.Users;
-                            MapID = response.Map;
                             established = true;
                         }
                     } finally {
@@ -163,13 +162,6 @@ public class KryoClient {
         return null;
     }
 
-    public int GetTiledMap() {
-        while (lock.isLocked()) {
-            //Waiting for it to unlock
-        }
-        return MapID;
-    }
-
     public List<User> GetUsers() {
         while (lock.isLocked()) {
             //Waiting for it to unlock
@@ -185,6 +177,11 @@ public class KryoClient {
                 GetUsers().get(i).angle = angle;
             }
         }
+    }
+
+    public void Disconnect() {
+        client.close();
+        client.stop();
     }
 
 }

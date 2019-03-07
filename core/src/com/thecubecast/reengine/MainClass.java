@@ -44,6 +44,9 @@ public class MainClass extends ApplicationAdapter{
 
         Gdx.graphics.setWindowedMode(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]));
 
+        Lwjgl3Window window = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
+        window.setPosition(GetMonitorSizeW() / 2 - Gdx.graphics.getWidth() / 2, GetMonitorSizeH() / 2 - Gdx.graphics.getHeight() / 2);
+
         if (Gdx.app.getPreferences("properties").contains("FullScreen")) {
             if (Gdx.app.getPreferences("properties").getBoolean("FullScreen")) {
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());

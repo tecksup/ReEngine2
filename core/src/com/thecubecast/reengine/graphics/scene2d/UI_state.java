@@ -47,6 +47,22 @@ public enum UI_state implements State<UIFSM> {
             table.add(PlayState).pad(2);
             table.row();
 
+            final TextArea usernameInput = new TextArea(entity.gsm.Username, entity.skin);
+            table.add(usernameInput).pad(2);
+            table.row();
+
+            final TkTextButton Multiplayer = new TkTextButton("Multiplayer", entity.skin) {
+                @Override
+                public void act(float delta) {
+                    super.act(delta);
+                    if (!entity.gsm.ErrorMessages.equals("")) {
+                        this.setText(entity.gsm.ErrorMessages);
+                    }
+                }
+            };
+            table.add(Multiplayer).pad(2);
+            table.row();
+
             final TkTextButton Options = new TkTextButton("Options", entity.skin);
             table.add(Options).pad(2);
             table.row();
@@ -59,11 +75,16 @@ public enum UI_state implements State<UIFSM> {
             PlayState.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    //gsm.Audio.stopMusic("8-bit-Digger");
-                    //GetLogin("", "");
-                    Gdx.app.getPreferences("properties").putString("Username", "");
-                    Gdx.app.getPreferences("properties").flush();
                     entity.gsm.setState(GameStateManager.State.PLAY);
+                    PlayState.setText("Loading");
+                }
+            });
+
+            Multiplayer.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.gsm.Username = usernameInput.getText();
+                    entity.gsm.setState(GameStateManager.State.MULTI);
                     PlayState.setText("Loading");
                 }
             });

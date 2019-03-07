@@ -29,7 +29,7 @@ public class UIFSM implements Telegraph {
 
     protected GameStateManager gsm;
 
-    public UIFSM(OrthographicCamera cam, GameStateManager gsm) {
+    public UIFSM(GameStateManager gsm) {
 
 
         this.gsm = gsm;
@@ -37,8 +37,6 @@ public class UIFSM implements Telegraph {
         stage = new Stage(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
 
         Gdx.input.setInputProcessor(stage);
-
-        stage.getViewport().setCamera(cam);
 
         setupSkin();
 
@@ -67,7 +65,7 @@ public class UIFSM implements Telegraph {
         skin = new Skin(Gdx.files.internal("Skins/test1/skin.json"));
     }
 
-    public void Draw(SpriteBatch bbg) {
+    public void Draw() {
 
         stateMachine.update();
 

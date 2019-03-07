@@ -49,7 +49,6 @@ public class KryoServer {
 
                     ServerSide response = new ServerSide();
                     response.Users = Users;
-                    //response.Map = tiledMap.hashCode();
                     response.text = "";
 
                     //response.text = request.username + " is at " + (response.x) + " " + (response.y);
@@ -58,8 +57,8 @@ public class KryoServer {
 
                 }
                 if (object instanceof Connect) {
-                    //Join(Users, tiledMap, (Connect)object, connection);
-                    //updateClient(tiledMap, Users, server);
+                    Join(Users, (Connect)object, connection);
+                    updateClient(Users, server);
 
                 }
             }
@@ -78,19 +77,14 @@ public class KryoServer {
                 e.printStackTrace();
             }
 
-            //updateClient(Users, server);
-            //System.out.println("Sent");
         }
-
-        //TpToSpawn(Users, server);
 
     }
 
 
-    public static void updateClient(TiledMap map, List<User> Users, Server server) {
+    public static void updateClient(List<User> Users, Server server) {
         ServerSide send = new ServerSide();
         send.Users = Users;
-        send.Map = map.hashCode();
         send.text = "lol";
         server.sendToAllTCP(send);
     }
@@ -166,7 +160,7 @@ public class KryoServer {
         }
     }
 
-    public static void Join(List<User> Users, TiledMap map, Connect connectToken, Connection connet) {
+    public static void Join(List<User> Users, Connect connectToken, Connection connet) {
         User temp = new User();
         temp.ID = connet.hashCode();
         temp.text = "";
@@ -178,7 +172,6 @@ public class KryoServer {
         ServerSide send = new ServerSide();
         send.text = "ID:" + connet.hashCode();
         send.Users = Users;
-        send.Map = map.hashCode();
         System.out.println("User " + temp.username + " has joined!");
         connet.sendTCP(send);
 

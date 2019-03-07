@@ -81,12 +81,9 @@ public class EditorState extends GameState {
         }
     };
 
-    //GUI
-    UIFSM UI;
-
     //Camera
     OrthographicCamera GuiCam;
-    public static OrthographicCamera camera;
+    public OrthographicCamera camera;
     ScreenShakeCameraController shaker;
 
     Vector3 StartDrag;
@@ -139,10 +136,9 @@ public class EditorState extends GameState {
         GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
         shaker = new ScreenShakeCameraController(camera);
 
-        UI = new UIFSM(GuiCam, gsm);
-        UI.inGame = true;
-        UI.setState(UI_state.InGameHome);
-        UI.setVisable(false);
+        gsm.UI.stage.getViewport().setCamera(GuiCam);
+        gsm.UI.inGame = true;
+        gsm.UI.setState(UI_state.INGAMEUI);
 
         //Particles
         Particles = new ParticleHandler();
@@ -354,7 +350,7 @@ public class EditorState extends GameState {
         UIStage.getViewport().update(gsm.UIWidth, gsm.UIHeight, true);
         UIStage.draw();
         UIStage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
-        UI.Draw(g);
+        gsm.UI.Draw();
     }
 
     private void handleInput() {
@@ -503,14 +499,14 @@ public class EditorState extends GameState {
         updategsmValues(gsm, pos);
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if (UI.Visible) {
-                UI.setVisable(!UI.Visible);
-                Gdx.input.setInputProcessor(UI.stage);
-            } else if (!UI.Visible) {
-                UI.setState(UI_state.InGameHome);
-                Gdx.input.setInputProcessor(UI.stage);
+            if (gsm.UI.Visible) {
+                gsm.UI.setVisable(!gsm.UI.Visible);
+                Gdx.input.setInputProcessor(gsm.UI.stage);
+            } else if (!gsm.UI.Visible) {
+                gsm.UI.setState(UI_state.InGameHome);
+                Gdx.input.setInputProcessor(gsm.UI.stage);
             } else {
-                UI.setVisable(!UI.Visible);
+                gsm.UI.setVisable(!gsm.UI.Visible);
                 Gdx.input.setInputProcessor(UIStage);
             }
             //gsm.ctm.newController("template");
@@ -536,7 +532,7 @@ public class EditorState extends GameState {
         GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
         shaker.reSize(camera);
 */
-        UI.reSize();
+        gsm.UI.reSize();
 
         //shaker.reSize(camera);
     }

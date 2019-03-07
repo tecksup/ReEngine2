@@ -15,14 +15,19 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Matrix4;
 import com.thecubecast.reengine.gamestates.*;
 import com.thecubecast.reengine.graphics.Draw;
+import com.thecubecast.reengine.graphics.scene2d.UIFSM;
+import com.thecubecast.reengine.graphics.scene2d.UI_state;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameStateManager {
     public static boolean Debug = false;
 
+    public String Username = "username";
+    public String ErrorMessages = "";
+
     public enum State {
-        INTRO, MENU, PLAY, LOADING, EDITOR
+        INTRO, MENU, PLAY, LOADING, EDITOR, MULTI
     }
 
     public State currentState;
@@ -38,6 +43,8 @@ public class GameStateManager {
     public int ticks = 0;
 
     private OrthographicCamera MainCam;
+
+    public UIFSM UI;
 
     private FrameBuffer WorldFBO;
     private FrameBuffer UIFBO;
@@ -94,6 +101,8 @@ public class GameStateManager {
         Render.Init();
         AudioM.init();
 
+        UI = new UIFSM(this);
+
         LoadState("STARTUP"); //THIS IS THE STATE WERE WE START WHEN THE GAME IS RUN
     }
 
@@ -108,6 +117,9 @@ public class GameStateManager {
     }
 
     public void setState(State i) {
+
+        UI.setState(UI_state.Home);
+
         previousState = currentState;
         unloadState();
         currentState = i;
@@ -134,7 +146,15 @@ public class GameStateManager {
                 gameState = new EditorState(this);
                 gameState.init();
                 break;
+            case MULTI:
+                Common.print("Loaded state MULTI");
+                gameState = new MultiplayerTestState(this);
+                gameState.init();
+                break;
         }
+
+        Gdx.input.setInputProcessor(UI.stage);
+        UI.inGame = false;
 
     }
 
@@ -281,12 +301,10 @@ public class GameStateManager {
         UIHeight = Height / (UIScale);
 
         if (Width/Scale <= 10) {
-            System.out.println("It's too small!");
             Width = 32;
         }
 
         if (Height/Scale <= 10) {
-            System.out.println("It's too small!");
             Height = 32;
         }
 

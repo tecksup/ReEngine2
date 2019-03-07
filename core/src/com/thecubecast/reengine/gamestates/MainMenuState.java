@@ -15,7 +15,6 @@ import com.thecubecast.reengine.graphics.scene2d.UIFSM;
 public class MainMenuState extends GameState {
 
     OrthographicCamera cameraGui;
-    UIFSM Menus;
 
     int BGMusicID;
 
@@ -34,8 +33,7 @@ public class MainMenuState extends GameState {
         gsm.DiscordManager.setPresenceState("In Menus");
 
         cameraGui = new OrthographicCamera();
-
-        Menus = new UIFSM(cameraGui, gsm);
+        gsm.UI.stage.getViewport().setCamera(cameraGui);
 
         //BGMusicID = AudioM.playMusic("menu.wav", true, true);
     }
@@ -52,8 +50,6 @@ public class MainMenuState extends GameState {
         //DEBUG CODE
         gsm.Render.debugRenderer.setProjectionMatrix(cameraGui.combined);
         gsm.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        //gsm.Render.debugRenderer.setColor();
-        //gsm.Render.debugRenderer.circle(gsm.UIWidth/2, gsm.UIHeight/2, gsm.UIHeight/4);
 
         gsm.Render.debugRenderer.end();
 
@@ -75,8 +71,8 @@ public class MainMenuState extends GameState {
         g.setProjectionMatrix(cameraGui.combined);
         g.begin();
         //GUI must draw last
-        Menus.Draw(g);
         g.end();
+        gsm.UI.Draw();
     }
 
 
@@ -89,7 +85,7 @@ public class MainMenuState extends GameState {
     public void reSize(SpriteBatch g, int H, int W) {
         //stage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), true);
         cameraGui.setToOrtho(false);
-        Menus.reSize();
+        gsm.UI.reSize();
     }
 
     @Override
