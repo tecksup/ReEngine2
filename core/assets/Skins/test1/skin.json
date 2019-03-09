@@ -53,9 +53,23 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 	}
 	Dropdown: {
 		imageUp: DropDown
-		imageDown: DropDown_hover
+		imageOver: DropDown_hover
 		imageChecked: DropUp
 		imageCheckedOver: DropUp_hover
+	}
+	Trash: {
+		imageUp: Trash
+		imageDown: Trash_Down
+		imageOver: Trash_hover
+	}
+	Play: {
+		imageUp: Play
+		imageOver: Play_hover
+	}
+	Plus: {
+		imageUp: Plus
+		imageDown: Plus
+		imageOver: Plus_hover
 	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {

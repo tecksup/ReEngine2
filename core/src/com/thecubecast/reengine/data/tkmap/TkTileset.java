@@ -1,5 +1,7 @@
 package com.thecubecast.reengine.data.tkmap;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 import static com.thecubecast.reengine.data.GameStateManager.Render;
@@ -21,7 +23,11 @@ public class TkTileset {
         TileSizeW = tileSizeW;
         TileSizeH = tileSizeH;
         TileSep = tileSep;
-        TilesetImage = Render.getTexture("tileset");
+        if (Path.contains(".png")) {
+            TilesetImage = new TextureRegion(new Texture(Gdx.files.internal(Path)));
+        } else {
+            TilesetImage = Render.getTexture(Path);
+        }
 
         int cols = TilesetImage.getRegionWidth() / TileSizeW;
         int rows = TilesetImage.getRegionHeight() / TileSizeH;

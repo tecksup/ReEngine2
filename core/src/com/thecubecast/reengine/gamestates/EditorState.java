@@ -98,7 +98,7 @@ public class EditorState extends GameState {
     private static List<WorldObject> Entities = new ArrayList<>();
 
     //Map Variables
-    String SaveNameText = "World";
+    String SaveNameText = gsm.SaveSelected;
     TkMap tempshitgiggle;
 
     Skin skin;
@@ -109,7 +109,6 @@ public class EditorState extends GameState {
 
     public EditorState(GameStateManager gsm) {
         super(gsm);
-        gsm.setUIScale(gsm.Scale/2);
     }
 
     public void init() {
@@ -138,7 +137,8 @@ public class EditorState extends GameState {
 
         gsm.UI.stage.getViewport().setCamera(GuiCam);
         gsm.UI.inGame = true;
-        gsm.UI.setState(UI_state.INGAMEUI);
+        gsm.UI.setState(UI_state.InGameHome);
+        gsm.UI.setVisable(false);
 
         //Particles
         Particles = new ParticleHandler();
@@ -399,11 +399,17 @@ public class EditorState extends GameState {
             }*/
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-            camera.zoom += 0.2f;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS) || Gdx.input.isKeyJustPressed(Input.Keys.EQUALS)) {
+            if (!OverHud)
+                gsm.setWorldScale(gsm.Scale + 1);
+            System.out.println(gsm.Scale);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-            camera.zoom -= 0.2f;
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+            if (!OverHud) {
+                if (gsm.Scale - 1 > 0)
+                    gsm.setWorldScale(gsm.Scale - 1);
+            }
+            System.out.println(gsm.Scale);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.FORWARD_DEL) || Gdx.input.isKeyJustPressed(Input.Keys.DEL)) {
@@ -501,15 +507,14 @@ public class EditorState extends GameState {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (gsm.UI.Visible) {
                 gsm.UI.setVisable(!gsm.UI.Visible);
-                Gdx.input.setInputProcessor(gsm.UI.stage);
+                UIStage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
+                Gdx.input.setInputProcessor(UIStage);
+                UIStage.getViewport().setCamera(GuiCam);
             } else if (!gsm.UI.Visible) {
                 gsm.UI.setState(UI_state.InGameHome);
+                gsm.UI.setVisable(gsm.UI.Visible);
                 Gdx.input.setInputProcessor(gsm.UI.stage);
-            } else {
-                gsm.UI.setVisable(!gsm.UI.Visible);
-                Gdx.input.setInputProcessor(UIStage);
             }
-            //gsm.ctm.newController("template");
         }
 
     }
@@ -530,9 +535,7 @@ public class EditorState extends GameState {
         camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
         camera.position.set(campostemp);
         GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
-        shaker.reSize(camera);
-*/
-        gsm.UI.reSize();
+        shaker.reSize(camera);*/
 
         //shaker.reSize(camera);
     }

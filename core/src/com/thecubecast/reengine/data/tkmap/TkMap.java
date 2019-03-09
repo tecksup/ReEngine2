@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.google.gson.*;
+import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.worldobjects.Interactable;
 import com.thecubecast.reengine.worldobjects.Trigger;
 import com.thecubecast.reengine.worldobjects.WorldObject;
@@ -18,7 +19,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class TkMap {
@@ -27,6 +31,9 @@ public class TkMap {
     JsonObject MapObject;
 
     String MapLocation;
+
+    String Created;
+    String LastEdit;
 
     int Width;
     int Height;
@@ -41,10 +48,19 @@ public class TkMap {
     Boolean[][] Collision;
 
     public TkMap(String MapLocation) {
+
         this.MapLocation = MapLocation;
         pixel = new Texture(Gdx.files.internal("white-pixel.png"));
         jsonReaderthing = new JsonParser();
         MapObject = jsonReaderthing.parse(Gdx.files.internal(MapLocation).readString()).getAsJsonObject();
+
+        Created = MapObject.get("Created").getAsString();
+
+        if (Created.equals("")) {
+            Created = Common.GetNow();
+        }
+
+        LastEdit = MapObject.get("LastEdit").getAsString();
 
         Width = MapObject.get("Width").getAsInt();
         Height = MapObject.get("Height").getAsInt();
@@ -111,6 +127,47 @@ public class TkMap {
         }
 
     }
+
+    public TkMap(String MapLocation, int Width, int Height, String TilesetLoc, int TileSize) {
+
+        Created = Common.GetNow();
+        LastEdit = Common.GetNow();
+
+        this.MapLocation = MapLocation;
+
+        this.Width = Width;
+        this.Height = Height;
+        this.TileSize = TileSize;
+
+        Tileset = new TkTileset("World", TilesetLoc, TileSize, TileSize, 0);
+
+        Ground = new int[Width][Height];
+        Foreground = new int[Width][Height];
+        Collision = new Boolean[Width][Height];
+
+        for (int y = this.getHeight() - 1; y >= 0; y--) {
+            for (int x = 0; x < this.getWidth(); x++) {
+                this.Ground[x][y] = -1;
+            }
+        }
+
+        //----------------------------------------------------
+
+        for (int y = this.getHeight() - 1; y >= 0; y--) {
+            for (int x = 0; x < this.getWidth(); x++) {
+                this.Foreground[x][y] = -1;
+            }
+        }
+
+        //---------------------------------------------------
+
+        for (int y = this.getHeight() - 1; y >= 0; y--) {
+            for (int x = 0; x < this.getWidth(); x++) {
+                this.Collision[x][y] = false;
+            }
+        }
+    }
+
 
     public JsonObject getMapObject() {
         return MapObject;
@@ -330,7 +387,13 @@ public class TkMap {
     }
 
     public String SerializeMap(List<WorldObject> entities) {
+
+        LastEdit = Common.GetNow();
+
         JsonObject Output = new JsonObject();
+
+        Output.addProperty("Created", Created);
+        Output.addProperty("LastEdit", LastEdit);
         Output.addProperty("Width", this.getWidth());
         Output.addProperty("Height", this.getHeight());
 
@@ -408,37 +471,39 @@ public class TkMap {
 
         //Objects
         JsonArray ObjectsList = new JsonArray();
-        for (int i = 0; i < entities.size(); i++) {
+        if (entities != null) {
+            for (int i = 0; i < entities.size(); i++) {
 
-            if (entities.get(i) instanceof Interactable) {
-                JsonObject Entity = new JsonObject();
-                Entity.addProperty("Name", ((Interactable) entities.get(i)).Name);
-                Entity.addProperty("Description", "");
-                Entity.addProperty("x", (int) entities.get(i).getPosition().x);
-                Entity.addProperty("y", (int) entities.get(i).getPosition().y);
-                Entity.addProperty("z", (int) entities.get(i).getPosition().z);
-                Entity.addProperty("Width", (int) entities.get(i).getSize().x);
-                Entity.addProperty("WidthOffset", (int) entities.get(i).getHitboxOffset().x);
-                Entity.addProperty("Height", (int) entities.get(i).getSize().y);
-                Entity.addProperty("HeightOffset", (int) entities.get(i).getHitboxOffset().y);
-                Entity.addProperty("Depth", (int) entities.get(i).getSize().z);
-                Entity.addProperty("DepthOffset", (int) entities.get(i).getHitboxOffset().z);
                 if (entities.get(i) instanceof Interactable) {
-                    Entity.addProperty("TexLocation", ((Interactable) entities.get(i)).getTexLocation());
-                } else {
-                    Entity.addProperty("TexLocation", "");
-                }
-                Entity.addProperty("Physics", entities.get(i).getState().name());
-                Entity.addProperty("Collidable", entities.get(i).isCollidable());
-                if (entities.get(i) instanceof Trigger) {
-                    Entity.addProperty("TriggerType", ((Trigger) entities.get(i)).getActivationType().toString());
-                    Entity.addProperty("Event", ((Trigger) entities.get(i)).getRawCommands());
-                } else {
-                    Entity.addProperty("TriggerType", "");
-                    Entity.addProperty("Event", "");
-                }
+                    JsonObject Entity = new JsonObject();
+                    Entity.addProperty("Name", ((Interactable) entities.get(i)).Name);
+                    Entity.addProperty("Description", "");
+                    Entity.addProperty("x", (int) entities.get(i).getPosition().x);
+                    Entity.addProperty("y", (int) entities.get(i).getPosition().y);
+                    Entity.addProperty("z", (int) entities.get(i).getPosition().z);
+                    Entity.addProperty("Width", (int) entities.get(i).getSize().x);
+                    Entity.addProperty("WidthOffset", (int) entities.get(i).getHitboxOffset().x);
+                    Entity.addProperty("Height", (int) entities.get(i).getSize().y);
+                    Entity.addProperty("HeightOffset", (int) entities.get(i).getHitboxOffset().y);
+                    Entity.addProperty("Depth", (int) entities.get(i).getSize().z);
+                    Entity.addProperty("DepthOffset", (int) entities.get(i).getHitboxOffset().z);
+                    if (entities.get(i) instanceof Interactable) {
+                        Entity.addProperty("TexLocation", ((Interactable) entities.get(i)).getTexLocation());
+                    } else {
+                        Entity.addProperty("TexLocation", "");
+                    }
+                    Entity.addProperty("Physics", entities.get(i).getState().name());
+                    Entity.addProperty("Collidable", entities.get(i).isCollidable());
+                    if (entities.get(i) instanceof Trigger) {
+                        Entity.addProperty("TriggerType", ((Trigger) entities.get(i)).getActivationType().toString());
+                        Entity.addProperty("Event", ((Trigger) entities.get(i)).getRawCommands());
+                    } else {
+                        Entity.addProperty("TriggerType", "");
+                        Entity.addProperty("Event", "");
+                    }
 
-                ObjectsList.add(Entity);
+                    ObjectsList.add(Entity);
+                }
             }
         }
 

@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.graphics.scene2d.UIFSM;
@@ -119,6 +120,7 @@ public class MultiplayerTestState extends GameState {
 
     public void drawUI(SpriteBatch g, int height, int width, float Time) {
         //Draws things on the screen, and not the world positions
+        g.setProjectionMatrix(GuiCam.combined);
         g.begin();
         //GUI must draw last
         gsm.Render.GUIDrawText(g, 50, 50, "" + network.GetClient(), Color.WHITE);
@@ -257,14 +259,14 @@ public class MultiplayerTestState extends GameState {
         GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
         //shaker = new ScreenShakeCameraController(camera);
 
-        //UI.reSize();
 
     }
 
     @Override
     public void dispose() {
         super.dispose();
-        network.Disconnect();
+        if (network != null)
+            network.Disconnect();
     }
 
     @Override

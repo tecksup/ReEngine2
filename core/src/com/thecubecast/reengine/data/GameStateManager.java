@@ -23,7 +23,10 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 public class GameStateManager {
     public static boolean Debug = false;
 
+    public String SaveSelected = "";
+
     public String Username = "username";
+    public String IP = "localhost";
     public String ErrorMessages = "";
 
     public enum State {
@@ -68,7 +71,7 @@ public class GameStateManager {
     private int Width;
     private int Height;
     public int Scale = 4;
-    public int UIScale = 4;
+    public int UIScale = 2;
 
     public static int WorldWidth;
     public static int WorldHeight;
@@ -85,8 +88,8 @@ public class GameStateManager {
         UIWidth = Width / (UIScale);
         UIHeight = Height / (UIScale);
 
-        WorldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Width / Scale, Height / Scale, false);
-        UIFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Width / (UIScale), Height / (UIScale), false);
+        WorldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, WorldWidth, WorldHeight, false);
+        UIFBO = new FrameBuffer(Pixmap.Format.RGBA8888, UIWidth, UIHeight, false);
 
         MainCam = new OrthographicCamera();
         MainCam.setToOrtho(false, Width, Height);
@@ -118,6 +121,7 @@ public class GameStateManager {
 
     public void setState(State i) {
 
+        Gdx.input.setInputProcessor(UI.stage);
         UI.setState(UI_state.Home);
 
         previousState = currentState;
@@ -153,7 +157,6 @@ public class GameStateManager {
                 break;
         }
 
-        Gdx.input.setInputProcessor(UI.stage);
         UI.inGame = false;
 
     }
@@ -261,7 +264,6 @@ public class GameStateManager {
     }
 
     public void reSize(SpriteBatch bbg, int H, int W) {
-        System.out.println("Resize Just Ran");
         Matrix4 matrix = new Matrix4();
         matrix.setToOrtho2D(0, 0, W, H);
         bbg.setProjectionMatrix(matrix);
@@ -270,27 +272,28 @@ public class GameStateManager {
 
         Width = W;
         Height = H;
+
+        if (Width/Scale <= 10) {
+            Width = 32;
+        }
+
+        if (Height/Scale <= 10) {
+            Height = 32;
+        }
+
         WorldWidth = Width / Scale;
         WorldHeight = Height / Scale;
         UIWidth = Width / (UIScale);
         UIHeight = Height / (UIScale);
 
-        if (Width/Scale <= 10) {
-            System.out.println("It's too small!");
-            Width = 32;
-        }
-
-        if (Height/Scale <= 10) {
-            System.out.println("It's too small!");
-            Height = 32;
-        }
-
-        WorldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Width / Scale, Height / Scale, false);
-        UIFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Width / (UIScale), Height / (UIScale), false);
+        WorldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, WorldWidth, WorldHeight, false);
+        UIFBO = new FrameBuffer(Pixmap.Format.RGBA8888, UIWidth, UIHeight, false);
 
         if (gameState != null) {
             gameState.reSize(bbg, H, W);
         }
+
+        UI.reSize();
 
     }
 
@@ -309,6 +312,27 @@ public class GameStateManager {
         }
 
         UIFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Width / (UIScale), Height / (UIScale), false);
+
+        if (gameState != null) {
+            gameState.reSize(null, Height, Width);
+        }
+    }
+
+    public void setWorldScale(int Scale) {
+        this.Scale = Scale;
+
+        WorldWidth = Width / (Scale);
+        WorldHeight = Height / (Scale);
+
+        if (Width/Scale <= 10) {
+            Width = 32;
+        }
+
+        if (Height/Scale <= 10) {
+            Height = 32;
+        }
+
+        WorldFBO = new FrameBuffer(Pixmap.Format.RGBA8888, Width / (Scale), Height / (Scale), false);
 
         if (gameState != null) {
             gameState.reSize(null, Height, Width);

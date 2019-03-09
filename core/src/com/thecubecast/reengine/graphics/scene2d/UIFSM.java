@@ -63,6 +63,7 @@ public class UIFSM implements Telegraph {
 
     public void setupSkin() {
         skin = new Skin(Gdx.files.internal("Skins/test1/skin.json"));
+        skin.getFont("Pixel").getData().markupEnabled = true;
     }
 
     public void Draw() {

@@ -7,6 +7,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 import java.awt.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Common {
 
@@ -85,4 +88,13 @@ public class Common {
 		gsm.MouseDrag[2] = (int) pos.y;
 		*/
     }
+
+    public static String GetNow() {
+        Date date = new Date();
+        String strDateFormat = "M/d/y k:mm";
+        DateFormat dateFormat = new SimpleDateFormat(strDateFormat);
+        String formattedDate= dateFormat.format(date);
+        return formattedDate;
+    }
+
 }

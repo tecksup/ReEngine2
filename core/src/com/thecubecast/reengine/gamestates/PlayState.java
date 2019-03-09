@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.thecubecast.reengine.data.Cube;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.ParticleHandler;
@@ -55,7 +56,7 @@ public class PlayState extends DialogStateExtention {
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
-        gsm.setUIScale(gsm.Scale);
+        gsm.setWorldScale(3);
     }
 
     public void init() {
@@ -370,17 +371,24 @@ public class PlayState extends DialogStateExtention {
     }
 
     public void drawUI(SpriteBatch g, int height, int width, float Time) {
+
+        if(MenuOpen) {
+            if (!gsm.UI.getState().equals(UI_state.INGAMEUI)) {
+                gsm.UI.setState(UI_state.INGAMEUI);
+                gsm.UI.stage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
+                Gdx.input.setInputProcessor(gsm.UI.stage);
+            }
+        } else {
+            if (!gsm.UI.getState().equals(UI_state.InGameHome)) {
+                gsm.UI.setState(UI_state.InGameHome);
+                gsm.UI.stage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
+                Gdx.input.setInputProcessor(gsm.UI.stage);
+            }
+        }
+
         //Draws things on the screen, and not the world positions
         g.setProjectionMatrix(GuiCam.combined);
         g.begin();
-
-        if(MenuOpen) {
-            if (!gsm.UI.getState().equals(UI_state.INGAMEUI))
-                gsm.UI.setState(UI_state.INGAMEUI);
-        } else {
-            if (!gsm.UI.getState().equals(UI_state.InGameHome))
-                gsm.UI.setState(UI_state.InGameHome);
-        }
 
         MenuDraw(g, Gdx.graphics.getDeltaTime());
         g.end();
@@ -493,8 +501,6 @@ public class PlayState extends DialogStateExtention {
         camera.position.set(campostemp);
         GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
         shaker.reSize(camera);
-
-        UI.reSize();
 
         //shaker.reSize(camera); */
     }

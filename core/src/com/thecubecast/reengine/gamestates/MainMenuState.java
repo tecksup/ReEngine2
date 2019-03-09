@@ -5,6 +5,7 @@ package com.thecubecast.reengine.gamestates;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.thecubecast.reengine.data.GameStateManager;
@@ -17,6 +18,8 @@ public class MainMenuState extends GameState {
     OrthographicCamera cameraGui;
 
     int BGMusicID;
+
+    Texture Background = new Texture(Gdx.files.internal("Images/image_04.png"));
 
     //Particles
     public static ParticleHandler Particles;
@@ -56,6 +59,8 @@ public class MainMenuState extends GameState {
         cameraGui.setToOrtho(false, width, height);
         bbg.setProjectionMatrix(cameraGui.combined);
         bbg.begin();
+
+        bbg.draw(Background,0,0, width, height);
 
         //Particles
         Particles.Draw(bbg);

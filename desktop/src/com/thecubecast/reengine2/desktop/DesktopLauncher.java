@@ -79,7 +79,7 @@ public class DesktopLauncher {
                 Common.print("Windowed-fullscreen");
             } else { //Windowed
                 Common.print("Windowed");
-                config.setResizable(false);
+                config.setResizable(true);
                 config.setWindowedMode(1920, 1080);
                 //config.setMaximized(true);
             }

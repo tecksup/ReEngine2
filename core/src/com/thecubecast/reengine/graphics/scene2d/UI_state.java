@@ -7,6 +7,7 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -14,10 +15,18 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.ControlerManager;
+import com.thecubecast.reengine.data.tkmap.TkMap;
+import com.thecubecast.reengine.gamestates.EditorState;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
 import static com.thecubecast.reengine.data.Common.GetMonitorSizeH;
@@ -38,28 +47,15 @@ public enum UI_state implements State<UIFSM> {
             table.setFillParent(true);
             entity.stage.addActor(table);
 
-            TypingLabel temptemptemp = new TypingLabel("{COLOR=yellow}Grav-fusion", entity.skin);
-            temptemptemp.skipToTheEnd();
-            table.add(temptemptemp);
-            table.row();
-
             final TkTextButton PlayState = new TkTextButton("Start", entity.skin);
             table.add(PlayState).pad(2);
             table.row();
 
-            final TextArea usernameInput = new TextArea(entity.gsm.Username, entity.skin);
-            table.add(usernameInput).pad(2);
+            final TkTextButton Editor = new TkTextButton("Editor", entity.skin);
+            table.add(Editor).pad(2);
             table.row();
 
-            final TkTextButton Multiplayer = new TkTextButton("Multiplayer", entity.skin) {
-                @Override
-                public void act(float delta) {
-                    super.act(delta);
-                    if (!entity.gsm.ErrorMessages.equals("")) {
-                        this.setText(entity.gsm.ErrorMessages);
-                    }
-                }
-            };
+            final TkTextButton Multiplayer = new TkTextButton("Multiplayer", entity.skin);
             table.add(Multiplayer).pad(2);
             table.row();
 
@@ -76,16 +72,21 @@ public enum UI_state implements State<UIFSM> {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     entity.gsm.setState(GameStateManager.State.PLAY);
-                    PlayState.setText("Loading");
+                }
+            });
+
+            Editor.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    //entity.gsm.setState(GameStateManager.State.EDITOR);
+                    entity.setState(EditorChooser);
                 }
             });
 
             Multiplayer.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    entity.gsm.Username = usernameInput.getText();
-                    entity.gsm.setState(GameStateManager.State.MULTI);
-                    PlayState.setText("Loading");
+                    entity.setState(MULTIPLAYERUI);
                 }
             });
 
@@ -530,6 +531,322 @@ public enum UI_state implements State<UIFSM> {
         @Override
         public void update(UIFSM entity) {
 
+            ControllerCheck(table);
+            entity.stage.act(Gdx.graphics.getDeltaTime());
+        }
+
+        @Override
+        public void exit(UIFSM entity) {
+            entity.stage.clear();
+        }
+
+        @Override
+        public boolean onMessage(UIFSM entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    MULTIPLAYERUI() {
+
+
+        private Table table;
+
+        @Override
+        public void enter(UIFSM entity) {
+
+            table = new Table();
+            table.setFillParent(true);
+            entity.stage.addActor(table);
+
+            final TextArea Username = new TextArea(entity.gsm.Username, entity.skin);
+            table.add(Username).pad(2);
+            table.row();
+
+            final TextArea IP = new TextArea(entity.gsm.IP, entity.skin);
+            table.add(IP).pad(2);
+            table.row();
+
+            final TkTextButton Connect = new TkTextButton("Connect", entity.skin) {
+                @Override
+                public void act(float delta) {
+                    super.act(delta);
+                    if (!entity.gsm.ErrorMessages.equals("")) {
+                        this.setText(entity.gsm.ErrorMessages);
+                    }
+                }
+            };
+            table.add(Connect).pad(2);
+            table.row();
+
+            final TkTextButton Back = new TkTextButton("Back", entity.skin);
+            table.add(Back).pad(2);
+            table.row();
+
+            Connect.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.gsm.Username = Username.getText();
+                    entity.gsm.setState(GameStateManager.State.MULTI);
+                }
+            });
+
+            Back.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.stateMachine.changeState(entity.stateMachine.getPreviousState());
+                }
+            });
+        }
+
+        @Override
+        public void update(UIFSM entity) {
+            table.setVisible(entity.Visible);
+            ControllerCheck(table);
+            entity.stage.act(Gdx.graphics.getDeltaTime());
+        }
+
+        @Override
+        public void exit(UIFSM entity) {
+            entity.stage.clear();
+        }
+
+        @Override
+        public boolean onMessage(UIFSM entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    EditorChooser() {
+
+
+        private Table table;
+
+        @Override
+        public void enter(UIFSM entity) {
+
+            table = new Table();
+            table.setFillParent(true);
+            entity.stage.addActor(table);
+
+            Table SavesList = new Table(entity.skin);
+            Table Left = new Table(entity.skin);
+            Table Right = new Table(entity.skin);
+
+            SavesList.add(Left);
+            SavesList.add(Right);
+
+            ScrollPane RecipeScroll = new ScrollPane(SavesList, entity.skin);
+            RecipeScroll.setupOverscroll(5, 50f, 100f);
+
+            //Finds all saves, and lists them
+            if (Gdx.files.internal("Saves").isDirectory()) {
+                for (int i = 0; i < Gdx.files.internal("Saves").list().length; i++) {
+                    String[] saves = Gdx.files.internal("Saves").list()[i].toString().split("/");
+
+                    JsonParser jsonReaderthing = new JsonParser();
+                    JsonObject MapObject = jsonReaderthing.parse(Gdx.files.internal("Saves/" + saves[1]).readString()).getAsJsonObject();
+
+                    String Created = MapObject.get("Created").getAsString();
+                    String LastEdit = MapObject.get("LastEdit").getAsString();
+
+                    Image Icon = new Image(new Texture(Gdx.files.internal("Sprites/Gunter.png")));
+                    Table Data = new Table();
+                    Label SaveName = new Label(saves[1].split(".cube")[0], entity.skin);
+                    Label MetaData = new Label("[GREEN]Created:[WHITE] " + Created + " | [GREEN]Edited:[WHITE] " + LastEdit , entity.skin);
+                    Data.add(SaveName).left().row();
+                    Data.add(MetaData).left().row();
+                    TkImageButton Delete = new TkImageButton(entity.skin, "Trash");
+                    TkImageButton Dupe = new TkImageButton(entity.skin, "Plus");
+                    TkImageButton Load = new TkImageButton(entity.skin, "Play");
+                    Left.add(Icon).pad(2).left();
+                    Left.add(Data).pad(2).left().row();
+                    Right.add(Delete).pad(5).center();
+                    Right.add(Dupe).pad(5).center();
+                    Right.add(Load).pad(5).center().row();
+
+                    Load.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            super.clicked(event, x, y);
+                            entity.gsm.SaveSelected = saves[1].split(".cube")[0];
+                            entity.gsm.setState(GameStateManager.State.EDITOR);
+                        }
+                    });
+
+                    Dupe.addListener(new ClickListener() {
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            super.clicked(event, x, y);
+                            try {
+                                Path path = Paths.get("Saves/" + saves[1]);
+
+                                int Copy = 0;
+                                while (Files.exists(Paths.get("Saves/" + saves[1].split(".cube")[0] + "_" + Copy + ".cube"))) {
+                                    Copy++;
+                                }
+
+                                Files.copy(path, Paths.get("Saves/" + saves[1].split(".cube")[0] + "_" + Copy + ".cube"));
+                                System.out.println("Duped " + saves[1]);
+                                entity.setState(EditorChooser);
+                            } catch (Exception e) {
+
+                            }
+                        }
+                    });
+
+                    Delete.addListener(new ClickListener() {
+                        boolean temp = false;
+                        @Override
+                        public void clicked(InputEvent event, float x, float y) {
+                            super.clicked(event, x, y);
+
+                            if (!temp) {
+                                temp = true;
+                                System.out.println("Are you sure you want to delete (Saves/" + saves[1] + ")?");
+                                return;
+                            }
+
+                            if (temp) {
+                                try {
+                                    Path path = Paths.get("Saves/" + saves[1]);
+                                    Files.deleteIfExists(path);
+                                    System.out.println("Deleted " + saves[1]);
+                                    entity.setState(EditorChooser);
+                                } catch (Exception e) {
+
+                                }
+                            }
+                        }
+                    });
+
+
+                }
+            }
+
+            Table Title = new Table(entity.skin);
+            Title.add(new Label("Levels", entity.skin));
+            Title.setBackground("Window_red");
+
+            table.add(RecipeScroll).row();
+            table.pack();
+            table.add(Title).padTop(-RecipeScroll.getHeight()*2).row();
+
+            Table tempTabl = new Table();
+
+            final TkTextButton Create = new TkTextButton("New", entity.skin);
+
+            final TkTextButton Back = new TkTextButton("Back", entity.skin);
+
+            tempTabl.add(Back).pad(2);
+            tempTabl.add(Create).pad(2);
+            table.add(tempTabl);
+            table.row();
+
+            Create.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.setState(NewLevel);
+                }
+            });
+
+            Back.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.stateMachine.changeState(Home);
+                }
+            });
+        }
+
+        @Override
+        public void update(UIFSM entity) {
+            table.setVisible(entity.Visible);
+            ControllerCheck(table);
+            entity.stage.act(Gdx.graphics.getDeltaTime());
+        }
+
+        @Override
+        public void exit(UIFSM entity) {
+            entity.stage.clear();
+        }
+
+        @Override
+        public boolean onMessage(UIFSM entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    NewLevel() {
+
+
+        private Table table;
+
+        @Override
+        public void enter(UIFSM entity) {
+
+            table = new Table();
+            table.setFillParent(true);
+            entity.stage.addActor(table);
+
+            Table SavesList = new Table(entity.skin);
+
+            ScrollPane RecipeScroll = new ScrollPane(SavesList, entity.skin);
+            RecipeScroll.setupOverscroll(5, 50f, 100f);
+
+            Table Title = new Table(entity.skin);
+            Title.add(new Label("Levels", entity.skin));
+            Title.setBackground("Window_red");
+
+            TextArea FileName = new TextArea("Untitled", entity.skin);
+            TextArea Width = new TextArea("60", entity.skin);
+            TextArea Height = new TextArea("60", entity.skin);
+            TextArea Tileset = new TextArea("tileset", entity.skin);
+            TextArea TileSize = new TextArea("16", entity.skin);
+
+            SavesList.add(FileName).row();
+            SavesList.add(Width).row();
+            SavesList.add(Height).row();
+            SavesList.add(Tileset).row();
+            SavesList.add(TileSize).row();
+
+            table.add(RecipeScroll).row();
+            table.pack();
+            table.add(Title).padTop(-RecipeScroll.getHeight()*2).row();
+
+            Table tempTabl = new Table();
+
+            final TkTextButton Create = new TkTextButton("New", entity.skin);
+
+            final TkTextButton Back = new TkTextButton("Back", entity.skin);
+
+            tempTabl.add(Back).pad(2);
+            tempTabl.add(Create).pad(2);
+            table.add(tempTabl);
+            table.row();
+
+            Create.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    System.out.println("Open UI to create a new map");
+                    TkMap temp = new TkMap("Saves/" + FileName.getText() + ".cube", Integer.parseInt(Width.getText()), Integer.parseInt(Height.getText()), Tileset.getText(), Integer.parseInt(TileSize.getText()));
+
+                    temp.SaveMap(null);
+                    entity.gsm.SaveSelected = FileName.getText();
+                    entity.gsm.setState(GameStateManager.State.EDITOR);
+
+                }
+            });
+
+            Back.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.stateMachine.changeState(EditorChooser);
+                }
+            });
+        }
+
+        @Override
+        public void update(UIFSM entity) {
+            table.setVisible(entity.Visible);
             ControllerCheck(table);
             entity.stage.act(Gdx.graphics.getDeltaTime());
         }
