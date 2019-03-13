@@ -87,4 +87,16 @@ public class Interactable extends Trigger {
         else
             Image = new Texture(Gdx.files.internal(TexLocation));
     }
+
+    public Interactable CreateNew() {
+
+        Interactable tempObj = new Interactable((int) this.getPosition().x, (int) this.getPosition().y, (int) this.getPosition().z, this.getSize(), this.getState(), this.isCollidable(), this.RawCommands, this.getActivationType());
+        tempObj.setTexLocation(this.getTexLocation());
+        tempObj.Name = this.Name;
+        tempObj.Description = this.Description;
+
+        tempObj.setHitboxOffset(this.getHitboxOffset());
+
+        return tempObj;
+    }
 }

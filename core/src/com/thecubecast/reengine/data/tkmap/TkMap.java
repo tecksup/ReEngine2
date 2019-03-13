@@ -424,13 +424,13 @@ public class TkMap {
         for (int y = this.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.getWidth(); x++) {
                 if (x == 0) {
-                    GroundTiles += "" + this.Ground[x][y];
+                    GroundTiles = GroundTiles.concat("" + this.Ground[x][y]);
                 } else {
-                    GroundTiles += "," + this.Ground[x][y];
+                    GroundTiles = GroundTiles.concat("," + this.Ground[x][y]);
                 }
             }
             if (y != 0) {
-                GroundTiles += "\n";
+                GroundTiles = GroundTiles.concat("\n");
             }
         }
         GroundLayer.addProperty("text", GroundTiles);
@@ -445,13 +445,13 @@ public class TkMap {
         for (int y = this.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.getWidth(); x++) {
                 if (x == 0) {
-                    ForegroundTiles += "" + this.Foreground[x][y];
+                    ForegroundTiles = ForegroundTiles.concat("" + this.Foreground[x][y]);
                 } else {
-                    ForegroundTiles += "," + this.Foreground[x][y];
+                    ForegroundTiles =ForegroundTiles.concat("," + this.Foreground[x][y]);
                 }
             }
             if (y != 0) {
-                ForegroundTiles += "\n";
+                ForegroundTiles =ForegroundTiles.concat("\n");
             }
         }
         ForegroundLayer.addProperty("text", ForegroundTiles);
@@ -465,13 +465,13 @@ public class TkMap {
         for (int y = this.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.getWidth(); x++) {
                 if (this.Collision[x][y]) {
-                    CollisionTiles += "1";
+                    CollisionTiles = CollisionTiles.concat("1");
                 } else {
-                    CollisionTiles += "0";
+                    CollisionTiles = CollisionTiles.concat("0");
                 }
             }
             if (y != 0) {
-                CollisionTiles += "\n";
+                CollisionTiles = CollisionTiles.concat("\n");
             }
         }
         CollisionLayer.addProperty("text", CollisionTiles);

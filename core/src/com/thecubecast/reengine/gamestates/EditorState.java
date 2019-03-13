@@ -20,6 +20,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.google.gson.JsonArray;
@@ -62,6 +63,8 @@ public class EditorState extends GameState {
     }
 
     private selection selected = selection.None;
+
+    private Interactable Prefab = null;
 
     private boolean SelectionDragging = false;
     private Vector2[] SelectedArea;
@@ -174,7 +177,7 @@ public class EditorState extends GameState {
             if (selected.equals(selection.Object)) {
                 if (Entities.get(i).getHitbox().contains(new Vector3(pos.x, pos.y, 2))) {
                     //Entities.get(i).setDebugView(true);
-                    if (SelectedArea == null && Gdx.input.isTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) {
+                    if (SelectedArea == null && Gdx.input.isTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT) && Prefab == null && !DraggingObject) {
                         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
                             SelectedObjects.add(Entities.get(i));
                             Entities.get(i).setDebugView(true);
@@ -350,6 +353,12 @@ public class EditorState extends GameState {
         //Draws things on the screen, and not the world positions
         g.setProjectionMatrix(GuiCam.combined);
         g.begin();
+        if (Prefab != null) {
+            Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            GuiCam.unproject(pos312);
+            Prefab.setPosition(pos312.x - (Prefab.getSize().x/2),pos312.y - (Prefab.getSize().y/2),0);
+            Prefab.draw(g, Time);
+        }
         g.end();
 
         UIStage.getViewport().update(gsm.UIWidth, gsm.UIHeight, true);
@@ -368,19 +377,26 @@ public class EditorState extends GameState {
             SaveMap(SaveNameText);
         }
 
+        if (selected.equals(selection.Object) && Prefab == null && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+            SelectedObjects.clear();
+            SelectedObjects.addAll(Entities);
+
+            for (int i = 0; i < SelectedObjects.size(); i++) {
+                SelectedObjects.get(i).setDebugView(true);
+            }
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.C)) {
-            System.out.println("Copied");
-            //Copied_Objects.clear();
-            //Copied_Objects.addAll(SelectedObjects);
+            //System.out.println("Copied");
+            Copied_Objects.clear();
+            Copied_Objects.addAll(SelectedObjects);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.V)) {
-            System.out.println("Pasted");
-            /*
-            //Get the middle of the screen position in the world coords
-            Vector3 camMiddle = new Vector3(camera.position.x + camera.viewportWidth, camera.position.y + camera.viewportHeight, 0);
+            //System.out.println("Pasted");
 
-            System.out.println(camMiddle);
+            //Get the middle of the screen position in the world coords
+            Vector3 camMiddle = new Vector3(camera.position.x, camera.position.y, 0);
 
             //calculate the average location of all the copied entities
             Vector3 AveragePos = new Vector3();
@@ -391,34 +407,34 @@ public class EditorState extends GameState {
             AveragePos.x = AveragePos.x/Copied_Objects.size();
             AveragePos.y = AveragePos.y/Copied_Objects.size();
             AveragePos.z = AveragePos.z/Copied_Objects.size();
-            System.out.println(AveragePos);
 
             //Calculate offset
             camMiddle.sub(AveragePos);
-            System.out.println(camMiddle);
 
             //Add the change from average location of copied, to location of middle screen
             for (int i = 0; i < Copied_Objects.size(); i++) {
-                WorldObject temp = Copied_Objects.get(i).getClass().newInstance();
+                Interactable temp = ((Interactable)Copied_Objects.get(i)).CreateNew();
 
                 temp.setPosition(temp.getPosition().x + camMiddle.x, temp.getPosition().y + camMiddle.y, AveragePos.z);
                 Entities.add(temp);
                 SelectedObjects.add(temp);
                 temp.setDebugView(true);
-            }*/
+            }
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS) || Gdx.input.isKeyJustPressed(Input.Keys.EQUALS) && UIStage.getKeyboardFocus() == null) {
             if (!OverHud)
                 gsm.setWorldScale(gsm.Scale + 1);
-            System.out.println(gsm.Scale);
+            if (gsm.Debug)
+                System.out.println(gsm.Scale);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS) && UIStage.getKeyboardFocus() == null) {
             if (!OverHud) {
                 if (gsm.Scale - 1 > 0)
                     gsm.setWorldScale(gsm.Scale - 1);
             }
-            System.out.println(gsm.Scale);
+            if (gsm.Debug)
+                System.out.println(gsm.Scale);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.FORWARD_DEL) || Gdx.input.isKeyJustPressed(Input.Keys.DEL) && UIStage.getKeyboardFocus() == null) {
@@ -427,6 +443,22 @@ public class EditorState extends GameState {
                     Entities.remove(SelectedObjects.get(i));
                 }
                 SelectedObjects.clear();
+            }
+        }
+
+        if (Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) { //KeyHit
+            Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(pos);
+
+            if (!OverHud) {
+                if (selected.equals(selection.Object)) {
+                    if (Prefab != null) {
+                        Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                        camera.unproject(pos312);
+                        Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
+                        Entities.add(Prefab.CreateNew());
+                    }
+                }
             }
         }
 
@@ -453,40 +485,40 @@ public class EditorState extends GameState {
                     } else {
                         tempshitgiggle.ClearCollision(((int) pos.x / 16), ((int) pos.y / 16));
                     }
+                } else if (selected.equals(selection.Object) && Prefab == null) {
+                    if (SelectionDragging && SelectedObjects.size() > 0) {
+                        if (SelectedObjects.get(0).getHitbox().contains(new Vector3(pos.x, pos.y, 2)) && SelectedArea == null) {
+                            //This is where your gonna move them around
+                            if (!DraggingObject) {
+                                draggingOffset[0] = (int) SelectedObjects.get(0).getPosition().x - (int) pos.x;
+                                draggingOffset[1] = (int) SelectedObjects.get(0).getPosition().y - (int) pos.y;
+                            }
+                            DraggingObject = true;
+
+                        }
+                    }
+
+                    if (DraggingObject) {
+                        for (int i = 0; i < SelectedObjects.size(); i++) {
+                            SelectedObjects.get(i).setPosition(pos.x + draggingOffset[0], pos.y + draggingOffset[1], SelectedObjects.get(i).getPosition().z);
+                            HiddenButtonTriggeresLoading.init(0,0);
+                        }
+                    }
+
+                    if (SelectionDragging && !DraggingObject) {
+
+                        if (SelectedArea == null) {
+                            SelectedArea = new Vector2[]{new Vector2(Gdx.input.getX(), Gdx.input.getY()), new Vector2(0, 0)};
+                        }
+
+                        if (SelectedArea != null) {
+                            SelectedArea[1].set(Gdx.input.getX(), Gdx.input.getY());
+                        }
+                    } else {
+                        SelectedArea = null;
+                    }
                 } else if (selected.equals(selection.None)) {
 
-                }
-
-                if (SelectionDragging && SelectedObjects.size() > 0) {
-                    if (SelectedObjects.get(0).getHitbox().contains(new Vector3(pos.x, pos.y, 2)) && SelectedArea == null) {
-                        //This is where your gonna move them around
-                        if (!DraggingObject) {
-                            draggingOffset[0] = (int) SelectedObjects.get(0).getPosition().x - (int) pos.x;
-                            draggingOffset[1] = (int) SelectedObjects.get(0).getPosition().y - (int) pos.y;
-                        }
-                        DraggingObject = true;
-
-                    }
-                }
-
-                if (DraggingObject) {
-                    for (int i = 0; i < SelectedObjects.size(); i++) {
-                        SelectedObjects.get(i).setPosition(pos.x + draggingOffset[0], pos.y + draggingOffset[1], SelectedObjects.get(i).getPosition().z);
-                        HiddenButtonTriggeresLoading.init(0,0);
-                    }
-                }
-
-                if (SelectionDragging && !DraggingObject) {
-
-                    if (SelectedArea == null) {
-                        SelectedArea = new Vector2[]{new Vector2(Gdx.input.getX(), Gdx.input.getY()), new Vector2(0, 0)};
-                    }
-
-                    if (SelectedArea != null) {
-                        SelectedArea[1].set(Gdx.input.getX(), Gdx.input.getY());
-                    }
-                } else {
-                    SelectedArea = null;
                 }
             }
 
@@ -521,7 +553,13 @@ public class EditorState extends GameState {
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             if (UIStage.getKeyboardFocus() != null) {
                 UIStage.setKeyboardFocus(null);
-            } else {
+            } else if (Prefab != null) {
+                if (!OverHud) {
+                    if (selected.equals(selection.Object)) {
+                        Prefab = null;
+                    }
+                }
+            }else {
                 if (gsm.UI.Visible) {
                     gsm.UI.setVisable(!gsm.UI.Visible);
                     UIStage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
@@ -921,22 +959,79 @@ public class EditorState extends GameState {
             JsonParser jsonReaderthing = new JsonParser();
             JsonObject MapObject = jsonReaderthing.parse(Gdx.files.internal("Saves/" + gsm.SaveSelected + ".ecube").readString()).getAsJsonObject();
             JsonArray MapPrefabs = MapObject.getAsJsonArray("Objects");
-            System.out.println("Size: " + MapPrefabs.size());
+            //System.out.println("Size: " + MapPrefabs.size());
 
-            for (int i = 0; i < MapPrefabs.size(); i++) {
+            for (int i = 1; i < MapPrefabs.size()+1; i++) {
 
                 int tempi = i - 1;
-                JsonObject temp = MapPrefabs.get(i).getAsJsonObject();
-                ImageButton tempimage = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(temp.get("TexLocation").getAsString())))));
+                JsonObject tempObject = MapPrefabs.get(tempi).getAsJsonObject();
+                ImageButton tempimage = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(tempObject.get("TexLocation").getAsString())))));
                 tempimage.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        //TileIDSelected = tempi;
+
+                        String Name = tempObject.get("Name").getAsString();
+                        String Description = tempObject.get("Description").getAsString();
+                        int W = tempObject.get("Width").getAsInt();
+                        int H = tempObject.get("Height").getAsInt();
+                        int D = tempObject.get("Depth").getAsInt();
+                        int OffsetX = tempObject.get("WidthOffset").getAsInt();
+                        int OffsetY = tempObject.get("HeightOffset").getAsInt();
+                        int OffsetZ = tempObject.get("DepthOffset").getAsInt();
+                        String tempImgLoc = tempObject.get("TexLocation").getAsString();
+                        String RawEvents = tempObject.get("Event").getAsString();
+                        Trigger.TriggerType TriggerType = Trigger.TriggerType.None;
+                        WorldObject.type Type;
+                        boolean Collidable = false;
+                        if (tempObject.get("Physics").getAsString().equals("Static")) {
+                            Type = WorldObject.type.Static;
+                            if (tempObject.get("Collidable").getAsBoolean())
+                                Collidable = true;
+                        } else if (tempObject.get("Physics").getAsString().equals("Dynamic")) {
+                            Type = WorldObject.type.Dynamic;
+                        } else {
+                            Type = WorldObject.type.Static;
+                        }
+
+                        if (tempObject.get("TriggerType").getAsString().equals("OnEntry")) {
+                            TriggerType = Trigger.TriggerType.OnEntry;
+                        } else if (tempObject.get("TriggerType").getAsString().equals("OnTrigger")) {
+                            TriggerType = Trigger.TriggerType.OnTrigger;
+                        } else if (tempObject.get("TriggerType").getAsString().equals("OnExit")) {
+                            TriggerType = Trigger.TriggerType.OnExit;
+                        } else if (tempObject.get("TriggerType").getAsString().equals("OnInteract")) {
+                            TriggerType = Trigger.TriggerType.OnInteract;
+                        } else if (tempObject.get("TriggerType").getAsString().equals("OnClick")) {
+                            TriggerType = Trigger.TriggerType.OnClick;
+                        } else if (tempObject.get("TriggerType").getAsString().equals("OnAttack")) {
+                            TriggerType = Trigger.TriggerType.OnAttack;
+                        }
+
+                        Interactable tempObj = new Interactable(0,0,0, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);
+                        tempObj.setTexLocation(tempImgLoc);
+                        tempObj.Name = Name;
+                        tempObj.Description = Description;
+
+                        tempObj.setHitboxOffset(new Vector3(OffsetX, OffsetY, OffsetZ));
+
+                        Prefab = tempObj;
                     }
                 });
-                ObjectEditorPrefab.add(tempimage);
+                Table Container = new Table(skin) {
+                    @Override
+                    public void act(float delta) {
+                        super.act(delta);
+                        if (tempimage.isOver()) {
+                            this.setBackground("Outline");
+                        } else {
+                            this.setBackground("Blank");
+                        }
+                    }
+                };
+                Container.add(tempimage).pad(-2);
+                ObjectEditorPrefab.add(Container);
                 if (i % 6 == 0) {
-                    TilesList.row();
+                    ObjectEditorPrefab.row();
                 }
             }
         }
@@ -1333,6 +1428,7 @@ public class EditorState extends GameState {
         BoxStuff.add(RecipeScroll).height(100).padTop(5);
 
         Table Title = new Table(skin);
+        //Title.add(new Label("Objects", skin));
         Title.add(Hide);
         Title.setBackground("Window_red");
 
@@ -1393,6 +1489,8 @@ public class EditorState extends GameState {
         Path path = Paths.get("Saves", Savename + ".cube");
         ArrayList<String> lines = new ArrayList<String>();
         lines.add(tempshitgiggle.SerializeMap(Entities));
+
+        System.out.println("Serialization Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
 
         try {
             Files.deleteIfExists(path);
