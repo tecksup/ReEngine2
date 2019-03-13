@@ -198,8 +198,8 @@ public class TkMap {
     }
 
     public void setCollision(int x, int y) {
-        if (x >= 0 && x < getWidth()) {
-            if (y >= 0 && y < getHeight()) {
+        if (x < Width && x >= 0) {
+            if (y < Height && y >= 0) {
                 Collision[x][y] = true;
             }
         }
@@ -210,11 +210,19 @@ public class TkMap {
     }
 
     public void setGroundCell(int x, int y, int ID) {
-        Ground[x][y] = ID;
+        if (x < Width && x >= 0) {
+            if (y < Height && y >= 0) {
+                Ground[x][y] = ID;
+            }
+        }
     }
 
     public void setForegroundCell(int x, int y, int ID) {
-        Foreground[x][y] = ID;
+        if (x < Width && x >= 0) {
+            if (y < Height && y >= 0) {
+                Foreground[x][y] = ID;
+            }
+        }
     }
 
     public void Draw(OrthographicCamera cam, SpriteBatch batch) {

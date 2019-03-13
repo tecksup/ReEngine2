@@ -207,13 +207,13 @@ public enum UI_state implements State<UIFSM> {
             table.add(Audio).pad(2);
             table.row();
 
-            final TkTextButton Graphics = new TkTextButton("graphics", entity.skin);
+            final TkTextButton Graphics = new TkTextButton("Graphics", entity.skin);
             table.add(Graphics).pad(2);
             table.row();
 
-            //final TkTextButton Controls = new TkTextButton("Controls", entity.skin);
-            //table.add(Controls).pad(2);
-            //table.row();
+            final TkTextButton Controls = new TkTextButton("Controls", entity.skin);
+            table.add(Controls).pad(2);
+            table.row();
 
             final TkTextButton back = new TkTextButton("Back", entity.skin);
             table.add(back).pad(2);
@@ -237,12 +237,12 @@ public enum UI_state implements State<UIFSM> {
                 }
             });
 
-            //Controls.addListener(new ClickListener() {
-            //    @Override
-            //    public void clicked(InputEvent event, float x, float y) {
-            //        entity.stateMachine.changeState(UI_state.Controls);
-            //    }
-            //});
+            Controls.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.stateMachine.changeState(UI_state.Controls);
+                }
+            });
 
             back.addListener(new ClickListener() {
                 @Override
@@ -558,13 +558,16 @@ public enum UI_state implements State<UIFSM> {
             table.setFillParent(true);
             entity.stage.addActor(table);
 
+            Table Window = new Table(entity.skin);
+            Window.setBackground("Window_red");
+
             final TextArea Username = new TextArea(entity.gsm.Username, entity.skin);
-            table.add(Username).pad(2);
-            table.row();
+            Window.add(Username).pad(2).padTop(10);
+            Window.row();
 
             final TextArea IP = new TextArea(entity.gsm.IP, entity.skin);
-            table.add(IP).pad(2);
-            table.row();
+            Window.add(IP).pad(2);
+            Window.row();
 
             final TkTextButton Connect = new TkTextButton("Connect", entity.skin) {
                 @Override
@@ -575,12 +578,25 @@ public enum UI_state implements State<UIFSM> {
                     }
                 }
             };
-            table.add(Connect).pad(2);
-            table.row();
+
+            Table Title = new Table(entity.skin);
+            Title.add(new Label("Connect to a Server", entity.skin));
+            Title.setBackground("Window_red");
+
+            table.add(Window).row();
+            table.pack();
+            table.add(Title).padTop(-Window.getHeight()*2).row();
+
+            Table tempTabl = new Table();
 
             final TkTextButton Back = new TkTextButton("Back", entity.skin);
-            table.add(Back).pad(2);
+
+            tempTabl.add(Back).pad(2);
+            tempTabl.add(Connect).pad(2);
+
+            table.add(tempTabl).pad(2);
             table.row();
+
 
             Connect.addListener(new ClickListener() {
                 @Override
@@ -638,88 +654,100 @@ public enum UI_state implements State<UIFSM> {
             ScrollPane RecipeScroll = new ScrollPane(SavesList, entity.skin);
             RecipeScroll.setupOverscroll(5, 50f, 100f);
 
+            JsonParser jsonReaderthing = new JsonParser();
+
             //Finds all saves, and lists them
             if (Gdx.files.internal("Saves").isDirectory()) {
                 for (int i = 0; i < Gdx.files.internal("Saves").list().length; i++) {
                     String[] saves = Gdx.files.internal("Saves").list()[i].toString().split("/");
 
-                    JsonParser jsonReaderthing = new JsonParser();
-                    JsonObject MapObject = jsonReaderthing.parse(Gdx.files.internal("Saves/" + saves[1]).readString()).getAsJsonObject();
+                    if (!saves[1].split("[.]cube")[0].contains(".ecube")) {
 
-                    String Created = MapObject.get("Created").getAsString();
-                    String LastEdit = MapObject.get("LastEdit").getAsString();
+                        JsonObject MapObject = jsonReaderthing.parse(Gdx.files.internal("Saves/" + saves[1]).readString()).getAsJsonObject();
 
-                    Image Icon = new Image(new Texture(Gdx.files.internal("Sprites/Gunter.png")));
-                    Table Data = new Table();
-                    Label SaveName = new Label(saves[1].split(".cube")[0], entity.skin);
-                    Label MetaData = new Label("[GREEN]Created:[WHITE] " + Created + " | [GREEN]Edited:[WHITE] " + LastEdit , entity.skin);
-                    Data.add(SaveName).left().row();
-                    Data.add(MetaData).left().row();
-                    TkImageButton Delete = new TkImageButton(entity.skin, "Trash");
-                    TkImageButton Dupe = new TkImageButton(entity.skin, "Plus");
-                    TkImageButton Load = new TkImageButton(entity.skin, "Play");
-                    Left.add(Icon).pad(2).left();
-                    Left.add(Data).pad(2).left().row();
-                    Right.add(Delete).pad(5).center();
-                    Right.add(Dupe).pad(5).center();
-                    Right.add(Load).pad(5).center().row();
+                        String Created = MapObject.get("Created").getAsString();
+                        String LastEdit = MapObject.get("LastEdit").getAsString();
 
-                    Load.addListener(new ClickListener() {
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            super.clicked(event, x, y);
-                            entity.gsm.SaveSelected = saves[1].split(".cube")[0];
-                            entity.gsm.setState(GameStateManager.State.EDITOR);
-                        }
-                    });
+                        Image Icon = new Image(new Texture(Gdx.files.internal("Sprites/Gunter.png")));
+                        Table Data = new Table();
+                        Label SaveName = new Label(saves[1].split(".cube")[0], entity.skin);
+                        Label MetaData = new Label("[GREEN]Created:[WHITE] " + Created + " | [GREEN]Edited:[WHITE] " + LastEdit, entity.skin);
+                        Data.add(SaveName).left().row();
+                        Data.add(MetaData).left().row();
+                        TkImageButton Delete = new TkImageButton(entity.skin, "Trash");
+                        TkImageButton Dupe = new TkImageButton(entity.skin, "Plus");
+                        TkImageButton Load = new TkImageButton(entity.skin, "Play");
+                        Left.add(Icon).pad(2).left();
+                        Left.add(Data).pad(2).left().row();
+                        Right.add(Delete).pad(5).center();
+                        Right.add(Dupe).pad(5).center();
+                        Right.add(Load).pad(5).center().row();
 
-                    Dupe.addListener(new ClickListener() {
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            super.clicked(event, x, y);
-                            try {
-                                Path path = Paths.get("Saves/" + saves[1]);
-
-                                int Copy = 0;
-                                while (Files.exists(Paths.get("Saves/" + saves[1].split(".cube")[0] + "_" + Copy + ".cube"))) {
-                                    Copy++;
-                                }
-
-                                Files.copy(path, Paths.get("Saves/" + saves[1].split(".cube")[0] + "_" + Copy + ".cube"));
-                                System.out.println("Duped " + saves[1]);
-                                entity.setState(EditorChooser);
-                            } catch (Exception e) {
-
+                        Load.addListener(new ClickListener() {
+                            @Override
+                            public void clicked(InputEvent event, float x, float y) {
+                                super.clicked(event, x, y);
+                                entity.gsm.SaveSelected = saves[1].split(".cube")[0];
+                                entity.gsm.setState(GameStateManager.State.EDITOR);
                             }
-                        }
-                    });
+                        });
 
-                    Delete.addListener(new ClickListener() {
-                        boolean temp = false;
-                        @Override
-                        public void clicked(InputEvent event, float x, float y) {
-                            super.clicked(event, x, y);
-
-                            if (!temp) {
-                                temp = true;
-                                System.out.println("Are you sure you want to delete (Saves/" + saves[1] + ")?");
-                                return;
-                            }
-
-                            if (temp) {
+                        Dupe.addListener(new ClickListener() {
+                            @Override
+                            public void clicked(InputEvent event, float x, float y) {
+                                super.clicked(event, x, y);
                                 try {
                                     Path path = Paths.get("Saves/" + saves[1]);
-                                    Files.deleteIfExists(path);
-                                    System.out.println("Deleted " + saves[1]);
-                                    entity.setState(EditorChooser);
+
+                                    int Copy = 0;
+                                    while (Files.exists(Paths.get("Saves/" + saves[1].split(".cube")[0] + "_" + Copy + ".cube"))) {
+                                        Copy++;
+                                    }
+
+                                    Files.copy(path, Paths.get("Saves/" + saves[1].split(".cube")[0] + "_" + Copy + ".cube"));
+                                    System.out.println("Duped " + saves[1]);
+
+                                    if (Gdx.files.internal("Saves/" + saves[1].split("[.]")[0] + ".ecube").exists()) {
+                                        Path path2 = Paths.get("Saves/" + saves[1].split("[.]")[0] + ".ecube");
+
+                                        Files.copy(path2, Paths.get("Saves/" + saves[1].split("[.]")[0] + "_" + Copy + ".ecube"));
+                                        System.out.println("Duped " + saves[1].split("[.]")[0] + " Editor File");
+                                    }
                                 } catch (Exception e) {
 
                                 }
+                                entity.setState(EditorChooser);
                             }
-                        }
-                    });
+                        });
+
+                        Delete.addListener(new ClickListener() {
+                            boolean temp = false;
+
+                            @Override
+                            public void clicked(InputEvent event, float x, float y) {
+                                super.clicked(event, x, y);
+
+                                if (!temp) {
+                                    temp = true;
+                                    System.out.println("Are you sure you want to delete (Saves/" + saves[1] + ")?");
+                                    return;
+                                }
+
+                                if (temp) {
+                                    try {
+                                        Path path = Paths.get("Saves/" + saves[1]);
+                                        Files.deleteIfExists(path);
+                                        System.out.println("Deleted " + saves[1]);
+                                        entity.setState(EditorChooser);
+                                    } catch (Exception e) {
+
+                                    }
+                                }
+                            }
+                        });
 
 
+                    }
                 }
             }
 
@@ -793,7 +821,7 @@ public enum UI_state implements State<UIFSM> {
             RecipeScroll.setupOverscroll(5, 50f, 100f);
 
             Table Title = new Table(entity.skin);
-            Title.add(new Label("Levels", entity.skin));
+            Title.add(new Label("Create New Level", entity.skin));
             Title.setBackground("Window_red");
 
             TextArea FileName = new TextArea("Untitled", entity.skin);
@@ -802,11 +830,11 @@ public enum UI_state implements State<UIFSM> {
             TextArea Tileset = new TextArea("tileset", entity.skin);
             TextArea TileSize = new TextArea("16", entity.skin);
 
-            SavesList.add(FileName).row();
-            SavesList.add(Width).row();
-            SavesList.add(Height).row();
-            SavesList.add(Tileset).row();
-            SavesList.add(TileSize).row();
+            SavesList.add(FileName).pad(2).padTop(10).row();
+            SavesList.add(Width).pad(2).row();
+            SavesList.add(Height).pad(2).row();
+            SavesList.add(Tileset).pad(2).row();
+            SavesList.add(TileSize).pad(2).row();
 
             table.add(RecipeScroll).row();
             table.pack();
@@ -814,9 +842,8 @@ public enum UI_state implements State<UIFSM> {
 
             Table tempTabl = new Table();
 
-            final TkTextButton Create = new TkTextButton("New", entity.skin);
-
             final TkTextButton Back = new TkTextButton("Back", entity.skin);
+            final TkTextButton Create = new TkTextButton("Create", entity.skin);
 
             tempTabl.add(Back).pad(2);
             tempTabl.add(Create).pad(2);

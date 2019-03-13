@@ -6,7 +6,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -20,6 +22,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.Cube;
 import com.thecubecast.reengine.data.GameStateManager;
@@ -109,6 +114,8 @@ public class EditorState extends GameState {
 
     public EditorState(GameStateManager gsm) {
         super(gsm);
+        gsm.setUIScale(2);
+        gsm.setWorldScale(3);
     }
 
     public void init() {
@@ -161,8 +168,6 @@ public class EditorState extends GameState {
 
         for (int i = 0; i < Entities.size(); i++) {
             Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
-
-            System.out.println();
 
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
@@ -355,6 +360,10 @@ public class EditorState extends GameState {
 
     private void handleInput() {
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.E) && UIStage.getKeyboardFocus() == null) {
+            Erasing = !Erasing;
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             SaveMap(SaveNameText);
         }
@@ -399,12 +408,12 @@ public class EditorState extends GameState {
             }*/
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS) || Gdx.input.isKeyJustPressed(Input.Keys.EQUALS)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS) || Gdx.input.isKeyJustPressed(Input.Keys.EQUALS) && UIStage.getKeyboardFocus() == null) {
             if (!OverHud)
                 gsm.setWorldScale(gsm.Scale + 1);
             System.out.println(gsm.Scale);
         }
-        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS) && UIStage.getKeyboardFocus() == null) {
             if (!OverHud) {
                 if (gsm.Scale - 1 > 0)
                     gsm.setWorldScale(gsm.Scale - 1);
@@ -412,7 +421,7 @@ public class EditorState extends GameState {
             System.out.println(gsm.Scale);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.FORWARD_DEL) || Gdx.input.isKeyJustPressed(Input.Keys.DEL)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.FORWARD_DEL) || Gdx.input.isKeyJustPressed(Input.Keys.DEL) && UIStage.getKeyboardFocus() == null) {
             if (!OverHud) {
                 for (int i = 0; i < SelectedObjects.size(); i++) {
                     Entities.remove(SelectedObjects.get(i));
@@ -504,16 +513,25 @@ public class EditorState extends GameState {
         camera.unproject(pos);
         updategsmValues(gsm, pos);
 
+        if (!gsm.UI.Visible) {
+            Gdx.input.setInputProcessor(UIStage);
+            UIStage.getViewport().setCamera(GuiCam);
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            if (gsm.UI.Visible) {
-                gsm.UI.setVisable(!gsm.UI.Visible);
-                UIStage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
-                Gdx.input.setInputProcessor(UIStage);
-                UIStage.getViewport().setCamera(GuiCam);
-            } else if (!gsm.UI.Visible) {
-                gsm.UI.setState(UI_state.InGameHome);
-                gsm.UI.setVisable(gsm.UI.Visible);
-                Gdx.input.setInputProcessor(gsm.UI.stage);
+            if (UIStage.getKeyboardFocus() != null) {
+                UIStage.setKeyboardFocus(null);
+            } else {
+                if (gsm.UI.Visible) {
+                    gsm.UI.setVisable(!gsm.UI.Visible);
+                    UIStage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
+                    Gdx.input.setInputProcessor(UIStage);
+                    UIStage.getViewport().setCamera(GuiCam);
+                } else if (!gsm.UI.Visible) {
+                    gsm.UI.setState(UI_state.InGameHome);
+                    gsm.UI.setVisable(gsm.UI.Visible);
+                    Gdx.input.setInputProcessor(gsm.UI.stage);
+                }
             }
         }
 
@@ -530,14 +548,6 @@ public class EditorState extends GameState {
         shaker = new ScreenShakeCameraController(camera);
 
         UISetup();
-
-        /*Vector3 campostemp = camera.position;
-        camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
-        camera.position.set(campostemp);
-        GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
-        shaker.reSize(camera);*/
-
-        //shaker.reSize(camera);
     }
 
     public void UISetup() {
@@ -572,6 +582,7 @@ public class EditorState extends GameState {
                             if (Entities.get(i).getHitbox().intersects(tempSelection)) {
                                 SelectedObjects.add(Entities.get(i));
                                 Entities.get(i).setDebugView(true);
+                                HiddenButtonTriggeresLoading.init(0,0);
                             }
                         }
                     }
@@ -622,6 +633,12 @@ public class EditorState extends GameState {
         });
         InfoTable.add(SaveButton);
 
+        Table TopRightTable = new Table(skin);
+        TopRightTable.setFillParent(true);
+        TopRightTable.top().right();
+        Button TopRightBoxStuff = new Button(skin, "Blank");
+        TopRightBoxStuff.setBackground("Window_green");
+
         EditorTable = new Table(skin);
         EditorTable.setFillParent(true);
         EditorTable.bottom().right();
@@ -629,7 +646,7 @@ public class EditorState extends GameState {
             @Override
             public void act(float delta) {
                 super.act(delta);
-                if (isOver()) {
+                if (isOver() || TopRightBoxStuff.isOver()) {
                     OverHud = true;
                 } else {
                     OverHud = false;
@@ -758,14 +775,16 @@ public class EditorState extends GameState {
             }
         });
         Table ButtonHolder = new Table();
-        ButtonHolder.add(Background);
-        ButtonHolder.add(Foreground);
-        ButtonHolder.add(Collision);
-        ButtonHolder.add(Objects);
-        ButtonHolder.add(Eraser);
-        ButtonHolder.add(Hide).right();
-        BoxStuff.add(ButtonHolder).row();
+        ButtonHolder.add(Background).row();
+        ButtonHolder.add(Foreground).row();
+        ButtonHolder.add(Collision).row();
+        ButtonHolder.add(Objects).row();
+        ButtonHolder.add(Eraser).row();
         EditorTable.add(BoxStuff);
+
+        TopRightBoxStuff.add(ButtonHolder);
+
+        TopRightTable.add(TopRightBoxStuff);
 
         Table TilesList = new Table(skin);
         TilesList.setName("TilesList");
@@ -773,8 +792,26 @@ public class EditorState extends GameState {
         TilesFGList.setName("TilesFGList");
         Table CollisionEditor = new Table(skin);
         CollisionEditor.setName("CollisionEditor");
-        Table ObjectEditor = new Table(skin);
-        ObjectEditor.setName("ObjectEditor");
+
+        Table ObjectEditorPrefab = new Table(skin);
+        ObjectEditorPrefab.setName("ObjectEditorPrefab");
+        Table ObjectEditorConfig = new Table(skin);
+        ObjectEditorConfig.setName("ObjectEditorConfig");
+        Table ObjectEditorPane = new Table(skin) {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                //Check the type of tileset, and change from background or foreground tiles
+                if (SelectedObjects.size() >= 1 && this.getCell(ObjectEditorConfig) == null) {
+                    this.clear();
+                    this.add(ObjectEditorConfig);
+                } else if (SelectedObjects.size() == 0 && this.getCell(ObjectEditorPrefab) == null){
+                    this.clear();
+                    this.add(ObjectEditorPrefab);
+                }
+            }
+        };
+        ObjectEditorPane.setName("ObjectEditor");
 
         ScrollPane RecipeScroll = new ScrollPane(TilesList, skin) {
             private boolean FG = false;
@@ -784,13 +821,20 @@ public class EditorState extends GameState {
                 super.act(delta);
                 //Check the type of tileset, and change from background or foreground tiles
                 if (selected.equals(selection.Ground) && !this.getActor().getName().equals("TilesList")) {
+                    EditorTable.setVisible(true);
                     this.setActor(TilesList);
                 } else if (selected.equals(selection.Forground) && !this.getActor().getName().equals("TilesFGList")) {
+                    EditorTable.setVisible(true);
                     this.setActor(TilesFGList);
                 } else if (selected.equals(selection.Collision) && !this.getActor().getName().equals("CollisionEditor")) {
+                    EditorTable.setVisible(false);
                     this.setActor(CollisionEditor);
                 } else if (selected.equals(selection.Object) && !this.getActor().getName().equals("ObjectEditor")) {
-                    this.setActor(ObjectEditor);
+                    EditorTable.setVisible(true);
+                    this.setActor(ObjectEditorPane);
+                } else if (selected.equals(selection.None)) {
+                    EditorTable.setVisible(false);
+                    this.getActor().setName("None");
                 }
             }
         };
@@ -872,9 +916,30 @@ public class EditorState extends GameState {
             }
         }
 
-        Label CollisionExplain = new Label("Left click to place CollisionTiles. Toggle the Eraser to erase them. ", skin);
-        CollisionExplain.setWrap(true);
-        CollisionEditor.add(CollisionExplain).width(gsm.UIWidth/3);
+        //Object Prefab Stuff
+        if (Gdx.files.internal("Saves/" + gsm.SaveSelected + ".ecube").exists()) {
+            JsonParser jsonReaderthing = new JsonParser();
+            JsonObject MapObject = jsonReaderthing.parse(Gdx.files.internal("Saves/" + gsm.SaveSelected + ".ecube").readString()).getAsJsonObject();
+            JsonArray MapPrefabs = MapObject.getAsJsonArray("Objects");
+            System.out.println("Size: " + MapPrefabs.size());
+
+            for (int i = 0; i < MapPrefabs.size(); i++) {
+
+                int tempi = i - 1;
+                JsonObject temp = MapPrefabs.get(i).getAsJsonObject();
+                ImageButton tempimage = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(temp.get("TexLocation").getAsString())))));
+                tempimage.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        //TileIDSelected = tempi;
+                    }
+                });
+                ObjectEditorPrefab.add(tempimage);
+                if (i % 6 == 0) {
+                    TilesList.row();
+                }
+            }
+        }
 
         //Object Editor Stuff
         Label NameL = new Label("Name", skin);
@@ -888,8 +953,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(NameL);
-        ObjectEditor.add(Name).row();
+        ObjectEditorConfig.add(NameL);
+        ObjectEditorConfig.add(Name).row();
         //
         Label DescriptionL = new Label("Description", skin);
         TextField Description = new TextField("", skin);
@@ -902,8 +967,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(DescriptionL);
-        ObjectEditor.add(Description).row();
+        ObjectEditorConfig.add(DescriptionL);
+        ObjectEditorConfig.add(Description).row();
         //
         Label XL = new Label("X", skin);
         TextField X = new TextField("", skin);
@@ -917,8 +982,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(XL);
-        ObjectEditor.add(X).row();
+        ObjectEditorConfig.add(XL);
+        ObjectEditorConfig.add(X).row();
         //
         Label YL = new Label("Y", skin);
         TextField Y = new TextField("", skin);
@@ -932,8 +997,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(YL);
-        ObjectEditor.add(Y).row();
+        ObjectEditorConfig.add(YL);
+        ObjectEditorConfig.add(Y).row();
         //
         Label ZL = new Label("Z", skin);
         TextField Z = new TextField("", skin);
@@ -947,8 +1012,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(ZL);
-        ObjectEditor.add(Z).row();
+        ObjectEditorConfig.add(ZL);
+        ObjectEditorConfig.add(Z).row();
         //
         Label WidthL = new Label("Width", skin);
         TextField Width = new TextField("", skin);
@@ -962,8 +1027,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(WidthL);
-        ObjectEditor.add(Width).row();
+        ObjectEditorConfig.add(WidthL);
+        ObjectEditorConfig.add(Width).row();
         //
         Label WidthOffsetL = new Label("Width Offset", skin);
         TextField WidthOffset = new TextField("", skin);
@@ -977,8 +1042,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(WidthOffsetL);
-        ObjectEditor.add(WidthOffset).row();
+        ObjectEditorConfig.add(WidthOffsetL);
+        ObjectEditorConfig.add(WidthOffset).row();
         //
         Label HeightL = new Label("Height", skin);
         TextField Height = new TextField("", skin);
@@ -992,8 +1057,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(HeightL);
-        ObjectEditor.add(Height).row();
+        ObjectEditorConfig.add(HeightL);
+        ObjectEditorConfig.add(Height).row();
         //
         Label HeightOffsetL = new Label("Height Offset", skin);
         TextField HeightOffset = new TextField("", skin);
@@ -1007,8 +1072,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(HeightOffsetL);
-        ObjectEditor.add(HeightOffset).row();
+        ObjectEditorConfig.add(HeightOffsetL);
+        ObjectEditorConfig.add(HeightOffset).row();
         //
         Label DepthL = new Label("Depth", skin);
         TextField Depth = new TextField("", skin);
@@ -1022,8 +1087,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(DepthL);
-        ObjectEditor.add(Depth).row();
+        ObjectEditorConfig.add(DepthL);
+        ObjectEditorConfig.add(Depth).row();
         //
         Label DepthOffsetL = new Label("Depth Offset", skin);
         TextField DepthOffset = new TextField("", skin);
@@ -1037,8 +1102,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(DepthOffsetL);
-        ObjectEditor.add(DepthOffset).row();
+        ObjectEditorConfig.add(DepthOffsetL);
+        ObjectEditorConfig.add(DepthOffset).row();
         //
         Label TextureL = new Label("Texture Path", skin);
         TextField Texture = new TextField("", skin);
@@ -1051,8 +1116,8 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(TextureL);
-        ObjectEditor.add(Texture).row();
+        ObjectEditorConfig.add(TextureL);
+        ObjectEditorConfig.add(Texture).row();
         //
         Label PhysicsL = new Label("Physics Type", skin);
         SelectBox Physics = new SelectBox(skin);
@@ -1081,11 +1146,11 @@ public class EditorState extends GameState {
         Table StupidFittingThing = new Table();
         StupidFittingThing.add(Physics);
         StupidFittingThing.add(Collidable);
-        ObjectEditor.add(PhysicsL);
-        ObjectEditor.add(StupidFittingThing).fillX().row();
+        ObjectEditorConfig.add(PhysicsL);
+        ObjectEditorConfig.add(StupidFittingThing).fillX().row();
         //
         SelectBox TriggerTypeChoice = new SelectBox(skin);
-        TriggerTypeChoice.setItems("OnEntry", "OnTrigger", "OnExit", "OnInteract", "OnClick");
+        TriggerTypeChoice.setItems("OnEntry", "OnTrigger", "OnExit", "OnInteract", "OnClick", "OnAttack");
         TriggerTypeChoice.setSelected("OnInteract");
         TriggerTypeChoice.addListener(new ChangeListener() {
             @Override
@@ -1099,12 +1164,12 @@ public class EditorState extends GameState {
                     TriggerType = Trigger.TriggerType.OnTrigger;
                 } else if (TriggerTypeChoice.getSelected().equals("OnExit")) {
                     TriggerType = Trigger.TriggerType.OnExit;
-                } else if (TriggerTypeChoice.getSelected().equals("OnTrigger")) {
-                    TriggerType = Trigger.TriggerType.OnTrigger;
-                } else if (TriggerTypeChoice.getSelected().equals("OnExit")) {
-                    TriggerType = Trigger.TriggerType.OnExit;
+                } else if (TriggerTypeChoice.getSelected().equals("OnInteract")) {
+                    TriggerType = Trigger.TriggerType.OnInteract;
                 } else if (TriggerTypeChoice.getSelected().equals("OnAttack")) {
                     TriggerType = Trigger.TriggerType.OnAttack;
+                }  else if (TriggerTypeChoice.getSelected().equals("OnClick")) {
+                    TriggerType = Trigger.TriggerType.OnClick;
                 }
 
                 if (SelectedObjects.size() > 0) {
@@ -1138,9 +1203,9 @@ public class EditorState extends GameState {
                 }
             }
         });
-        ObjectEditor.add(TriggerTypeChoice).fillX().row();
-        ObjectEditor.add(EventL);
-        ObjectEditor.add(EventCode).height(64).row();
+        ObjectEditorConfig.add(TriggerTypeChoice).fillX().row();
+        ObjectEditorConfig.add(EventL);
+        ObjectEditorConfig.add(EventCode).height(64).row();
         TkTextButton DuplicateOrCreate = new TkTextButton("", skin) {
             @Override
             public void act(float delta) {
@@ -1188,8 +1253,10 @@ public class EditorState extends GameState {
                 SelectedObjects.clear();
             }
         });
-        ObjectEditor.add(DuplicateOrCreate);
-        ObjectEditor.add(Delete).row();
+        ObjectEditorConfig.add(DuplicateOrCreate);
+        ObjectEditorConfig.add(Delete).row();
+
+        ObjectEditorPane.add(ObjectEditorPrefab);
 
         HiddenButtonTriggeresLoading = new WorldObject() {
 
@@ -1210,7 +1277,7 @@ public class EditorState extends GameState {
                     DepthOffset.setText("" + (int) temp.getHitboxOffset().z);
                     Texture.setText(temp.getTexLocation());
                     Physics.setSelected(temp.getState());
-                    Collision.setChecked(temp.isCollidable());
+                    Collidable.setChecked(temp.isCollidable());
 
                     TriggerTypeChoice.setSelected(temp.getActivationType().name().toString());
                     EventCode.setText(temp.getRawCommands());
@@ -1228,7 +1295,7 @@ public class EditorState extends GameState {
                     DepthOffset.setText("");
                     Texture.setText("");
                     Physics.setSelected("Static");
-                    Collision.setChecked(false);
+                    Collidable.setChecked(false);
                     TriggerTypeChoice.setSelected("None");
                     EventCode.setText("None");
                 } else if (SelectedObjects.size() > 1) {
@@ -1246,7 +1313,7 @@ public class EditorState extends GameState {
                     DepthOffset.setText("");
                     Texture.setText("");
                     Physics.setSelected("Static");
-                    Collision.setChecked(temp.isCollidable());
+                    Collidable.setChecked(temp.isCollidable());
                     TriggerTypeChoice.setSelected("None");
                     EventCode.setText("None");
                 }
@@ -1265,7 +1332,17 @@ public class EditorState extends GameState {
         };
         BoxStuff.add(RecipeScroll).height(100).padTop(5);
 
+        Table Title = new Table(skin);
+        Title.add(Hide);
+        Title.setBackground("Window_red");
+
+        BoxStuff.row();
+        BoxStuff.pack();
+        EditorTable.pack();
+        BoxStuff.add(Title).right().padTop(-EditorTable.getHeight()*2).row();
+
         UIStage.addActor(InfoTable);
+        UIStage.addActor(TopRightTable);
         UIStage.addActor(EditorTable);
     }
 
@@ -1310,6 +1387,9 @@ public class EditorState extends GameState {
     }
 
     public void SaveMap(String Savename) {
+
+        double Started = System.nanoTime();
+
         Path path = Paths.get("Saves", Savename + ".cube");
         ArrayList<String> lines = new ArrayList<String>();
         lines.add(tempshitgiggle.SerializeMap(Entities));
@@ -1321,6 +1401,7 @@ public class EditorState extends GameState {
             e.printStackTrace();
         }
         System.out.println("Saved Map!");
+        System.out.println("Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
     }
 
     @Override
