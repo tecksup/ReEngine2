@@ -225,6 +225,51 @@ public class TkMap {
         }
     }
 
+    public void fillArea(int x, int y, int original, int fill, int[][] arr) {
+        int maxX = arr.length - 1;
+        int maxY = arr[0].length - 1;
+        int[][] stack = new int[(maxX+1)*(maxY+1)][2];
+        int index = 0;
+
+        stack[0][0] = x;
+        stack[0][1] = y;
+        arr[x][y] = fill;
+
+        while (index >= 0){
+            x = stack[index][0];
+            y = stack[index][1];
+            index--;
+
+            if ((x > 0) && (arr[x-1][y] == original)){
+                arr[x-1][y] = fill;
+                index++;
+                stack[index][0] = x-1;
+                stack[index][1] = y;
+            }
+
+            if ((x < maxX) && (arr[x+1][y] == original)){
+                arr[x+1][y] = fill;
+                index++;
+                stack[index][0] = x+1;
+                stack[index][1] = y;
+            }
+
+            if ((y > 0) && (arr[x][y-1] == original)){
+                arr[x][y-1] = fill;
+                index++;
+                stack[index][0] = x;
+                stack[index][1] = y-1;
+            }
+
+            if ((y < maxY) && (arr[x][y+1] == original)){
+                arr[x][y+1] = fill;
+                index++;
+                stack[index][0] = x;
+                stack[index][1] = y+1;
+            }
+        }
+    }
+
     public void Draw(OrthographicCamera cam, SpriteBatch batch) {
 
         Rectangle drawView;
@@ -420,20 +465,20 @@ public class TkMap {
         JsonObject GroundLayer = new JsonObject();
         GroundLayer.addProperty("tileset", this.Tileset.Name);
         GroundLayer.addProperty("exportMode", "CSV");
-        String GroundTiles = "";
+        StringBuilder GroundTiles = new StringBuilder();
         for (int y = this.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.getWidth(); x++) {
                 if (x == 0) {
-                    GroundTiles = GroundTiles.concat("" + this.Ground[x][y]);
+                    GroundTiles = GroundTiles.append(this.Ground[x][y]);
                 } else {
-                    GroundTiles = GroundTiles.concat("," + this.Ground[x][y]);
+                    GroundTiles = GroundTiles.append("," + this.Ground[x][y]);
                 }
             }
             if (y != 0) {
-                GroundTiles = GroundTiles.concat("\n");
+                GroundTiles = GroundTiles.append("\n");
             }
         }
-        GroundLayer.addProperty("text", GroundTiles);
+        GroundLayer.addProperty("text", GroundTiles.toString());
         Output.add("Ground", GroundLayer);
 
         //----------------------------------------------------
@@ -441,40 +486,40 @@ public class TkMap {
         JsonObject ForegroundLayer = new JsonObject();
         ForegroundLayer.addProperty("tileset", this.Tileset.Name);
         ForegroundLayer.addProperty("exportMode", "CSV");
-        String ForegroundTiles = "";
+        StringBuilder ForegroundTiles = new StringBuilder();
         for (int y = this.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.getWidth(); x++) {
                 if (x == 0) {
-                    ForegroundTiles = ForegroundTiles.concat("" + this.Foreground[x][y]);
+                    ForegroundTiles = ForegroundTiles.append(this.Foreground[x][y]);
                 } else {
-                    ForegroundTiles =ForegroundTiles.concat("," + this.Foreground[x][y]);
+                    ForegroundTiles =ForegroundTiles.append("," + this.Foreground[x][y]);
                 }
             }
             if (y != 0) {
-                ForegroundTiles =ForegroundTiles.concat("\n");
+                ForegroundTiles =ForegroundTiles.append("\n");
             }
         }
-        ForegroundLayer.addProperty("text", ForegroundTiles);
+        ForegroundLayer.addProperty("text", ForegroundTiles.toString());
         Output.add("Foreground", ForegroundLayer);
 
         //---------------------------------------------------
 
         JsonObject CollisionLayer = new JsonObject();
         CollisionLayer.addProperty("exportMode", "Bitstring");
-        String CollisionTiles = "";
+        StringBuilder CollisionTiles = new StringBuilder();
         for (int y = this.getHeight() - 1; y >= 0; y--) {
             for (int x = 0; x < this.getWidth(); x++) {
                 if (this.Collision[x][y]) {
-                    CollisionTiles = CollisionTiles.concat("1");
+                    CollisionTiles = CollisionTiles.append("1");
                 } else {
-                    CollisionTiles = CollisionTiles.concat("0");
+                    CollisionTiles = CollisionTiles.append("0");
                 }
             }
             if (y != 0) {
-                CollisionTiles = CollisionTiles.concat("\n");
+                CollisionTiles = CollisionTiles.append("\n");
             }
         }
-        CollisionLayer.addProperty("text", CollisionTiles);
+        CollisionLayer.addProperty("text", CollisionTiles.toString());
         Output.add("Collision", CollisionLayer);
 
         //Objects

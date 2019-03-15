@@ -71,6 +71,12 @@ com.badlogic.gdx.scenes.scene2d.ui.ImageButton$ImageButtonStyle: {
 		imageDown: Plus
 		imageOver: Plus_hover
 	}
+	Fill: {
+		imageUp: Fill
+		imageDown: Fill
+		imageOver: Fill_H
+		imageChecked: Fill_H
+	}
 }
 com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton$ImageTextButtonStyle: {
 	default: {

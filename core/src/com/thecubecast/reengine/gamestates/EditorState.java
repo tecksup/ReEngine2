@@ -57,6 +57,7 @@ public class EditorState extends GameState {
 
     int TileIDSelected = 0;
     boolean Erasing = false;
+    boolean Fill = false;
 
     private enum selection {
         Ground, Forground, Collision, Object, None
@@ -373,6 +374,10 @@ public class EditorState extends GameState {
             Erasing = !Erasing;
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.F) && UIStage.getKeyboardFocus() == null) {
+            Fill = !Fill;
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.S)) {
             SaveMap(SaveNameText);
         }
@@ -457,6 +462,19 @@ public class EditorState extends GameState {
                         camera.unproject(pos312);
                         Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
                         Entities.add(Prefab.CreateNew());
+                    }
+                } else if (selected.equals(selected.Ground) && Fill) {
+                    if (Erasing) {
+                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getGround()[(int) pos.x / 16][(int) pos.y / 16], -1, tempshitgiggle.getGround());
+                    } else {
+                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getGround()[(int) pos.x / 16][(int) pos.y / 16], TileIDSelected, tempshitgiggle.getGround());
+                    }
+                } else if (selected.equals(selected.Forground)&& Fill) {
+
+                    if (Erasing) {
+                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getForeground()[(int) pos.x / 16][(int) pos.y / 16], -1, tempshitgiggle.getForeground());
+                    } else {
+                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getForeground()[(int) pos.x / 16][(int) pos.y / 16], TileIDSelected, tempshitgiggle.getForeground());
                     }
                 }
             }
@@ -712,6 +730,8 @@ public class EditorState extends GameState {
                     selected = selection.None;
                 } else {
                     selected = selection.Ground;
+                    Erasing = false;
+                    Fill = false;
                 }
             }
         });
@@ -734,6 +754,8 @@ public class EditorState extends GameState {
                     selected = selection.None;
                 } else {
                     selected = selection.Forground;
+                    Erasing = false;
+                    Fill = false;
                 }
             }
         });
@@ -756,6 +778,8 @@ public class EditorState extends GameState {
                     selected = selection.None;
                 } else {
                     selected = selection.Collision;
+                    Erasing = false;
+                    Fill = false;
                 }
             }
         });
@@ -778,7 +802,27 @@ public class EditorState extends GameState {
                     selected = selection.None;
                 } else {
                     selected = selection.Object;
+                    Erasing = false;
+                    Fill = false;
                 }
+            }
+        });
+        TkImageButton FillTool = new TkImageButton(skin, "Fill") {
+            @Override
+            public void act(float delta) {
+                super.act(delta);
+                if (Fill) {
+                    this.setChecked(true);
+                } else {
+                    this.setChecked(false);
+                }
+            }
+        };
+        FillTool.togglable = true;
+        FillTool.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                Fill = !Fill;
             }
         });
         TkImageButton Eraser = new TkImageButton(skin, "Eraser") {
@@ -817,6 +861,7 @@ public class EditorState extends GameState {
         ButtonHolder.add(Foreground).row();
         ButtonHolder.add(Collision).row();
         ButtonHolder.add(Objects).row();
+        ButtonHolder.add(FillTool).row();
         ButtonHolder.add(Eraser).row();
         EditorTable.add(BoxStuff);
 
