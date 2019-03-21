@@ -20,12 +20,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class TkMap {
+
+    private Stack<TkMapCommand> Undocommands = new Stack<>();
+    private Stack<TkMapCommand> Redocommands = new Stack<>();
 
     JsonParser jsonReaderthing;
     JsonObject MapObject;
@@ -168,6 +168,23 @@ public class TkMap {
         }
     }
 
+    public void undo() {
+        if (Undocommands.size() != 0)
+        {
+            TkMapCommand command = Undocommands.pop();
+            command.UnExecute();
+            Redocommands.push(command);
+        }
+    }
+
+    public void redo() {
+        if (Redocommands.size() != 0)
+        {
+            TkMapCommand command = Redocommands.pop();
+            command.Execute();
+            Undocommands.push(command);
+        }
+    }
 
     public JsonObject getMapObject() {
         return MapObject;
@@ -200,19 +217,50 @@ public class TkMap {
     public void setCollision(int x, int y) {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
-                Collision[x][y] = true;
+                if (!getCollision()[x][y]) {
+                    TkMapCommand cmd = new TkMapCollisionCommand(x, y, true, this);
+                    cmd.Execute();
+                    Undocommands.push(cmd);
+                    Redocommands.clear();
+                }
             }
         }
     }
 
     public void ClearCollision(int x, int y) {
-        Collision[x][y] = false;
+        if (x < Width && x >= 0) {
+            if (y < Height && y >= 0) {
+                if (getCollision()[x][y]) {
+                    TkMapCommand cmd = new TkMapCollisionCommand(x, y, false, this);
+                    cmd.Execute();
+                    Undocommands.push(cmd);
+                    Redocommands.clear();
+                }
+            }
+        }
     }
 
     public void setGroundCell(int x, int y, int ID) {
+        //Calls the TkMapBackgroundCommand
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
-                Ground[x][y] = ID;
+                if (getGround()[x][y] != ID) {
+                    System.out.println("Ran Ground command");
+                    TkMapCommand cmd = new TkMapBackgroundCommand(x, y, ID, this);
+                    cmd.Execute();
+                    Undocommands.push(cmd);
+                    Redocommands.clear();
+                }
+            }
+        }
+    }
+
+    public void fillGroundArea(int x, int y, int ID) {
+        if (x < Width && x >= 0) {
+            if (y < Height && y >= 0) {
+                TkMapCommand cmd = new TkMapBackgroundFillCommand(x, y, ID, this);
+                cmd.Execute();
+                Undocommands.push(cmd);Redocommands.clear();
             }
         }
     }
@@ -220,52 +268,23 @@ public class TkMap {
     public void setForegroundCell(int x, int y, int ID) {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
-                Foreground[x][y] = ID;
+                if (getForeground()[x][y] != ID) {
+                    System.out.println("Ran Foreground command");
+                    TkMapCommand cmd = new TkMapForegroundCommand(x, y, ID, this);
+                    cmd.Execute();
+                    Undocommands.push(cmd);
+                    Redocommands.clear();
+                }
             }
         }
     }
 
-    public void fillArea(int x, int y, int original, int fill, int[][] arr) {
-        int maxX = arr.length - 1;
-        int maxY = arr[0].length - 1;
-        int[][] stack = new int[(maxX+1)*(maxY+1)][2];
-        int index = 0;
-
-        stack[0][0] = x;
-        stack[0][1] = y;
-        arr[x][y] = fill;
-
-        while (index >= 0){
-            x = stack[index][0];
-            y = stack[index][1];
-            index--;
-
-            if ((x > 0) && (arr[x-1][y] == original)){
-                arr[x-1][y] = fill;
-                index++;
-                stack[index][0] = x-1;
-                stack[index][1] = y;
-            }
-
-            if ((x < maxX) && (arr[x+1][y] == original)){
-                arr[x+1][y] = fill;
-                index++;
-                stack[index][0] = x+1;
-                stack[index][1] = y;
-            }
-
-            if ((y > 0) && (arr[x][y-1] == original)){
-                arr[x][y-1] = fill;
-                index++;
-                stack[index][0] = x;
-                stack[index][1] = y-1;
-            }
-
-            if ((y < maxY) && (arr[x][y+1] == original)){
-                arr[x][y+1] = fill;
-                index++;
-                stack[index][0] = x;
-                stack[index][1] = y+1;
+    public void fillForegroundArea(int x, int y, int ID) {
+        if (x < Width && x >= 0) {
+            if (y < Height && y >= 0) {
+                TkMapCommand cmd = new TkMapForegroundCommand(x, y, ID, this);
+                cmd.Execute();
+                Undocommands.push(cmd);Redocommands.clear();
             }
         }
     }

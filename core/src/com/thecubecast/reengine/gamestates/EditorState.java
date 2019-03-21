@@ -391,6 +391,16 @@ public class EditorState extends GameState {
             }
         }
 
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.Z)) {
+            //System.out.println("Copied");
+            tempshitgiggle.undo();
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+            //System.out.println("Copied");
+            tempshitgiggle.redo();
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.C)) {
             //System.out.println("Copied");
             Copied_Objects.clear();
@@ -465,16 +475,16 @@ public class EditorState extends GameState {
                     }
                 } else if (selected.equals(selected.Ground) && Fill) {
                     if (Erasing) {
-                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getGround()[(int) pos.x / 16][(int) pos.y / 16], -1, tempshitgiggle.getGround());
+                        tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
                     } else {
-                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getGround()[(int) pos.x / 16][(int) pos.y / 16], TileIDSelected, tempshitgiggle.getGround());
+                        tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
                     }
                 } else if (selected.equals(selected.Forground)&& Fill) {
 
                     if (Erasing) {
-                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getForeground()[(int) pos.x / 16][(int) pos.y / 16], -1, tempshitgiggle.getForeground());
+                        tempshitgiggle.fillForegroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
                     } else {
-                        tempshitgiggle.fillArea(((int) pos.x / 16), ((int) pos.y / 16), tempshitgiggle.getForeground()[(int) pos.x / 16][(int) pos.y / 16], TileIDSelected, tempshitgiggle.getForeground());
+                        tempshitgiggle.fillForegroundArea(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
                     }
                 }
             }
