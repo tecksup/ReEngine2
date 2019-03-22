@@ -245,7 +245,7 @@ public class TkMap {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
                 if (getGround()[x][y] != ID) {
-                    System.out.println("Ran Ground command");
+                    //System.out.println("Ran Ground command");
                     TkMapCommand cmd = new TkMapBackgroundCommand(x, y, ID, this);
                     cmd.Execute();
                     Undocommands.push(cmd);
@@ -258,9 +258,12 @@ public class TkMap {
     public void fillGroundArea(int x, int y, int ID) {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
-                TkMapCommand cmd = new TkMapBackgroundFillCommand(x, y, ID, this);
-                cmd.Execute();
-                Undocommands.push(cmd);Redocommands.clear();
+                if (getGround()[x][y] != ID) {
+                    TkMapCommand cmd = new TkMapBackgroundFillCommand(x, y, ID, this);
+                    cmd.Execute();
+                    Undocommands.push(cmd);
+                    Redocommands.clear();
+                }
             }
         }
     }
@@ -269,7 +272,7 @@ public class TkMap {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
                 if (getForeground()[x][y] != ID) {
-                    System.out.println("Ran Foreground command");
+                    //System.out.println("Ran Foreground command");
                     TkMapCommand cmd = new TkMapForegroundCommand(x, y, ID, this);
                     cmd.Execute();
                     Undocommands.push(cmd);
@@ -282,9 +285,12 @@ public class TkMap {
     public void fillForegroundArea(int x, int y, int ID) {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
-                TkMapCommand cmd = new TkMapForegroundCommand(x, y, ID, this);
-                cmd.Execute();
-                Undocommands.push(cmd);Redocommands.clear();
+                if (getForeground()[x][y] != ID) {
+                    TkMapCommand cmd = new TkMapForegroundFillCommand(x, y, ID, this);
+                    cmd.Execute();
+                    Undocommands.push(cmd);
+                    Redocommands.clear();
+                }
             }
         }
     }
