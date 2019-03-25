@@ -1,5 +1,10 @@
 package com.thecubecast.reengine.data.tkmap;
 
+import com.badlogic.gdx.math.Vector3;
+import com.thecubecast.reengine.gamestates.EditorState;
+
+import java.util.ArrayList;
+
 public class TkMapCollisionCommand implements TkMapCommand {
 
     int x;
@@ -8,13 +13,18 @@ public class TkMapCollisionCommand implements TkMapCommand {
     boolean ID;
     boolean OldID;
 
+    EditorState.BrushSizes size;
+
+    ArrayList<Vector3> Tiles = new ArrayList<>();
+
     TkMap map;
 
-    public TkMapCollisionCommand(int x, int y, boolean ID, TkMap map) {
+    public TkMapCollisionCommand(int x, int y, boolean ID, EditorState.BrushSizes size, TkMap map) {
         this.x = x;
         this.y = y;
         this.ID = ID;
         this.map = map;
+        this.size = size;
     }
 
     @Override

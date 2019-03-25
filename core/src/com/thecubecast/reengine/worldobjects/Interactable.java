@@ -4,13 +4,16 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.thecubecast.reengine.gamestates.GameState;
 
+import static com.thecubecast.reengine.data.GameStateManager.Render;
+
 public class Interactable extends Trigger {
 
-    public Texture Image;
+    public TextureAtlas.AtlasRegion Image;
 
     public String ID = "None";
     public String Name = "";
@@ -64,7 +67,7 @@ public class Interactable extends Trigger {
     public BoundingBox getImageHitbox() {
 
         if (Image != null) {
-            BoundingBox temp = new BoundingBox(this.getPosition(), new Vector3(Image.getWidth(), Image.getHeight(), 0).add(this.getPosition()));
+            BoundingBox temp = new BoundingBox(this.getPosition(), new Vector3(Image.getRegionWidth(), Image.getRegionHeight(), 0).add(this.getPosition()));
             return temp;
         } else {
             BoundingBox temp = new BoundingBox(this.getPosition(), new Vector3(getSize().x, getSize().y, 0).add(this.getPosition()));
@@ -84,8 +87,14 @@ public class Interactable extends Trigger {
         TexLocation = texLocation;
         if (texLocation.equals(""))
             Image = null;
-        else
-            Image = new Texture(Gdx.files.internal(TexLocation));
+        else if (texLocation.contains(".png")) {
+            Texture tempimage = new Texture(Gdx.files.internal(TexLocation));
+            Image = new TextureAtlas.AtlasRegion(tempimage, 0, 0, tempimage.getWidth(), tempimage.getHeight());
+        }
+        else {
+            Image = Render.getTexture(TexLocation);
+        }
+
     }
 
     public Interactable CreateNew() {

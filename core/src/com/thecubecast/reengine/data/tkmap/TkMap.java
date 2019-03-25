@@ -9,9 +9,14 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.google.gson.*;
 import com.thecubecast.reengine.data.Common;
+import com.thecubecast.reengine.data.GameStateManager;
+import com.thecubecast.reengine.gamestates.EditorState;
 import com.thecubecast.reengine.worldobjects.Interactable;
+import com.thecubecast.reengine.worldobjects.NPC;
 import com.thecubecast.reengine.worldobjects.Trigger;
 import com.thecubecast.reengine.worldobjects.WorldObject;
+import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Pawn;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -215,10 +220,14 @@ public class TkMap {
     }
 
     public void setCollision(int x, int y) {
+        setCollision(x,y, EditorState.BrushSizes.small);
+    }
+
+    public void setCollision(int x, int y, EditorState.BrushSizes Size) {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
                 if (!getCollision()[x][y]) {
-                    TkMapCommand cmd = new TkMapCollisionCommand(x, y, true, this);
+                    TkMapCommand cmd = new TkMapCollisionCommand(x, y, true, Size, this);
                     cmd.Execute();
                     Undocommands.push(cmd);
                     Redocommands.clear();
@@ -228,10 +237,14 @@ public class TkMap {
     }
 
     public void ClearCollision(int x, int y) {
+        ClearCollision(x,y, EditorState.BrushSizes.small);
+    }
+
+    public void ClearCollision(int x, int y, EditorState.BrushSizes Size) {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
                 if (getCollision()[x][y]) {
-                    TkMapCommand cmd = new TkMapCollisionCommand(x, y, false, this);
+                    TkMapCommand cmd = new TkMapCollisionCommand(x, y, false, Size, this);
                     cmd.Execute();
                     Undocommands.push(cmd);
                     Redocommands.clear();
@@ -241,12 +254,16 @@ public class TkMap {
     }
 
     public void setGroundCell(int x, int y, int ID) {
+        setGroundCell(x,y,ID, EditorState.BrushSizes.small);
+    }
+
+    public void setGroundCell(int x, int y, int ID, EditorState.BrushSizes Size) {
         //Calls the TkMapBackgroundCommand
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
                 if (getGround()[x][y] != ID) {
                     //System.out.println("Ran Ground command");
-                    TkMapCommand cmd = new TkMapBackgroundCommand(x, y, ID, this);
+                    TkMapCommand cmd = new TkMapBackgroundCommand(x, y, ID, Size, this);
                     cmd.Execute();
                     Undocommands.push(cmd);
                     Redocommands.clear();
@@ -269,11 +286,15 @@ public class TkMap {
     }
 
     public void setForegroundCell(int x, int y, int ID) {
+        setForegroundCell(x,y,ID, EditorState.BrushSizes.small);
+    }
+
+    public void setForegroundCell(int x, int y, int ID, EditorState.BrushSizes Size) {
         if (x < Width && x >= 0) {
             if (y < Height && y >= 0) {
                 if (getForeground()[x][y] != ID) {
                     //System.out.println("Ran Foreground command");
-                    TkMapCommand cmd = new TkMapForegroundCommand(x, y, ID, this);
+                    TkMapCommand cmd = new TkMapForegroundCommand(x, y, ID, Size, this);
                     cmd.Execute();
                     Undocommands.push(cmd);
                     Redocommands.clear();
@@ -398,12 +419,13 @@ public class TkMap {
     }
 
     //Returns the objects that were in the map file
-    public ArrayList<WorldObject> getObjects() {
+    public ArrayList<WorldObject> getObjects(FlatTiledGraph Grid, GameStateManager gsm) {
         ArrayList<WorldObject> temp = new ArrayList<>();
         if (getMapObject() == null) {
             return temp;
         }
         JsonArray temparray = getMapObject().get("Objects").getAsJsonArray();
+        System.out.println(temparray.size());
         for (int i = 0; i < temparray.size(); i++) {
             int X, Y, Z, W, H, D, OffsetX, OffsetY, OffsetZ;
             JsonObject tempObject = temparray.get(i).getAsJsonObject();
@@ -447,14 +469,18 @@ public class TkMap {
                 TriggerType = Trigger.TriggerType.OnAttack;
             }
 
-            Interactable tempObj = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);
-            tempObj.setTexLocation(tempImgLoc);
-            tempObj.Name = Name;
-            tempObj.Description = Description;
+            if (Description.equals("AI Pawn") && Grid != null) {
+                temp.add(new Pawn(Name, X, Y, Z, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, Grid, gsm));
+            } else {
 
-            tempObj.setHitboxOffset(new Vector3(OffsetX, OffsetY, OffsetZ));
+                Interactable tempObj = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);
+                tempObj.setTexLocation(tempImgLoc);
+                tempObj.Name = Name;
+                tempObj.Description = Description;
 
-            temp.add(tempObj);
+                tempObj.setHitboxOffset(new Vector3(OffsetX, OffsetY, OffsetZ));
+                temp.add(tempObj);
+            }
         }
         return temp;
     }
@@ -555,7 +581,7 @@ public class TkMap {
                 if (entities.get(i) instanceof Interactable) {
                     JsonObject Entity = new JsonObject();
                     Entity.addProperty("Name", ((Interactable) entities.get(i)).Name);
-                    Entity.addProperty("Description", "");
+                    Entity.addProperty("Description", ((Interactable) entities.get(i)).Description);
                     Entity.addProperty("x", (int) entities.get(i).getPosition().x);
                     Entity.addProperty("y", (int) entities.get(i).getPosition().y);
                     Entity.addProperty("z", (int) entities.get(i).getPosition().z);

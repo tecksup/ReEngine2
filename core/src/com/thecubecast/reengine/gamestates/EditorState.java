@@ -55,6 +55,10 @@ public class EditorState extends GameState {
     boolean DraggingObject = false;
     int[] draggingOffset = {0,0};
 
+    public enum BrushSizes {small, medium, large};
+
+    private BrushSizes BrushSize = BrushSizes.small;
+
     int TileIDSelected = 0;
     boolean Erasing = false;
     boolean Fill = false;
@@ -124,13 +128,17 @@ public class EditorState extends GameState {
 
     public void init() {
 
-        tempshitgiggle = new TkMap("Saves/" + SaveNameText + ".cube");
+        double Started = System.nanoTime();
 
-        ArrayList<WorldObject> tempobjsshit = tempshitgiggle.getObjects();
+        tempshitgiggle = new TkMap("Saves/" + SaveNameText + ".cube");
+        System.out.println("Loading Map Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
+        ArrayList<WorldObject> tempobjsshit = tempshitgiggle.getObjects(null, gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
             Entities.add(tempobjsshit.get(i));
 
-        }
+        }System.out.println("Loading Objects Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
+
+        System.out.println("Loading Everything Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
 
         MainCameraFocusPoint = CameraFocusPointEdit;
 
@@ -497,21 +505,21 @@ public class EditorState extends GameState {
             if (!OverHud) {
                 if (selected.equals(selection.Ground)) {
                     if (!Erasing) {
-                        tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
+                        tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected, BrushSize);
                     } else {
-                        tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1);
+                        tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1, BrushSize);
                     }
                 } else if (selected.equals(selection.Forground)) {
                     if (!Erasing) {
-                        tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
+                        tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected, BrushSize);
                     } else {
-                        tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1);
+                        tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1, BrushSize);
                     }
                 } else if (selected.equals(selection.Collision)) {
                     if (!Erasing) {
-                        tempshitgiggle.setCollision(((int) pos.x / 16), ((int) pos.y / 16));
+                        tempshitgiggle.setCollision(((int) pos.x / 16), ((int) pos.y / 16), BrushSize);
                     } else {
-                        tempshitgiggle.ClearCollision(((int) pos.x / 16), ((int) pos.y / 16));
+                        tempshitgiggle.ClearCollision(((int) pos.x / 16), ((int) pos.y / 16), BrushSize);
                     }
                 } else if (selected.equals(selection.Object) && Prefab == null) {
                     if (SelectionDragging && SelectedObjects.size() > 0) {

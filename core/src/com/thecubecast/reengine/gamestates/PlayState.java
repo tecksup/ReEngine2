@@ -62,8 +62,9 @@ public class PlayState extends DialogStateExtention {
     public void init() {
 
         WorldMap = new TkMap("Saves/World.cube");
+        MapGraph = new FlatTiledGraph(WorldMap);
 
-        ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects();
+        ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects(MapGraph, gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
             Entities.add(tempobjsshit.get(i));
             if (tempobjsshit.get(i).isCollidable()) {
@@ -110,13 +111,6 @@ public class PlayState extends DialogStateExtention {
 
         //Particles
         Particles = new ParticleHandler();
-
-        MapGraph = new FlatTiledGraph(WorldMap);
-
-        Entities.add(new Pawn("[PURPLE]pawn", 400,250,0, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, MapGraph, gsm));
-        Entities.add(new Pawn("[PURPLE]pawn", 470,240,0, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, MapGraph, gsm));
-        Entities.add(new Pawn("[PURPLE]pawn", 710,330,0, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, MapGraph, gsm));
-        Entities.add(new Pawn("[PURPLE]pawn", 800,425,0, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, MapGraph, gsm));
 
         MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
 

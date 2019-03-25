@@ -1,5 +1,7 @@
 package com.thecubecast.reengine.data.tkmap;
 
+import com.thecubecast.reengine.gamestates.EditorState;
+
 import java.util.Stack;
 
 public class TkMapForegroundFillCommand implements TkMapCommand {
@@ -34,7 +36,7 @@ public class TkMapForegroundFillCommand implements TkMapCommand {
 
         stack[0][0] = x;
         stack[0][1] = y;
-        TkMapCommand OGcmd = new TkMapForegroundCommand(x, y, ID, map);
+        TkMapCommand OGcmd = new TkMapForegroundCommand(x, y, ID, EditorState.BrushSizes.small, map);
         OGcmd.Execute();
         Undocommands.push(OGcmd);
         Redocommands.clear();
@@ -46,7 +48,7 @@ public class TkMapForegroundFillCommand implements TkMapCommand {
 
             if ((x > 0) && (map.getForeground()[x-1][y] == OldID)){
                 //map.getForeground()[x-1][y] = ID;
-                TkMapCommand cmd = new TkMapForegroundCommand(x-1, y, ID, map);
+                TkMapCommand cmd = new TkMapForegroundCommand(x-1, y, ID, EditorState.BrushSizes.small, map);
                 cmd.Execute();
                 Undocommands.push(cmd);
                 Redocommands.clear();
@@ -57,7 +59,7 @@ public class TkMapForegroundFillCommand implements TkMapCommand {
 
             if ((x < maxX) && (map.getForeground()[x+1][y] == OldID)){
                 //map.getForeground()[x+1][y] = ID;
-                TkMapCommand cmd = new TkMapForegroundCommand(x+1, y, ID, map);
+                TkMapCommand cmd = new TkMapForegroundCommand(x+1, y, ID, EditorState.BrushSizes.small, map);
                 cmd.Execute();
                 Undocommands.push(cmd);
                 Redocommands.clear();
@@ -68,7 +70,7 @@ public class TkMapForegroundFillCommand implements TkMapCommand {
 
             if ((y > 0) && (map.getForeground()[x][y-1] == OldID)){
                 //map.getForeground()[x][y-1] = ID;
-                TkMapCommand cmd = new TkMapForegroundCommand(x, y-1, ID, map);
+                TkMapCommand cmd = new TkMapForegroundCommand(x, y-1, ID, EditorState.BrushSizes.small, map);
                 cmd.Execute();
                 Undocommands.push(cmd);
                 Redocommands.clear();
@@ -79,7 +81,7 @@ public class TkMapForegroundFillCommand implements TkMapCommand {
 
             if ((y < maxY) && (map.getForeground()[x][y+1] == OldID)){
                 //map.getForeground()[x][y+1] = ID;
-                TkMapCommand cmd = new TkMapForegroundCommand(x, y+1, ID, map);
+                TkMapCommand cmd = new TkMapForegroundCommand(x, y+1, ID, EditorState.BrushSizes.small, map);
                 cmd.Execute();
                 Undocommands.push(cmd);
                 Redocommands.clear();

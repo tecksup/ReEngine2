@@ -3,40 +3,6 @@ atlasData: {
 	atlasCurrent: true
 	drawables: [
 		{
-			file: C:/Users/tecksup/Desktop/Mecha.png
-			bgColor: {
-				r: 0
-				g: 0
-				b: 0
-				a: 1
-			}
-			visible: false
-			tint: null
-			tintName: null
-			name: Mecha
-			tiled: false
-			minWidth: 0
-			minHeight: 0
-			customized: false
-		}
-		{
-			file: C:/Users/tecksup/Desktop/Pixel.png
-			bgColor: {
-				r: 0
-				g: 0
-				b: 0
-				a: 1
-			}
-			visible: false
-			tint: null
-			tintName: null
-			name: Pixel
-			tiled: false
-			minWidth: 0
-			minHeight: 0
-			customized: false
-		}
-		{
 			file: D:/GitHub/GildedReality/images/Skins/Overworld/Raw/knob.9.png
 			bgColor: {
 				r: 0
@@ -44,7 +10,6 @@ atlasData: {
 				b: 0
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: knob
@@ -61,7 +26,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: progress
@@ -78,7 +42,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: button_d
@@ -95,7 +58,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: button_h
@@ -112,7 +74,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: button_
@@ -129,7 +90,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: MenuFocused
@@ -146,7 +106,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: window_
@@ -163,7 +122,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: window_Dialog
@@ -180,7 +138,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: health_knob_dis
@@ -197,7 +154,6 @@ atlasData: {
 				b: 0
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: health_
@@ -214,7 +170,6 @@ atlasData: {
 				b: 0
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: health_knob
@@ -231,7 +186,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Table_dialog
@@ -248,7 +202,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Table_dialog_icons
@@ -265,7 +218,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: A_icon
@@ -282,7 +234,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: A_icon_alt
@@ -299,7 +250,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: select-box-pressed
@@ -316,7 +266,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: select-box
@@ -333,7 +282,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: checkbox
@@ -350,7 +298,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: checkbox_s
@@ -367,7 +314,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Window_grey
@@ -384,7 +330,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Window_red
@@ -401,7 +346,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Window_grey_back
@@ -418,7 +362,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Window_green
@@ -435,7 +378,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Window_grey_TopOutline
@@ -452,7 +394,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Cursor_text
@@ -469,7 +410,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Eraser
@@ -486,7 +426,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Eraser_Hover
@@ -503,7 +442,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: DropDown
@@ -520,7 +458,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: DropDown_hover
@@ -537,7 +474,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: DropUp
@@ -554,7 +490,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: DropUp_hover
@@ -571,7 +506,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Trash
@@ -588,7 +522,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Trash_Down
@@ -605,7 +538,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Trash_hover
@@ -622,7 +554,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Play
@@ -639,7 +570,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Play_hover
@@ -656,7 +586,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Plus
@@ -673,7 +602,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Plus_hover
@@ -690,7 +618,6 @@ atlasData: {
 				b: 0
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Outline
@@ -707,7 +634,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Blank
@@ -724,7 +650,6 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Fill
@@ -741,10 +666,43 @@ atlasData: {
 				b: 1
 				a: 1
 			}
-			visible: true
 			tint: null
 			tintName: null
 			name: Fill_H
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
+	]
+	fontDrawables: [
+		{
+			file: C:/Users/tecksup/Desktop/Mecha.png
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			tint: null
+			tintName: null
+			name: Mecha
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
+		{
+			file: C:/Users/tecksup/Desktop/Pixel.png
+			bgColor: {
+				r: 0
+				g: 0
+				b: 0
+				a: 1
+			}
+			tint: null
+			tintName: null
+			name: Pixel
 			tiled: false
 			minWidth: 0
 			minHeight: 0
@@ -891,6 +849,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -983,6 +942,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.CheckBox: [
@@ -1161,6 +1121,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.ImageButton: [
@@ -1297,6 +1258,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -1431,6 +1393,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -1565,6 +1528,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -1699,6 +1663,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -1833,6 +1798,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -1967,6 +1933,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -2101,6 +2068,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.ImageTextButton: [
@@ -2286,6 +2254,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.Label: [
@@ -2317,6 +2286,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -2346,6 +2316,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.List: [
@@ -2391,6 +2362,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.ProgressBar: [
@@ -2457,6 +2429,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -2521,6 +2494,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -2585,6 +2559,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.ScrollPane: [
@@ -2637,6 +2612,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.SelectBox: [
@@ -2710,6 +2686,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.Slider: [
@@ -2790,6 +2767,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -2868,6 +2846,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.SplitPane: [
@@ -2885,6 +2864,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -2900,6 +2880,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.TextButton: [
@@ -3043,6 +3024,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.TextField: [
@@ -3130,6 +3112,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.TextTooltip: [
@@ -3161,6 +3144,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.Touchpad: [
@@ -3185,6 +3169,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.Tree: [
@@ -3230,6 +3215,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 		]
 		com.badlogic.gdx.scenes.scene2d.ui.Window: [
@@ -3268,6 +3254,7 @@ jsonData: {
 					}
 				}
 				deletable: false
+				parent: null
 			}
 			{
 				class: com.ray3k.skincomposer.data.StyleData
@@ -3304,6 +3291,7 @@ jsonData: {
 					}
 				}
 				deletable: true
+				parent: null
 			}
 		]
 	}

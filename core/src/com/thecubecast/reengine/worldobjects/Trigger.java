@@ -3,6 +3,7 @@ package com.thecubecast.reengine.worldobjects;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.gamestates.DialogStateExtention;
@@ -10,6 +11,8 @@ import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
 
 import java.util.List;
+
+import static com.thecubecast.reengine.data.GameStateManager.Render;
 
 public class Trigger extends WorldObject {
 
@@ -279,7 +282,15 @@ public class Trigger extends WorldObject {
                 try {
                     if (Commands[i].length == 2) {
                         if (this instanceof Interactable){
-                            ((Interactable) this).Image = new Texture(Gdx.files.internal(Commands[i][1]));
+                            if (Commands[i][1].equals(""))
+                                ((Interactable) this).Image = null;
+                            else if (Commands[i][1].contains(".png")) {
+                                Texture temp = new Texture(Gdx.files.internal(Commands[i][1]));
+                                ((Interactable) this).Image = new TextureAtlas.AtlasRegion(temp, 0, 0, temp.getWidth(), temp.getHeight());
+                            }
+                            else {
+                                ((Interactable) this).Image = Render.getTexture(Commands[i][1]);
+                            }
                         }
                     } else {
                         System.out.println("No Image Location!");
