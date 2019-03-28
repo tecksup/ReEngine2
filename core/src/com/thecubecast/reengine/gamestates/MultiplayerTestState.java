@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.GameStateManager;
+import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.graphics.scene2d.UIFSM;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
 import kryonetwork.KryoClient;
@@ -36,6 +37,8 @@ public class MultiplayerTestState extends GameState {
     //Camera
     OrthographicCamera GuiCam;
     public OrthographicCamera camera;
+
+    TkMap MapTemp;
 
     public MultiplayerTestState(GameStateManager gsm) {
         super(gsm);

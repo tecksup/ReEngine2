@@ -12,7 +12,7 @@ import com.thecubecast.reengine.gamestates.GameState;
 
 public class HackSlashPlayer extends WorldObject {
 
-    public int Health = 10;
+    public int Health = 10000;
 
     public int Energy = 100;
 

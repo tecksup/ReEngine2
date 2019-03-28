@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
@@ -48,10 +49,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.thecubecast.reengine.data.Common.updategsmValues;
+import static com.thecubecast.reengine.data.GameStateManager.Render;
 
 public class EditorState extends GameState {
 
     boolean OverHud = false;
+    private boolean KeyboardImportant = false;
     boolean DraggingObject = false;
     int[] draggingOffset = {0,0};
 
@@ -131,14 +134,15 @@ public class EditorState extends GameState {
         double Started = System.nanoTime();
 
         tempshitgiggle = new TkMap("Saves/" + SaveNameText + ".cube");
-        System.out.println("Loading Map Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
+        //System.out.println("Loading Map Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
         ArrayList<WorldObject> tempobjsshit = tempshitgiggle.getObjects(null, gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
             Entities.add(tempobjsshit.get(i));
 
-        }System.out.println("Loading Objects Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
+        }
+        //System.out.println("Loading Objects Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
 
-        System.out.println("Loading Everything Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
+        //System.out.println("Loading Everything Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
 
         MainCameraFocusPoint = CameraFocusPointEdit;
 
@@ -498,6 +502,17 @@ public class EditorState extends GameState {
             }
         }
 
+        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) { //KeyHit
+            Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(pos);
+
+            if (selected.equals(selection.Ground)) {
+                TileIDSelected = tempshitgiggle.getGround()[(int)pos.x/16][(int)pos.y/16];
+            } else if (selected.equals(selection.Forground)) {
+                TileIDSelected = tempshitgiggle.getForeground()[(int)pos.x/16][(int)pos.y/16];
+            }
+        }
+
         if (Gdx.input.isTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) { //KeyHit
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
@@ -562,7 +577,7 @@ public class EditorState extends GameState {
             DraggingObject = false;
         }
 
-        if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) {
+        if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
             if (Dragging == false) {
@@ -686,15 +701,7 @@ public class EditorState extends GameState {
         InfoTable.setFillParent(true);
         InfoTable.top().left();
 
-        TextField Savename = new TextField(SaveNameText, skin) {
-            @Override
-            public void act(float delta) {
-                super.act(delta);
-                if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                    UIStage.setKeyboardFocus(null);
-                }
-            }
-        };
+        TextField Savename = new TextField(SaveNameText, skin);
 
         InfoTable.add(Savename).pad(15).top().left();
         TkTextButton SaveButton = new TkTextButton("Save", skin);
@@ -981,7 +988,7 @@ public class EditorState extends GameState {
                 }
             });
             TilesList.add(tempimage);
-            if (i % 12 == 0) {
+            if (i % tempshitgiggle.TilesetWidth == 0) {
                 TilesList.row();
             }
         }
@@ -1012,7 +1019,7 @@ public class EditorState extends GameState {
                 }
             });
             TilesFGList.add(tempimage);
-            if (i % 12 == 0) {
+            if (i % tempshitgiggle.TilesetWidth == 0) {
                 TilesFGList.row();
             }
         }
@@ -1028,7 +1035,18 @@ public class EditorState extends GameState {
 
                 int tempi = i - 1;
                 JsonObject tempObject = MapPrefabs.get(tempi).getAsJsonObject();
-                ImageButton tempimage = new ImageButton(new TextureRegionDrawable(new TextureRegion(new Texture(Gdx.files.internal(tempObject.get("TexLocation").getAsString())))));
+                TextureAtlas.AtlasRegion Image;
+                if (tempObject.get("TexLocation").getAsString().equals(""))
+                    Image = null;
+                else if (tempObject.get("TexLocation").getAsString().contains(".png")) {
+                    Texture tempimage = new Texture(Gdx.files.internal(tempObject.get("TexLocation").getAsString()));
+                    Image = new TextureAtlas.AtlasRegion(tempimage, 0, 0, tempimage.getWidth(), tempimage.getHeight());
+                }
+                else {
+                    Image = Render.getTexture(tempObject.get("TexLocation").getAsString());
+                }
+
+                ImageButton tempimage = new ImageButton(new TextureRegionDrawable(new TextureRegion(Image)));
                 tempimage.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {

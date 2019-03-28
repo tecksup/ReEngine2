@@ -14,6 +14,8 @@ public class TkTileset {
     int TileSizeH;
     int TileSep;
 
+    int TilesetWidth;
+
     TextureRegion TilesetImage;
     TextureRegion[] Tiles;
 
@@ -31,6 +33,8 @@ public class TkTileset {
 
         int cols = TilesetImage.getRegionWidth() / TileSizeW;
         int rows = TilesetImage.getRegionHeight() / TileSizeH;
+
+        TilesetWidth = cols;
 
         Tiles = new TextureRegion[rows * cols];
 

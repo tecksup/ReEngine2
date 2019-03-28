@@ -47,6 +47,7 @@ public class TkMap {
 
     private Texture pixel;
     public TkTileset Tileset;
+    public int TilesetWidth;
 
     int[][] Ground;
     int[][] Foreground;
@@ -57,7 +58,12 @@ public class TkMap {
         this.MapLocation = MapLocation;
         pixel = new Texture(Gdx.files.internal("white-pixel.png"));
         jsonReaderthing = new JsonParser();
-        MapObject = jsonReaderthing.parse(Gdx.files.internal(MapLocation).readString()).getAsJsonObject();
+        try {
+            MapObject = jsonReaderthing.parse(new String(Files.readAllBytes(Paths.get(MapLocation)))).getAsJsonObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
+        }
 
         Created = MapObject.get("Created").getAsString();
 
@@ -78,6 +84,8 @@ public class TkMap {
                 MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSize").getAsJsonObject().get("Height").getAsInt(),
                 MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSep").getAsInt()
         );
+
+        TilesetWidth = Tileset.TilesetWidth;
 
         Ground = new int[Width][Height];
         Foreground = new int[Width][Height];

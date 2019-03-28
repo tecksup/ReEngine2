@@ -22,13 +22,14 @@ import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.*;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Pawn;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.thecubecast.reengine.data.GameStateManager.AudioM;
 
-public class PlayState extends DialogStateExtention {
+public class ExampleState extends DialogStateExtention {
 
     //GUI
     boolean MenuOpen = true;
@@ -51,20 +52,18 @@ public class PlayState extends DialogStateExtention {
 
     Music MusicID;
 
-    public PlayState(GameStateManager gsm) {
+    public ExampleState(GameStateManager gsm) {
         super(gsm);
         gsm.setWorldScale(3);
     }
 
     public void init() {
 
-        WorldMap = new TkMap("Saves/World.cube");
+        //Create the map
+        WorldMap = new TkMap("Saves/Gilded.cube");
         MapGraph = new FlatTiledGraph(WorldMap);
 
-        player = new HackSlashPlayer(10 * 16, 3 * 16, gsm);
-
-        Entities.add(player);
-
+        //Load the objects
         ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects(MapGraph, gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
             Entities.add(tempobjsshit.get(i));
@@ -79,6 +78,7 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
+        //Load Collision map
         for (int x = 0; x < WorldMap.getWidth(); x++) {
             for (int y = 0; y < WorldMap.getHeight(); y++) {
                 if (WorldMap.getCollision()[x][y]) {
@@ -87,9 +87,14 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
+        //create the player and give them a location
+        player = new HackSlashPlayer(10 * 16, 3 * 16, gsm);
+        Entities.add(player);
+
         //Setup Dialog Instance
         MenuInit(gsm.UIWidth, gsm.UIHeight);
 
+        //Discord Presence
         gsm.DiscordManager.setPresenceDetails("topdown Demo - Level 1");
         gsm.DiscordManager.setPresenceState("In Game");
         gsm.DiscordManager.getPresence().largeImageText = "Level 1";
@@ -109,6 +114,7 @@ public class PlayState extends DialogStateExtention {
         //Particles
         Particles = new ParticleHandler();
 
+        //Audio
         MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
 
     }
@@ -118,9 +124,10 @@ public class PlayState extends DialogStateExtention {
         Particles.Update();
 
         for (int i = 0; i < Entities.size(); i++) {
-            if (Entities.get(i) instanceof PathfindingWorldObject) {
-                Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
+            if (Entities.get(i) instanceof Pawn) {
+                ((Pawn)Entities.get(i)).update(Gdx.graphics.getDeltaTime(), this);
                 if (!((NPC) Entities.get(i)).isAlive()) {
+                    Particles.AddParticleEffect("Leaf", player.getIntereactBox().getCenterX(), player.getIntereactBox().getCenterY());
                     Entities.remove(i);
                 }
             } else if (Entities.get(i) instanceof NPC) {
@@ -156,50 +163,7 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
-        List<WorldObject> Remove = new ArrayList<>();
-
-        for (int i = 0; i < Entities.size(); i++) {
-
-            if (Entities.get(i) instanceof Bullet) {
-
-                ((Bullet)Entities.get(i)).timeAlive += Gdx.graphics.getDeltaTime();
-
-                if (((Bullet)Entities.get(i)).timeAlive >= ((Bullet)Entities.get(i)).Lifespan){
-                    Remove.add(Entities.get(i));
-                    break;
-                }
-
-                WorldObject tempPar = ((Bullet)Entities.get(i)).Parrent;
-                if (Entities.get(i).checkCollision(new Vector3(Entities.get(i).getPosition().x, Entities.get(i).getPosition().y, 0), Collisions, true)) {
-                    Remove.add(Entities.get(i));
-                } else {
-                    for (int j = 0; j < Entities.size(); j++) {
-                        if (Entities.get(j).equals(tempPar)) {
-
-                        } else if (Entities.get(j) instanceof Bullet) {
-
-                        } else if (Entities.get(j).getHitbox().contains(Entities.get(i).getPosition())) {
-
-                            if(Entities.get(j) instanceof NPC) {
-                                Remove.add(Entities.get(i));
-                                ((NPC) Entities.get(j)).setHealth(((NPC) Entities.get(j)).getHealth()-10);
-                            } else if (Entities.get(j) instanceof HackSlashPlayer) {
-                                if (!((HackSlashPlayer) Entities.get(j)).Rolling) {
-                                    Remove.add(Entities.get(i));
-                                    ((HackSlashPlayer) Entities.get(j)).Health--;
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-
-        for (int i = 0; i < Remove.size(); i++) {
-            Entities.remove(Remove.get(i));
-        }
-
+        //calls the camera update method
         cameraUpdate(player, camera, Entities,0,0, WorldMap.getWidth()*WorldMap.getTileSize(), WorldMap.getHeight()*WorldMap.getTileSize());
 
         if (player.Health > 0) {
@@ -209,6 +173,7 @@ public class PlayState extends DialogStateExtention {
 
     public void draw(SpriteBatch g, int height, int width, float Time) {
 
+        //updates the camera
         shaker.update(gsm.DeltaTime);
         g.setProjectionMatrix(shaker.getCombinedMatrix());
 
@@ -219,9 +184,9 @@ public class PlayState extends DialogStateExtention {
 
         WorldMap.Draw(camera, g);
 
-        gsm.Render.GUIDrawText(g, 80,95,"Use WASD to move", Color.WHITE);
-        gsm.Render.GUIDrawText(g, 170,140,"SPACE to roll", Color.WHITE);
-        gsm.Render.GUIDrawText(g, 170,130,"And CLICK to attack!", Color.WHITE);
+        //gsm.Render.GUIDrawText(g, 80,95,"Use WASD to move", Color.WHITE);
+        //gsm.Render.GUIDrawText(g, 170,140,"SPACE to roll", Color.WHITE);
+        //gsm.Render.GUIDrawText(g, 170,130,"And CLICK to attack!", Color.WHITE);
         //gsm.Render.GUIDrawText(g, 810,648,"Press F", Color.WHITE);
 
         //Block of code renders all the entities
@@ -254,6 +219,7 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
+        //Debug box
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) { //KeyHit
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
@@ -291,8 +257,8 @@ public class PlayState extends DialogStateExtention {
 
             gsm.Render.debugRenderer.setColor(Color.FIREBRICK);
             for (int i = 0; i < Entities.size(); i++) {
-                if(Entities.get(i) instanceof PathfindingWorldObject) {
-                    PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
+                if(Entities.get(i) instanceof Pawn) {
+                    Pawn temp = (Pawn) Entities.get(i);
                     int nodeCount = temp.getPath().getCount();
                     for (int j = 0; j < nodeCount; j++) {
                         FlatTiledNode node = temp.getPath().nodes.get(j);
@@ -305,9 +271,7 @@ public class PlayState extends DialogStateExtention {
             for (int i = 0; i < Entities.size(); i++) {
                 if(Entities.get(i) instanceof PathfindingWorldObject) {
                     PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
-                    if (temp.getDestination() != null) {
-                        gsm.Render.debugRenderer.rect(temp.getDestination().x + 2, temp.getDestination().y + 2, 12, 12);
-                    }
+                    gsm.Render.debugRenderer.rect(temp.getDestination().x+2, temp.getDestination().y+2, 12, 12);
                 }
             }
 
@@ -408,7 +372,7 @@ public class PlayState extends DialogStateExtention {
                             Trigger Ent = (Trigger) Entities.get(i);
                             Ent.Interact(player,shaker,this,null,Particles,Entities);
                         }
-                     }
+                    }
                 }
             }
         }
@@ -469,15 +433,7 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
-            AddDialog("pawn", "It's working!");
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
-            Bullet temp = new Bullet((int)player.getPosition().x, (int)player.getPosition().y, (int)player.getPosition().z, new Vector3(5,-5, 0), player);
-            Entities.add(temp);
-        }
-
+        //Teleport
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.T)) {
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);

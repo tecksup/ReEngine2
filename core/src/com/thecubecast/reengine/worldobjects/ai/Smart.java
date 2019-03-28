@@ -1,24 +1,27 @@
 package com.thecubecast.reengine.worldobjects.ai;
 
 import com.badlogic.gdx.ai.fsm.DefaultStateMachine;
+import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.ai.fsm.StateMachine;
 import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.ai.msg.Telegraph;
 import com.badlogic.gdx.ai.pfa.indexed.IndexedAStarPathFinder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.TiledManhattanDistance;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.TiledSmoothableGraphPath;
-import com.thecubecast.reengine.worldobjects.Student;
+import com.thecubecast.reengine.worldobjects.PathfindingWorldObject;
 
 import static com.badlogic.gdx.utils.TimeUtils.nanoTime;
 
 public class Smart implements Telegraph {
 
     private Vector3 Destination;
-    Student WorldObject;
+    public PathfindingWorldObject WorldObject;
+    public GameState GState;
 
     FlatTiledGraph worldMap;
 
@@ -26,9 +29,9 @@ public class Smart implements Telegraph {
     IndexedAStarPathFinder<FlatTiledNode> pathFinder;
     TiledManhattanDistance<FlatTiledNode> heuristic;
 
-    private StateMachine<Smart, Student_State> stateMachine;
+    private StateMachine<Smart, State<Smart>> stateMachine;
 
-    public Smart(Student WorldObject, FlatTiledGraph worldMap) {
+    public Smart(PathfindingWorldObject WorldObject, FlatTiledGraph worldMap, State<Smart> AIType) {
 
         Destination = new Vector3(WorldObject.getPosition());
 
@@ -38,15 +41,15 @@ public class Smart implements Telegraph {
         heuristic = new TiledManhattanDistance<FlatTiledNode>();
         pathFinder = new IndexedAStarPathFinder<FlatTiledNode>(worldMap, true);
 
-        stateMachine = new DefaultStateMachine<Smart, Student_State>(this, Student_State.IDLE);
+        stateMachine = new DefaultStateMachine<>(this, AIType);
         stateMachine.getCurrentState().enter(this);
 
         this.WorldObject = WorldObject;
 
     }
 
-    public void update() {
-        stateMachine.update();
+    public void update(GameState G) {
+        this.GState=G; stateMachine.update();
     }
 
     @Override
@@ -67,8 +70,8 @@ public class Smart implements Telegraph {
             FlatTiledNode endNode = worldMap.getNode(tileX, tileY);
             if (forceUpdate || endNode.type == FlatTiledNode.GROUND) {
                 if (endNode.type == FlatTiledNode.GROUND) {
-                    WorldObject.setPositionX(tileX * 16);
-                    WorldObject.setPositionY(tileY * 16);
+                    //WorldObject.setPositionX(tileX * 16);
+                    //WorldObject.setPositionY(tileY * 16);
                 } else {
                     endNode = worldMap.getNode(tileX, tileY);
                 }
@@ -93,7 +96,7 @@ public class Smart implements Telegraph {
 
 
     //GETTERS AND SETTERS
-    public StateMachine<Smart, Student_State> getStateMachine() {
+    public StateMachine<Smart, State<Smart>> getStateMachine() {
         return stateMachine;
     }
 

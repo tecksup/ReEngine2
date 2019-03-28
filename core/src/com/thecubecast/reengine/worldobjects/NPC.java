@@ -183,10 +183,6 @@ public abstract class NPC extends WorldObject {
         setEState(entityState.dead);
     }
 
-    public void GettingKilled(ParticleHandler particles) {
-        particles.AddParticleEffect("Health", getPosition().x, getPosition().y);
-    }
-
     public float getHealth() {
         return health;
     }

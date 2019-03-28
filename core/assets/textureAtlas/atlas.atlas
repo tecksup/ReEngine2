@@ -1,404 +1,411 @@
 
 atlas.png
-size: 512,256
+size: 1024,256
 format: RGBA8888
 filter: MipMapLinearNearest,MipMapLinearNearest
 repeat: none
 Gunter
   rotate: false
-  xy: 376, 45
+  xy: 794, 113
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
   index: -1
 Red_Marker
   rotate: false
-  xy: 152, 21
+  xy: 980, 138
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Shadow
   rotate: false
-  xy: 445, 92
+  xy: 169, 12
   size: 16, 8
   orig: 16, 8
   offset: 0, 0
   index: -1
+World
+  rotate: false
+  xy: 8, 56
+  size: 384, 192
+  orig: 384, 192
+  offset: 0, 0
+  index: -1
 Yellow_Marker
   rotate: false
-  xy: 392, 21
+  xy: 504, 44
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 blood1
   rotate: false
-  xy: 235, 9
+  xy: 1010, 207
   size: 6, 5
   orig: 6, 5
   offset: 0, 0
   index: -1
 blood2
   rotate: false
-  xy: 262, 11
+  xy: 528, 57
   size: 4, 3
   orig: 4, 3
   offset: 0, 0
   index: -1
 blood3
   rotate: false
-  xy: 274, 12
+  xy: 540, 59
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 bloodSplatter1
   rotate: false
-  xy: 152, 8
+  xy: 1006, 178
   size: 10, 5
   orig: 10, 5
   offset: 0, 0
   index: -1
 bloodSplatter2
   rotate: false
-  xy: 228, 87
+  xy: 1006, 162
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 bloodSplatter3
   rotate: false
-  xy: 353, 51
+  xy: 8, 8
   size: 6, 4
   orig: 6, 4
   offset: 0, 0
   index: -1
 bloodSplatter4
   rotate: false
-  xy: 249, 11
+  xy: 385, 45
   size: 5, 3
   orig: 5, 3
   offset: 0, 0
   index: -1
 brute
   rotate: false
-  xy: 208, 103
+  xy: 600, 104
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 0
 brute
   rotate: false
-  xy: 8, 9
+  xy: 984, 220
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 1
 brute
   rotate: false
-  xy: 44, 9
+  xy: 8, 20
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 2
 brute
   rotate: false
-  xy: 80, 9
+  xy: 504, 68
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 3
 brute_idle
   rotate: false
-  xy: 116, 9
+  xy: 636, 104
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 brute_pistol
   rotate: false
-  xy: 376, 101
+  xy: 44, 20
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 469, 92
+  xy: 1004, 146
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 deadTree
   rotate: false
-  xy: 412, 102
+  xy: 540, 69
   size: 25, 27
   orig: 25, 27
   offset: 0, 0
   index: -1
 explosion
   rotate: false
-  xy: 8, 45
+  xy: 600, 198
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 0
 explosion
   rotate: false
-  xy: 208, 197
+  xy: 600, 140
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 1
 explosion
   rotate: false
-  xy: 64, 45
+  xy: 656, 198
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 2
 explosion
   rotate: false
-  xy: 208, 139
+  xy: 656, 140
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 3
 explosion
   rotate: false
-  xy: 264, 197
+  xy: 712, 198
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 4
 explosion
   rotate: false
-  xy: 120, 45
+  xy: 712, 140
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 5
 explosion
   rotate: false
-  xy: 264, 139
+  xy: 768, 198
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 6
 explosion
   rotate: false
-  xy: 320, 197
+  xy: 768, 140
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 7
 explosion
   rotate: false
-  xy: 320, 139
+  xy: 824, 198
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 8
 face
   rotate: false
-  xy: 365, 18
+  xy: 202, 29
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
   index: -1
 pawn
   rotate: false
-  xy: 348, 111
+  xy: 738, 112
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 0
 pawn
   rotate: false
-  xy: 348, 83
+  xy: 146, 28
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 1
 pawn
   rotate: false
-  xy: 480, 227
+  xy: 639, 76
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 2
 pawn
   rotate: false
-  xy: 480, 199
+  xy: 766, 112
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 3
 pawn_idle
   rotate: false
-  xy: 480, 171
+  xy: 174, 28
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 pawn_pistol
   rotate: false
-  xy: 353, 63
+  xy: 146, 8
   size: 15, 12
   orig: 15, 12
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 480, 142
+  xy: 229, 27
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 0
 player
   rotate: false
-  xy: 209, 15
+  xy: 255, 27
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 1
 player
   rotate: false
-  xy: 327, 51
+  xy: 281, 27
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 2
 player
   rotate: false
-  xy: 235, 22
+  xy: 307, 27
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 3
 player_1 copy
   rotate: false
-  xy: 261, 22
+  xy: 333, 27
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_2_dis
   rotate: false
-  xy: 287, 22
+  xy: 359, 27
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_4 copy
   rotate: false
-  xy: 313, 22
+  xy: 984, 191
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_idle
   rotate: false
-  xy: 339, 22
+  xy: 980, 162
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_roll
   rotate: false
-  xy: 445, 108
+  xy: 672, 111
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 0
 player_roll
   rotate: false
-  xy: 376, 72
+  xy: 80, 27
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 1
 player_roll
   rotate: false
-  xy: 176, 15
+  xy: 573, 75
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 2
 player_roll
   rotate: false
-  xy: 228, 51
+  xy: 705, 111
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 3
 player_roll
   rotate: false
-  xy: 261, 51
+  xy: 113, 27
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 4
 player_roll
   rotate: false
-  xy: 294, 51
+  xy: 606, 75
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 5
 sword
   rotate: false
-  xy: 376, 196
+  xy: 824, 139
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 0
 sword
   rotate: false
-  xy: 428, 196
+  xy: 880, 197
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 1
 sword
   rotate: false
-  xy: 376, 137
+  xy: 932, 197
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 2
 sword
   rotate: false
-  xy: 428, 137
+  xy: 876, 138
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 3
 sword
   rotate: false
-  xy: 176, 44
+  xy: 928, 138
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 4
 sword
   rotate: false
-  xy: 244, 80
+  xy: 400, 45
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 5
 sword_4 copy
   rotate: false
-  xy: 296, 80
+  xy: 452, 45
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: -1
 tileset
   rotate: false
-  xy: 8, 103
+  xy: 400, 104
   size: 192, 144
   orig: 192, 144
   offset: 0, 0

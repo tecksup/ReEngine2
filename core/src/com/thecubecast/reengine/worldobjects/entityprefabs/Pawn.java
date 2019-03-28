@@ -13,11 +13,12 @@ import com.thecubecast.reengine.data.dcputils.TextureAnimation;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.graphics.scene2d.TkLabel;
+import com.thecubecast.reengine.worldobjects.PathfindingWorldObject;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
-import com.thecubecast.reengine.worldobjects.ai.pawn.Pawn_Enemy;
+import com.thecubecast.reengine.worldobjects.ai.PawnStates;
 import com.thecubecast.reengine.worldobjects.HackSlashPlayer;
 
-public class Pawn extends Pawn_Enemy {
+public class Pawn extends PathfindingWorldObject {
 
     //True is left, False is right
     public boolean Facing = true;
@@ -38,7 +39,7 @@ public class Pawn extends Pawn_Enemy {
     ProgressBar HealthBar;
 
     public Pawn(String name, int x, int y, int z, Vector3 size, float knockbackResistance, float health, intractability interact, boolean invincible, FlatTiledGraph map, GameStateManager gsm) {
-        super(name,x,y,z, size, knockbackResistance,health, interact, invincible, map, gsm);
+        super(name,x,y,z, size, knockbackResistance,health, interact, invincible, map, PawnStates.IDLE);
         setSize(Size);
         setHitboxOffset(new Vector3(6,0,0));
 
@@ -108,7 +109,7 @@ public class Pawn extends Pawn_Enemy {
         //batch.draw(Exclamation, (int) getPosition().x + 6, (int) getPosition().y + 63 + (float) (Math.sin(Time) * 2));
     }
 
-    public void update(float delta, GameState G, HackSlashPlayer player) {
+    public void update(float delta, GameState G) {
         if (G.Collisions == null) {
             return;
         }
@@ -118,7 +119,7 @@ public class Pawn extends Pawn_Enemy {
                 //G.Collisions.get(i).setRect(hankbox);
             }
         }
-        super.update(delta, G, player);
+        super.update(delta, G);
         stage.act(Gdx.graphics.getDeltaTime());
         NameLabel.setText(getName());
         NameLabel.setPosition((int) getPosition().x - 2, (int) getPosition().y + 24);
