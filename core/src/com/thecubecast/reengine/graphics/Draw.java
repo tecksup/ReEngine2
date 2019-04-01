@@ -24,7 +24,7 @@ public class Draw {
     public Animation<TextureRegion> LoadingAnimation; // Must declare frame type (TextureRegion)
     Texture LoadingSheet;
 
-    BitmapFont font = new BitmapFont(Gdx.files.internal("Fonts/Pixel.fnt"), new TextureRegion(new Texture(Gdx.files.internal("Fonts/Pixel.png"))));
+    public BitmapFont font = new BitmapFont(Gdx.files.internal("Fonts/Pixel.fnt"), new TextureRegion(new Texture(Gdx.files.internal("Fonts/Pixel.png"))));
 
     public void Init() {
         font.getData().markupEnabled = true;

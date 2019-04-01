@@ -114,8 +114,10 @@ public class MainClass extends ApplicationAdapter{
     public void resize(int width, int height) {
         W = width;
         H = height;
-        Common.print("Ran Resize!");
-        Common.print("" + width + " and H: " + height);
+        if (gsm.Debug) {
+            Common.print("Ran Resize!");
+            Common.print("" + width + " and H: " + height);
+        }
         gsm.reSize(batch, H, W);
     }
 

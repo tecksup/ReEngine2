@@ -11,10 +11,7 @@ import com.google.gson.*;
 import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.gamestates.EditorState;
-import com.thecubecast.reengine.worldobjects.Interactable;
-import com.thecubecast.reengine.worldobjects.NPC;
-import com.thecubecast.reengine.worldobjects.Trigger;
-import com.thecubecast.reengine.worldobjects.WorldObject;
+import com.thecubecast.reengine.worldobjects.*;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.entityprefabs.Pawn;
 
@@ -141,7 +138,7 @@ public class TkMap {
 
     }
 
-    public TkMap(String MapLocation, int Width, int Height, String TilesetLoc, int TileSize) {
+    public TkMap(String MapLocation, int Width, int Height, String TilesetLoc, int TileSize, int TilePadding) {
 
         Created = Common.GetNow();
         LastEdit = Common.GetNow();
@@ -152,7 +149,7 @@ public class TkMap {
         this.Height = Height;
         this.TileSize = TileSize;
 
-        Tileset = new TkTileset("World", TilesetLoc, TileSize, TileSize, 0);
+        Tileset = new TkTileset("World", TilesetLoc, TileSize, TileSize, TilePadding);
 
         Ground = new int[Width][Height];
         Foreground = new int[Width][Height];
@@ -462,6 +459,8 @@ public class TkMap {
 
             if (Description.equals("AI Pawn") && Grid != null) {
                 temp.add(new Pawn(Name, X, Y, Z, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, Grid, gsm));
+            } else if (Name.equals("Text")) {
+                temp.add(new TextWorldObject(X,Y,Z, Description, gsm.Render.font));
             } else {
 
                 Interactable tempObj = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);

@@ -561,13 +561,13 @@ public enum UI_state implements State<UIFSM> {
             Table Window = new Table(entity.skin);
             Window.setBackground("Window_red");
 
+            Window.add(new Label("Username", entity.skin)).pad(2);
             final TextArea Username = new TextArea(entity.gsm.Username, entity.skin);
-            Window.add(Username).pad(2).padTop(10);
-            Window.row();
+            Window.add(Username).pad(2).padTop(10).row();
 
+            Window.add(new Label("IP Address", entity.skin)).pad(2);
             final TextArea IP = new TextArea(entity.gsm.IP, entity.skin);
-            Window.add(IP).pad(2);
-            Window.row();
+            Window.add(IP).pad(2).row();
 
             final TkTextButton Connect = new TkTextButton("Connect", entity.skin) {
                 @Override
@@ -829,12 +829,20 @@ public enum UI_state implements State<UIFSM> {
             TextArea Height = new TextArea("60", entity.skin);
             TextArea Tileset = new TextArea("tileset", entity.skin);
             TextArea TileSize = new TextArea("16", entity.skin);
+            TextArea TilePadding = new TextArea("2", entity.skin);
 
+            SavesList.add(new Label("Save name", entity.skin)).pad(2).padTop(10);
             SavesList.add(FileName).pad(2).padTop(10).row();
+            SavesList.add(new Label("Map width", entity.skin)).pad(2).padTop(10);
             SavesList.add(Width).pad(2).row();
+            SavesList.add(new Label("Map height", entity.skin)).pad(2).padTop(10);
             SavesList.add(Height).pad(2).row();
+            SavesList.add(new Label("Tileset name", entity.skin)).pad(2).padTop(10);
             SavesList.add(Tileset).pad(2).row();
+            SavesList.add(new Label("Tile size", entity.skin)).pad(2).padTop(10);
             SavesList.add(TileSize).pad(2).row();
+            SavesList.add(new Label("Tile padding", entity.skin)).pad(2).padTop(10);
+            SavesList.add(TilePadding).pad(2).row();
 
             table.add(RecipeScroll).row();
             table.pack();
@@ -854,7 +862,7 @@ public enum UI_state implements State<UIFSM> {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Open UI to create a new map");
-                    TkMap temp = new TkMap("Saves/" + FileName.getText() + ".cube", Integer.parseInt(Width.getText()), Integer.parseInt(Height.getText()), Tileset.getText(), Integer.parseInt(TileSize.getText()));
+                    TkMap temp = new TkMap("Saves/" + FileName.getText() + ".cube", Integer.parseInt(Width.getText()), Integer.parseInt(Height.getText()), Tileset.getText(), Integer.parseInt(TileSize.getText()), Integer.parseInt(TilePadding.getText()));
 
                     temp.SaveMap(null);
                     entity.gsm.SaveSelected = FileName.getText();
@@ -890,7 +898,7 @@ public enum UI_state implements State<UIFSM> {
     };
 
     public void ControllerCheck(Table table) {
-        if (ctm.controllers.size() > 0) {
+        /*if (ctm.controllers.size() > 0) {
             for (int i = 0; i < table.getCells().size; i++) {
                 if (table.getCells().get(i).getActor() instanceof TkTextButton) {
                     int nextSelection = i;
@@ -934,7 +942,7 @@ public enum UI_state implements State<UIFSM> {
                 }
             }
 
-        }
+        }*/
     }
 
 

@@ -46,7 +46,7 @@ public class TkTileset {
         for (int l = 0; l < TilesetImage.getRegionHeight() / (TileSizeH + (TileSep)); l++) {
             for (int j = 0; j < TilesetImage.getRegionWidth() / (TileSizeW + (TileSep)); j++) {
                 //Tiles[index++] = tmp[l][j];
-                Tiles[index++] = new TextureRegion(tmp[l][j], TileSep/2,TileSep/2, tileSizeW, TileSizeH);
+                Tiles[index++] = new TextureRegion(tmp[l][j], TileSep/2,TileSep/2, TileSizeW, TileSizeH);
             }
         }
 

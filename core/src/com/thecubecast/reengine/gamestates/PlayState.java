@@ -219,11 +219,6 @@ public class PlayState extends DialogStateExtention {
 
         WorldMap.Draw(camera, g);
 
-        gsm.Render.GUIDrawText(g, 80,95,"Use WASD to move", Color.WHITE);
-        gsm.Render.GUIDrawText(g, 170,140,"SPACE to roll", Color.WHITE);
-        gsm.Render.GUIDrawText(g, 170,130,"And CLICK to attack!", Color.WHITE);
-        //gsm.Render.GUIDrawText(g, 810,648,"Press F", Color.WHITE);
-
         //Block of code renders all the entities
         WorldObjectComp entitySort = new WorldObjectComp();
         WorldObjectCompDepth entitySortz = new WorldObjectCompDepth();
@@ -487,14 +482,15 @@ public class PlayState extends DialogStateExtention {
     }
 
     public void reSize(SpriteBatch g, int H, int W) {
+        Vector3 temppos = camera.position;
 
-        /*Vector3 campostemp = camera.position;
+        camera = new OrthographicCamera();
+        GuiCam = new OrthographicCamera();
         camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
-        camera.position.set(campostemp);
+        camera.position.set(temppos);
         GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
-        shaker.reSize(camera);
+        shaker = new ScreenShakeCameraController(camera);
 
-        //shaker.reSize(camera); */
     }
 
     public void cameraUpdate(WorldObject mainFocus, OrthographicCamera cam, List<WorldObject> Entities, int MinX, int MinY, int MaxX, int MaxY) {

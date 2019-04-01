@@ -54,7 +54,7 @@ public class DesktopLauncher {
 
             @Override
             public boolean closeRequested() {
-                Common.print("clicked X");
+                //Common.print("clicked X");
                 Common.ProperShutdown();
                 return true;
             }
@@ -80,9 +80,9 @@ public class DesktopLauncher {
             if (Display_WindowedFull) { //Windowed Fullscreen
                 config.setMaximized(true);
                 config.setDecorated(false);
-                Common.print("Windowed-fullscreen");
+                //Common.print("Windowed-fullscreen");
             } else { //Windowed
-                Common.print("Windowed");
+                //Common.print("Windowed");
                 config.setResizable(true);
                 config.setWindowedMode(1920, 1080);
                 //config.setMaximized(true);

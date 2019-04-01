@@ -4,6 +4,7 @@ package com.thecubecast.reengine.gamestates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
+import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -77,7 +78,6 @@ public class EditorState extends GameState {
     private Vector2[] SelectedArea;
     private List<WorldObject> SelectedObjects = new ArrayList<>();
     private List<WorldObject> Copied_Objects = new ArrayList<>();
-
 
     WorldObject CameraFocusPointEdit = new WorldObject() {
         @Override
@@ -393,7 +393,7 @@ public class EditorState extends GameState {
             SaveMap(SaveNameText);
         }
 
-        if (selected.equals(selection.Object) && Prefab == null && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.A)) {
+        if (selected.equals(selection.Object) && Prefab == null && Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.A) && UIStage.getKeyboardFocus() == null) {
             SelectedObjects.clear();
             SelectedObjects.addAll(Entities);
 
@@ -1099,6 +1099,10 @@ public class EditorState extends GameState {
                         tempObj.Description = Description;
 
                         tempObj.setHitboxOffset(new Vector3(OffsetX, OffsetY, OffsetZ));
+
+                        if (tempObj.Name.equals("Text")) {
+                            tempObj = new TextWorldObject(0,0,0, "Text", gsm.Render.font);
+                        }
 
                         Prefab = tempObj;
                     }

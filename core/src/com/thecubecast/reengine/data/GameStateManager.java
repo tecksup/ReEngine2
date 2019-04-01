@@ -129,35 +129,34 @@ public class GameStateManager {
         currentState = i;
         switch (currentState) {
             case INTRO:
-                Common.print("Loaded state Intro");
                 gameState = new IntroState(this);
                 gameState.init();
                 break;
             case MENU:
-                Common.print("Loaded state MENU");
                 gameState = new MainMenuState(this);
                 gameState.init();
                 break;
             case PLAY:
-                Common.print("Loaded state PLAY");
                 gameState = new PlayState(this);
                 gameState.init();
                 break;
             case LOADING:
                 break;
             case EDITOR:
-                Common.print("Loaded state EDITOR");
                 gameState = new EditorState(this);
                 gameState.init();
                 break;
             case MULTI:
-                Common.print("Loaded state MULTI");
                 gameState = new MultiplayerTestState(this);
                 gameState.init();
                 break;
         }
 
         UI.inGame = false;
+
+        if (Debug) {
+            System.out.println("Loaded State " + gameState.getClass().getName());
+        }
 
     }
 
