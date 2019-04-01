@@ -5,11 +5,15 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3WindowListener;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.MainClass;
 
 public class DesktopLauncher {
     public static void main(String[] args) {
+
+        //TexturePacker.process("../../images/atlas-T", "../../images", "Tiles");
+
 
         DcpTexturePackerManager texturePackerManager = new DcpTexturePackerManager();
         texturePackerManager.checkWhetherToPackImages();

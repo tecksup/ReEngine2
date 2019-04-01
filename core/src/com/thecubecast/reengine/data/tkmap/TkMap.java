@@ -334,25 +334,9 @@ public class TkMap {
         }
 
         //Draw the Ground
-        for (int y = Height - 1; y >= 0; y--) {
-            for (int x = 0; x < Width; x++) {
-                if (Ground[x][y] != -1) {
-                    if (drawView.overlaps(new Rectangle(x * 16, y * 16, 16, 16))) {
-                        batch.draw(Tileset.Tiles[Ground[x][y]], x * 16, y * 16);
-                    }
-                }
-            }
-        }
+        DrawGround(cam, batch, 1);
         //Draw the Foreground
-        for (int y = Height - 1; y >= 0; y--) {
-            for (int x = 0; x < Width; x++) {
-                if (Foreground[x][y] != -1) {
-                    if (drawView.overlaps(new Rectangle(x * 16, y * 16, 16, 16))) {
-                        batch.draw(Tileset.Tiles[Foreground[x][y]], x * 16, y * 16);
-                    }
-                }
-            }
-        }
+        DrawForground(cam, batch, 1);
     }
 
     public void DrawGround(OrthographicCamera cam, SpriteBatch batch, float Opp) {
@@ -433,7 +417,6 @@ public class TkMap {
             return temp;
         }
         JsonArray temparray = getMapObject().get("Objects").getAsJsonArray();
-        System.out.println(temparray.size());
         for (int i = 0; i < temparray.size(); i++) {
             int X, Y, Z, W, H, D, OffsetX, OffsetY, OffsetZ;
             JsonObject tempObject = temparray.get(i).getAsJsonObject();

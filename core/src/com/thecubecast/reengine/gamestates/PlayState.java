@@ -58,7 +58,7 @@ public class PlayState extends DialogStateExtention {
 
     public void init() {
 
-        WorldMap = new TkMap("Saves/World.cube");
+        WorldMap = new TkMap("Saves/Gilded.cube");
         MapGraph = new FlatTiledGraph(WorldMap);
 
         player = new HackSlashPlayer(10 * 16, 3 * 16, gsm);
@@ -200,7 +200,7 @@ public class PlayState extends DialogStateExtention {
             Entities.remove(Remove.get(i));
         }
 
-        cameraUpdate(player, camera, Entities,0,0, WorldMap.getWidth()*WorldMap.getTileSize(), WorldMap.getHeight()*WorldMap.getTileSize());
+        cameraUpdate(player, camera, Entities,8,8, WorldMap.getWidth()*WorldMap.getTileSize()-8, WorldMap.getHeight()*WorldMap.getTileSize()-8);
 
         if (player.Health > 0) {
             handleInput();
@@ -519,6 +519,9 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
+        FocalPoint.x = FocalPoint.x / totalFocusPoints;
+        FocalPoint.y = FocalPoint.y / totalFocusPoints;
+
         if (FocalPoint.x - cam.viewportWidth / 2 <= MinX) {
             FocalPoint.x = MinX + cam.viewportWidth / 2;
         } else if (FocalPoint.x + cam.viewportWidth / 2 >= MaxX) {
@@ -531,7 +534,7 @@ public class PlayState extends DialogStateExtention {
             FocalPoint.y = MaxY - cam.viewportHeight / 2;
         }
 
-        cam.position.set((int) (FocalPoint.x / totalFocusPoints), (int) (FocalPoint.y / totalFocusPoints), 0);
+        cam.position.set((int) (FocalPoint.x), (int) (FocalPoint.y), 0);
 
         cam.update();
     }

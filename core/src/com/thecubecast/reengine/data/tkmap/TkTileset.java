@@ -31,21 +31,22 @@ public class TkTileset {
             TilesetImage = Render.getTexture(Path);
         }
 
-        int cols = TilesetImage.getRegionWidth() / TileSizeW;
-        int rows = TilesetImage.getRegionHeight() / TileSizeH;
+        int cols = TilesetImage.getRegionWidth() / (TileSizeW + (TileSep));
+        int rows = TilesetImage.getRegionHeight() / (TileSizeH + (TileSep));
 
         TilesetWidth = cols;
 
         Tiles = new TextureRegion[rows * cols];
 
         TextureRegion[][] tmp = TilesetImage.split(
-                TileSizeW,
-                TileSizeH);
+                TileSizeW + (TileSep),
+                TileSizeH + (TileSep));
 
         int index = 0;
-        for (int l = 0; l < TilesetImage.getRegionHeight() / TileSizeH; l++) {
-            for (int j = 0; j < TilesetImage.getRegionWidth() / TileSizeW; j++) {
-                Tiles[index++] = tmp[l][j];
+        for (int l = 0; l < TilesetImage.getRegionHeight() / (TileSizeH + (TileSep)); l++) {
+            for (int j = 0; j < TilesetImage.getRegionWidth() / (TileSizeW + (TileSep)); j++) {
+                //Tiles[index++] = tmp[l][j];
+                Tiles[index++] = new TextureRegion(tmp[l][j], TileSep/2,TileSep/2, tileSizeW, TileSizeH);
             }
         }
 

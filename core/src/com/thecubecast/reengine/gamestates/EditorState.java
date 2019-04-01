@@ -54,7 +54,6 @@ import static com.thecubecast.reengine.data.GameStateManager.Render;
 public class EditorState extends GameState {
 
     boolean OverHud = false;
-    private boolean KeyboardImportant = false;
     boolean DraggingObject = false;
     int[] draggingOffset = {0,0};
 
@@ -131,7 +130,7 @@ public class EditorState extends GameState {
 
     public void init() {
 
-        double Started = System.nanoTime();
+        //double Started = System.nanoTime();
 
         tempshitgiggle = new TkMap("Saves/" + SaveNameText + ".cube");
         //System.out.println("Loading Map Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
@@ -628,11 +627,14 @@ public class EditorState extends GameState {
 
     public void reSize(SpriteBatch g, int H, int W) {
 
-        System.out.println("Resized");
+        //System.out.println("Resized");
+
+        Vector3 temppos = camera.position;
 
         camera = new OrthographicCamera();
         GuiCam = new OrthographicCamera();
         camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
+        camera.position.set(temppos);
         GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
         shaker = new ScreenShakeCameraController(camera);
 
@@ -692,6 +694,10 @@ public class EditorState extends GameState {
                 return super.touchDragged(screenX, screenY, pointer);
             }
 
+            @Override
+            public boolean scrolled(int amount) {
+                return super.scrolled(amount);
+            }
         };
         Gdx.input.setInputProcessor(UIStage);
         UIStage.getViewport().setCamera(GuiCam);
@@ -963,7 +969,6 @@ public class EditorState extends GameState {
 
         //Ground stuff
         for (int i = 1; i < tempshitgiggle.Tileset.getTiles().length + 1; i++) {
-
             int tempi = i - 1;
             ImageButton tempimage = new ImageButton(new TextureRegionDrawable(tempshitgiggle.Tileset.getTiles()[i - 1])) {
                 int MYID = tempi;
@@ -1550,15 +1555,19 @@ public class EditorState extends GameState {
             FocalPoint.x = MinX + cam.viewportWidth / 2;
         } else if (FocalPoint.x + cam.viewportWidth / 2 >= MaxX) {
             FocalPoint.x = MaxX - cam.viewportWidth / 2;
+        } else {
+            FocalPoint.x = FocalPoint.x / totalFocusPoints;
         }
 
         if (FocalPoint.y - cam.viewportHeight / 2 <= MinY) {
             FocalPoint.y = MinY + cam.viewportHeight / 2;
         } else if (FocalPoint.y + cam.viewportHeight / 2 >= MaxY) {
             FocalPoint.y = MaxY - cam.viewportHeight / 2;
+        } else {
+            FocalPoint.y = FocalPoint.y / totalFocusPoints;
         }
 
-        cam.position.set((int) (FocalPoint.x / totalFocusPoints), (int) (FocalPoint.y / totalFocusPoints), 0);
+        cam.position.set((int) (FocalPoint.x), (int) (FocalPoint.y), 0);
 
         cam.update();
     }
