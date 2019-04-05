@@ -117,11 +117,7 @@ public class SoundManager {
     }
 
     public boolean isPlaying(int MusicID) {
-        if (HandledMusic.get(MusicID).isPlaying()) {
-            return true;
-        } else {
-            return false;
-        }
+        return HandledMusic.get(MusicID).isPlaying();
     }
 
     public void pauseMusic(int MusicID) {

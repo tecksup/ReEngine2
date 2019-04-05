@@ -460,7 +460,9 @@ public class TkMap {
             if (Description.equals("AI Pawn") && Grid != null) {
                 temp.add(new Pawn(Name, X, Y, Z, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, Grid, gsm));
             } else if (Name.equals("Text")) {
-                temp.add(new TextWorldObject(X,Y,Z, Description, gsm.Render.font));
+                temp.add(new TextWorldObject(X,Y,Z, Description, GameStateManager.Render.font));
+            } else if (Name.equals("Crop")) {
+                temp.add(new FarmTile(X,Y,Z, Description));
             } else {
 
                 Interactable tempObj = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);

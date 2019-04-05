@@ -42,11 +42,11 @@ public class HackSlashPlayer extends WorldObject {
         super(x,y,0, new Vector3(16,16,2));
         this.setState(type.Dynamic);
         this.gsm = gsm;
-        Walking = new TextureAnimation<>(gsm.Render.getTextures("player"), 0.1f);
-        Roll = new TextureAnimation<>(gsm.Render.getTextures("player_roll"), 0.05f);
-        Idle = new TextureAnimation<>(gsm.Render.getTextures("player_idle"), 0.1f);
-        Sword = new TextureAnimation<>(gsm.Render.getTextures("sword"), 0.05f);
-        Shadow = gsm.Render.getTexture("Shadow");
+        Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("player"), 0.1f);
+        Roll = new TextureAnimation<>(GameStateManager.Render.getTextures("player_roll"), 0.05f);
+        Idle = new TextureAnimation<>(GameStateManager.Render.getTextures("player_idle"), 0.1f);
+        Sword = new TextureAnimation<>(GameStateManager.Render.getTextures("sword"), 0.05f);
+        Shadow = GameStateManager.Render.getTexture("Shadow");
     }
 
     @Override

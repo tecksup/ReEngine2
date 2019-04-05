@@ -84,7 +84,7 @@ public class MainClass extends ApplicationAdapter{
 
         Draw(batch); //DRAW
         batch.begin();
-        gsm.Render.GUIDrawText(batch, 0, H, Gdx.graphics.getFramesPerSecond() + "", Color.YELLOW);
+        GameStateManager.Render.GUIDrawText(batch, 0, H, Gdx.graphics.getFramesPerSecond() + "", Color.YELLOW);
         batch.end();
     }
 
@@ -114,7 +114,7 @@ public class MainClass extends ApplicationAdapter{
     public void resize(int width, int height) {
         W = width;
         H = height;
-        if (gsm.Debug) {
+        if (GameStateManager.Debug) {
             Common.print("Ran Resize!");
             Common.print("" + width + " and H: " + height);
         }

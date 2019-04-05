@@ -65,6 +65,12 @@ public class Smart implements Telegraph {
     public void updatePath(boolean forceUpdate) {
         int tileX = (int) getDestination().x / 16;
         int tileY = (int) getDestination().y / 16;
+
+        if (tileX < 0 || tileX > worldMap.getNodeCount())
+            return;
+        if (tileY < 0 || tileY > worldMap.getNodeCount())
+            return;
+
         if (forceUpdate || tileX != WorldObject.getPosition().x || tileY != WorldObject.getPosition().y) {
             FlatTiledNode startNode = worldMap.getNode((int) WorldObject.getPosition().x / 16, (int) WorldObject.getPosition().y / 16);
             FlatTiledNode endNode = worldMap.getNode(tileX, tileY);

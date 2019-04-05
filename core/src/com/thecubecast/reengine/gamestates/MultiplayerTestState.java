@@ -108,7 +108,7 @@ public class MultiplayerTestState extends GameState {
 
         if (network.GetUsers().size() != 0) {
             for (int l = 0; l < network.GetUsers().size(); l++) {
-                gsm.Render.GUIDrawText(g, Common.roundDown((network.GetUsers().get(l).x * 64)), Common.roundDown((network.GetUsers().get(l).y * 64)), network.GetUsers().get(l).username, Color.WHITE);
+                GameStateManager.Render.GUIDrawText(g, Common.roundDown((network.GetUsers().get(l).x * 64)), Common.roundDown((network.GetUsers().get(l).y * 64)), network.GetUsers().get(l).username, Color.WHITE);
             }
 
         }
@@ -126,7 +126,7 @@ public class MultiplayerTestState extends GameState {
         g.setProjectionMatrix(GuiCam.combined);
         g.begin();
         //GUI must draw last
-        gsm.Render.GUIDrawText(g, 50, 50, "" + network.GetClient(), Color.WHITE);
+        GameStateManager.Render.GUIDrawText(g, 50, 50, "" + network.GetClient(), Color.WHITE);
         g.end();
 
         gsm.UI.Draw();
@@ -258,8 +258,8 @@ public class MultiplayerTestState extends GameState {
     public void reSize(SpriteBatch g, int H, int W) {
         camera = new OrthographicCamera();
         GuiCam = new OrthographicCamera();
-        camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
-        GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
+        camera.setToOrtho(false, GameStateManager.WorldWidth, GameStateManager.WorldHeight);
+        GuiCam.setToOrtho(false, GameStateManager.UIWidth, GameStateManager.UIHeight);
         //shaker = new ScreenShakeCameraController(camera);
 
 

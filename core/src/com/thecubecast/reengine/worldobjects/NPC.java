@@ -20,7 +20,7 @@ public abstract class NPC extends WorldObject {
 
     private float health;
     private boolean invulnerable = false;
-    private String name;
+    public String name;
 
     public float VelDrag = -1;
 
@@ -208,11 +208,7 @@ public abstract class NPC extends WorldObject {
     }
 
     public boolean isAlive() {
-        if (getEState().equals(entityState.alive)) {
-            return true;
-        } else {
-            return false;
-        }
+        return getEState().equals(entityState.alive);
     }
 
     public entityState getEState() {

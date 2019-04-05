@@ -42,11 +42,7 @@ open class Timer @JvmOverloads constructor(var timeLimit: Float = 1f, isTimerOn:
     }
 }
 
-class LoopTimer(timeLimit: Float) : Timer(timeLimit, true, false) {
-
-}
+class LoopTimer(timeLimit: Float) : Timer(timeLimit, true, false)
 
 /** Only ticks when the timeLimit is reached, then it turns off */
-class AlarmTimer(timeLimit: Float) : Timer(timeLimit, true, true) {
-
-}
+class AlarmTimer(timeLimit: Float) : Timer(timeLimit, true, true)

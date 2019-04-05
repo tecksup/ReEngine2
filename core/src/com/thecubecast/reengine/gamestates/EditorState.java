@@ -58,7 +58,7 @@ public class EditorState extends GameState {
     boolean DraggingObject = false;
     int[] draggingOffset = {0,0};
 
-    public enum BrushSizes {small, medium, large};
+    public enum BrushSizes {small, medium, large}
 
     private BrushSizes BrushSize = BrushSizes.small;
 
@@ -153,8 +153,8 @@ public class EditorState extends GameState {
         //Camera setup
         camera = new OrthographicCamera();
         GuiCam = new OrthographicCamera();
-        camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
-        GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
+        camera.setToOrtho(false, GameStateManager.WorldWidth, GameStateManager.WorldHeight);
+        GuiCam.setToOrtho(false, GameStateManager.UIWidth, GameStateManager.UIHeight);
         shaker = new ScreenShakeCameraController(camera);
 
         gsm.UI.stage.getViewport().setCamera(GuiCam);
@@ -267,12 +267,12 @@ public class EditorState extends GameState {
         }
 
         //Renders my favorite little debug stuff
-        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) { //KeyHit
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Prefab == null && SelectedObjects.size() == 0) { //KeyHit
             gsm.Cursor = GameStateManager.CursorType.Question;
 
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
-            gsm.Render.GUIDrawText(g, Common.roundDown(pos.x) - 5, Common.roundDown(pos.y) - 5, "X: " + ((int) pos.x / 16) + " Y: " + ((int) pos.y / 16), Color.WHITE);
+            Render.GUIDrawText(g, Common.roundDown(pos.x) - 5, Common.roundDown(pos.y) - 5, "X: " + ((int) pos.x / 16) + " Y: " + ((int) pos.y / 16), Color.WHITE);
         } else {
             gsm.Cursor = GameStateManager.CursorType.Normal;
         }
@@ -301,25 +301,25 @@ public class EditorState extends GameState {
         g.end();
 
         //DEBUG CODE
-        gsm.Render.debugRenderer.setProjectionMatrix(camera.combined);
-        gsm.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        Render.debugRenderer.setProjectionMatrix(camera.combined);
+        Render.debugRenderer.begin(ShapeRenderer.ShapeType.Line);
 
-        if (gsm.Debug) {
+        if (GameStateManager.Debug) {
 
-            gsm.Render.debugRenderer.setColor(Color.WHITE);
-            gsm.Render.debugRenderer.rect(CameraFocusPointEdit.getPosition().x, CameraFocusPointEdit.getPosition().y, 2, 2);
+            Render.debugRenderer.setColor(Color.WHITE);
+            Render.debugRenderer.rect(CameraFocusPointEdit.getPosition().x, CameraFocusPointEdit.getPosition().y, 2, 2);
 
             for (int i = 0; i < Collisions.size(); i++) {
 
                 //The bottom
-                gsm.Render.debugRenderer.setColor(Color.YELLOW);
-                gsm.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
+                Render.debugRenderer.setColor(Color.YELLOW);
+                Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
 
                 //The top of the Cube
-                gsm.Render.debugRenderer.setColor(Color.RED);
-                gsm.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().getDepth() / 2 + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
+                Render.debugRenderer.setColor(Color.RED);
+                Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().getDepth() / 2 + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
 
-                gsm.Render.debugRenderer.setColor(Color.ORANGE);
+                Render.debugRenderer.setColor(Color.ORANGE);
             }
 
         }
@@ -327,37 +327,37 @@ public class EditorState extends GameState {
         for (int i = 0; i < Entities.size(); i++) {
             //gsm.Render.debugRenderer.box(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y, Entities.get(i).getHitbox().min.z, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight(), Entities.get(i).getHitbox().getDepth());
 
-            if (gsm.Debug || Entities.get(i).isDebugView()) {
+            if (GameStateManager.Debug || Entities.get(i).isDebugView()) {
                 //The bottom
-                gsm.Render.debugRenderer.setColor(Color.GREEN);
-                gsm.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
+                Render.debugRenderer.setColor(Color.GREEN);
+                Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
 
                 //The top of the Cube
-                gsm.Render.debugRenderer.setColor(Color.BLUE);
-                gsm.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().getDepth() / 2 + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
+                Render.debugRenderer.setColor(Color.BLUE);
+                Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().getDepth() / 2 + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
 
             }
 
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-            gsm.Render.debugRenderer.setColor(Color.WHITE);
-            gsm.Render.debugRenderer.rect(((int) pos312.x / 16) * 16 + 1, ((int) pos312.y / 16) * 16 + 1, 15, 15);
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Prefab == null && SelectedObjects.size() == 0) {
+            Render.debugRenderer.setColor(Color.WHITE);
+            Render.debugRenderer.rect(((int) pos312.x / 16) * 16 + 1, ((int) pos312.y / 16) * 16 + 1, 15, 15);
         }
 
         if (Erasing) {
-            gsm.Render.debugRenderer.setColor(Color.WHITE);
-            gsm.Render.debugRenderer.rect(((int) pos312.x / 16) * 16 + 1, ((int) pos312.y / 16) * 16 + 1, 15, 15);
+            Render.debugRenderer.setColor(Color.WHITE);
+            Render.debugRenderer.rect(((int) pos312.x / 16) * 16 + 1, ((int) pos312.y / 16) * 16 + 1, 15, 15);
         }
 
         if (SelectedArea != null) {
             Vector3 PosStart = new Vector3(SelectedArea[0].x, SelectedArea[0].y, 0);
             camera.unproject(PosStart);
-            gsm.Render.debugRenderer.setColor(Color.ORANGE);
-            gsm.Render.debugRenderer.rect(PosStart.x, PosStart.y, -Common.roundUp(SelectedArea[0].x - SelectedArea[1].x) / gsm.Scale, Common.roundUp(SelectedArea[0].y - SelectedArea[1].y) / gsm.Scale);
+            Render.debugRenderer.setColor(Color.ORANGE);
+            Render.debugRenderer.rect(PosStart.x, PosStart.y, -Common.roundUp(SelectedArea[0].x - SelectedArea[1].x) / gsm.Scale, Common.roundUp(SelectedArea[0].y - SelectedArea[1].y) / gsm.Scale);
         }
 
-        gsm.Render.debugRenderer.end();
+        Render.debugRenderer.end();
 
     }
 
@@ -368,12 +368,20 @@ public class EditorState extends GameState {
         if (Prefab != null) {
             Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             GuiCam.unproject(pos312);
-            Prefab.setPosition(pos312.x - (Prefab.getSize().x/2),pos312.y - (Prefab.getSize().y/2),0);
+
+            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                float temptempx = pos312.x - (Prefab.getSize().x / 2);
+                float temptempy = pos312.y - (Prefab.getSize().y / 2);
+                Prefab.setPosition(((int)(temptempx/16))*16, ((int)(temptempy/16))*16, 0);
+            } else {
+                Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
+            }
+
             Prefab.draw(g, Time);
         }
         g.end();
 
-        UIStage.getViewport().update(gsm.UIWidth, gsm.UIHeight, true);
+        UIStage.getViewport().update(GameStateManager.UIWidth, GameStateManager.UIHeight, true);
         UIStage.draw();
         UIStage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         gsm.UI.Draw();
@@ -451,7 +459,7 @@ public class EditorState extends GameState {
         if (Gdx.input.isKeyJustPressed(Input.Keys.PLUS) || Gdx.input.isKeyJustPressed(Input.Keys.EQUALS) && UIStage.getKeyboardFocus() == null) {
             if (!OverHud)
                 gsm.setWorldScale(gsm.Scale + 1);
-            if (gsm.Debug)
+            if (GameStateManager.Debug)
                 System.out.println(gsm.Scale);
         }
         if (Gdx.input.isKeyJustPressed(Input.Keys.MINUS) && UIStage.getKeyboardFocus() == null) {
@@ -459,7 +467,7 @@ public class EditorState extends GameState {
                 if (gsm.Scale - 1 > 0)
                     gsm.setWorldScale(gsm.Scale - 1);
             }
-            if (gsm.Debug)
+            if (GameStateManager.Debug)
                 System.out.println(gsm.Scale);
         }
 
@@ -481,16 +489,23 @@ public class EditorState extends GameState {
                     if (Prefab != null) {
                         Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                         camera.unproject(pos312);
-                        Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
+
+                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                            float temptempx = pos312.x - (Prefab.getSize().x / 2);
+                            float temptempy = pos312.y - (Prefab.getSize().y / 2);
+                            Prefab.setPosition(((int)(temptempx/16))*16, ((int)(temptempy/16))*16, 0);
+                        } else {
+                            Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
+                        }
                         Entities.add(Prefab.CreateNew());
                     }
-                } else if (selected.equals(selected.Ground) && Fill) {
+                } else if (selected.equals(selection.Ground) && Fill) {
                     if (Erasing) {
                         tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
                     } else {
                         tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
                     }
-                } else if (selected.equals(selected.Forground)&& Fill) {
+                } else if (selected.equals(selection.Forground)&& Fill) {
 
                     if (Erasing) {
                         tempshitgiggle.fillForegroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
@@ -550,7 +565,15 @@ public class EditorState extends GameState {
 
                     if (DraggingObject) {
                         for (int i = 0; i < SelectedObjects.size(); i++) {
-                            SelectedObjects.get(i).setPosition(pos.x + draggingOffset[0], pos.y + draggingOffset[1], SelectedObjects.get(i).getPosition().z);
+
+                            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                                float temptempx = pos.x + draggingOffset[0];
+                                float temptempy = pos.y + draggingOffset[1];
+                                SelectedObjects.get(i).setPosition(((int)(temptempx/16))*16, ((int)(temptempy/16))*16, SelectedObjects.get(i).getPosition().z);
+                            } else {
+                                SelectedObjects.get(i).setPosition(pos.x + draggingOffset[0], pos.y + draggingOffset[1], SelectedObjects.get(i).getPosition().z);
+                            }
+
                             HiddenButtonTriggeresLoading.init(0,0);
                         }
                     }
@@ -612,7 +635,7 @@ public class EditorState extends GameState {
             }else {
                 if (gsm.UI.Visible) {
                     gsm.UI.setVisable(!gsm.UI.Visible);
-                    UIStage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
+                    UIStage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
                     Gdx.input.setInputProcessor(UIStage);
                     UIStage.getViewport().setCamera(GuiCam);
                 } else if (!gsm.UI.Visible) {
@@ -633,16 +656,16 @@ public class EditorState extends GameState {
 
         camera = new OrthographicCamera();
         GuiCam = new OrthographicCamera();
-        camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
+        camera.setToOrtho(false, GameStateManager.WorldWidth, GameStateManager.WorldHeight);
         camera.position.set(temppos);
-        GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
+        GuiCam.setToOrtho(false, GameStateManager.UIWidth, GameStateManager.UIHeight);
         shaker = new ScreenShakeCameraController(camera);
 
         UISetup();
     }
 
     public void UISetup() {
-        UIStage = new Stage(new FitViewport(gsm.UIWidth, gsm.UIHeight)) {
+        UIStage = new Stage(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight)) {
             @Override
             public boolean touchUp(int screenX, int screenY, int pointer, int button) {
                 if (SelectionDragging) {
@@ -733,11 +756,7 @@ public class EditorState extends GameState {
             @Override
             public void act(float delta) {
                 super.act(delta);
-                if (isOver() || TopRightBoxStuff.isOver()) {
-                    OverHud = true;
-                } else {
-                    OverHud = false;
-                }
+                OverHud = isOver() || TopRightBoxStuff.isOver();
             }
         };
         BoxStuff.setBackground("Window_green");
@@ -1101,7 +1120,10 @@ public class EditorState extends GameState {
                         tempObj.setHitboxOffset(new Vector3(OffsetX, OffsetY, OffsetZ));
 
                         if (tempObj.Name.equals("Text")) {
-                            tempObj = new TextWorldObject(0,0,0, "Text", gsm.Render.font);
+                            tempObj = new TextWorldObject(0,0,0, "Text", Render.font);
+                        } else if (tempObj.Name.equals("Crop")) {
+                            tempObj = new FarmTile(0,0,0, "Wheat");
+                            ((FarmTile)tempObj).setCropLife(1);
                         }
 
                         Prefab = tempObj;

@@ -68,11 +68,11 @@ public class LoadingState extends GameState {
 
     public void update() {
         tics++;
-        gsm.Render.manager.update();
-        progress.setValue(gsm.Render.manager.getProgress());
+        GameStateManager.Render.manager.update();
+        progress.setValue(GameStateManager.Render.manager.getProgress());
         if (Load.equals("STARTUP")) {
-            if (gsm.Render.manager.getProgress() == 1) {
-                gsm.Render.retrieveTextureAtlas();
+            if (GameStateManager.Render.manager.getProgress() == 1) {
+                GameStateManager.Render.retrieveTextureAtlas();
 
                 Gdx.graphics.setVSync(true);
                 gsm.setState(GameStateManager.State.MENU);
@@ -90,7 +90,7 @@ public class LoadingState extends GameState {
 
         //gsm.Render.DrawAnimatedTile(g, gsm.Render.LoadingAnimation, 50, 50, 2.0f, 2.0f, Time);
 
-        gsm.Render.DrawAnimatedTile(g, gsm.Render.LoadingAnimation, 2, 2, Time);
+        GameStateManager.Render.DrawAnimatedTile(g, GameStateManager.Render.LoadingAnimation, 2, 2, Time);
         stage.getRoot().draw(g, 1);
         g.end();
     }

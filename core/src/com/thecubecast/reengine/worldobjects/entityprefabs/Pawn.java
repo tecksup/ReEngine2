@@ -43,10 +43,10 @@ public class Pawn extends PathfindingWorldObject {
         setSize(Size);
         setHitboxOffset(new Vector3(6,0,0));
 
-        Walking = new TextureAnimation<>(gsm.Render.getTextures("pawn"), 0.1f);
-        Idle = new TextureAnimation<>(gsm.Render.getTextures("pawn_idle"), 0.1f);
-        Sword = new TextureAnimation<>(gsm.Render.getTextures("pawn_pistol"), 0.05f);
-        Shadow = gsm.Render.getTexture("Shadow");
+        Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("pawn"), 0.1f);
+        Idle = new TextureAnimation<>(GameStateManager.Render.getTextures("pawn_idle"), 0.1f);
+        Sword = new TextureAnimation<>(GameStateManager.Render.getTextures("pawn_pistol"), 0.05f);
+        Shadow = GameStateManager.Render.getTexture("Shadow");
 
         FocusStrength = 0.15f;
 

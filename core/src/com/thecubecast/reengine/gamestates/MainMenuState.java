@@ -51,10 +51,10 @@ public class MainMenuState extends GameState {
     public void draw(SpriteBatch bbg, int height, int width, float Time) {
 
         //DEBUG CODE
-        gsm.Render.debugRenderer.setProjectionMatrix(cameraGui.combined);
-        gsm.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        GameStateManager.Render.debugRenderer.setProjectionMatrix(cameraGui.combined);
+        GameStateManager.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
-        gsm.Render.debugRenderer.end();
+        GameStateManager.Render.debugRenderer.end();
 
         cameraGui.setToOrtho(false, width, height);
         bbg.setProjectionMatrix(cameraGui.combined);

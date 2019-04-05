@@ -88,7 +88,7 @@ public class PlayState extends DialogStateExtention {
         }
 
         //Setup Dialog Instance
-        MenuInit(gsm.UIWidth, gsm.UIHeight);
+        MenuInit(GameStateManager.UIWidth, GameStateManager.UIHeight);
 
         gsm.DiscordManager.setPresenceDetails("topdown Demo - Level 1");
         gsm.DiscordManager.setPresenceState("In Game");
@@ -109,7 +109,40 @@ public class PlayState extends DialogStateExtention {
         //Particles
         Particles = new ParticleHandler();
 
-        MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
+        //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
+
+        Entities.add(new FarmTile(2*16, 2*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(3*16, 2*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(4*16, 2*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(5*16, 2*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(6*16, 2*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(2*16, 3*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(3*16, 3*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(4*16, 3*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(5*16, 3*16, 0, "Eggplant"));
+        Entities.add(new FarmTile(6*16, 3*16, 0, "Eggplant"));
+
+        Entities.add(new FarmTile(2*16, 4*16, 0, "Tomato"));
+        Entities.add(new FarmTile(3*16, 4*16, 0, "Tomato"));
+        Entities.add(new FarmTile(4*16, 4*16, 0, "Tomato"));
+        Entities.add(new FarmTile(5*16, 4*16, 0, "Tomato"));
+        Entities.add(new FarmTile(6*16, 4*16, 0, "Tomato"));
+        Entities.add(new FarmTile(2*16, 5*16, 0, "Tomato"));
+        Entities.add(new FarmTile(3*16, 5*16, 0, "Tomato"));
+        Entities.add(new FarmTile(4*16, 5*16, 0, "Tomato"));
+        Entities.add(new FarmTile(5*16, 5*16, 0, "Tomato"));
+        Entities.add(new FarmTile(6*16, 5*16, 0, "Tomato"));
+
+        Entities.add(new FarmTile(2*16, 6*16, 0, "Wheat"));
+        Entities.add(new FarmTile(3*16, 6*16, 0, "Wheat"));
+        Entities.add(new FarmTile(4*16, 6*16, 0, "Wheat"));
+        Entities.add(new FarmTile(5*16, 6*16, 0, "Wheat"));
+        Entities.add(new FarmTile(6*16, 6*16, 0, "Wheat"));
+        Entities.add(new FarmTile(2*16, 7*16, 0, "Wheat"));
+        Entities.add(new FarmTile(3*16, 7*16, 0, "Wheat"));
+        Entities.add(new FarmTile(4*16, 7*16, 0, "Wheat"));
+        Entities.add(new FarmTile(5*16, 7*16, 0, "Wheat"));
+        Entities.add(new FarmTile(6*16, 7*16, 0, "Wheat"));
 
     }
 
@@ -125,10 +158,12 @@ public class PlayState extends DialogStateExtention {
                 }
             } else if (Entities.get(i) instanceof NPC) {
                 if (!((NPC) Entities.get(i)).isAlive()) {
+                    Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
                     Particles.AddParticleEffect("Leaf", player.getIntereactBox().getCenterX(), player.getIntereactBox().getCenterY());
                     Entities.remove(i);
                 }
             } else if (Entities.get(i) instanceof Interactable) {
+                Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
                 Interactable Entitemp = (Interactable) Entities.get(i);
                 Entitemp.Trigger(player, shaker, this, null, Particles, Entities);
                 Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
@@ -252,14 +287,14 @@ public class PlayState extends DialogStateExtention {
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) { //KeyHit
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
-            gsm.Render.GUIDrawText(g, (int) pos.x / 16 * 16 + 1, (int) pos.y / 16 * 16 + 1, ((int) pos.x) + " : " +( (int) pos.y) + "", Color.WHITE);
+            GameStateManager.Render.GUIDrawText(g, (int) pos.x / 16 * 16 + 1, (int) pos.y / 16 * 16 + 1, ((int) pos.x) + " : " +( (int) pos.y) + "", Color.WHITE);
         }
 
         g.end();
 
         //DEBUG CODE
-        gsm.Render.debugRenderer.setProjectionMatrix(camera.combined);
-        gsm.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Line);
+        GameStateManager.Render.debugRenderer.setProjectionMatrix(camera.combined);
+        GameStateManager.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Line);
 
         if (GameStateManager.Debug) {
 
@@ -269,12 +304,12 @@ public class PlayState extends DialogStateExtention {
                 for (int x = 0; x < WorldMap.getWidth(); x++) {
                     switch (MapGraph.getNode(x, y).type) {
                         case FlatTiledNode.GROUND:
-                            gsm.Render.debugRenderer.setColor(Color.GREEN);
-                            gsm.Render.debugRenderer.rect(x * 16, y * 16, 16, 16);
+                            GameStateManager.Render.debugRenderer.setColor(Color.GREEN);
+                            GameStateManager.Render.debugRenderer.rect(x * 16, y * 16, 16, 16);
                             break;
                         case FlatTiledNode.COLLIDABLE:
-                            gsm.Render.debugRenderer.setColor(Color.RED);
-                            gsm.Render.debugRenderer.rect(x * 16, y * 16, 16, 16);
+                            GameStateManager.Render.debugRenderer.setColor(Color.RED);
+                            GameStateManager.Render.debugRenderer.rect(x * 16, y * 16, 16, 16);
                             break;
                         default:
                             //gsm.Render.debugRenderer.setColor(Color.WHITE);
@@ -284,24 +319,24 @@ public class PlayState extends DialogStateExtention {
                 }
             }
 
-            gsm.Render.debugRenderer.setColor(Color.FIREBRICK);
+            GameStateManager.Render.debugRenderer.setColor(Color.FIREBRICK);
             for (int i = 0; i < Entities.size(); i++) {
                 if(Entities.get(i) instanceof PathfindingWorldObject) {
                     PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
                     int nodeCount = temp.getPath().getCount();
                     for (int j = 0; j < nodeCount; j++) {
                         FlatTiledNode node = temp.getPath().nodes.get(j);
-                        gsm.Render.debugRenderer.rect(node.x * 16 + 4, node.y * 16 + 4, 4, 4);
+                        GameStateManager.Render.debugRenderer.rect(node.x * 16 + 4, node.y * 16 + 4, 4, 4);
                     }
                 }
             }
 
-            gsm.Render.debugRenderer.setColor(Color.FOREST);
+            GameStateManager.Render.debugRenderer.setColor(Color.FOREST);
             for (int i = 0; i < Entities.size(); i++) {
                 if(Entities.get(i) instanceof PathfindingWorldObject) {
                     PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
                     if (temp.getDestination() != null) {
-                        gsm.Render.debugRenderer.rect(temp.getDestination().x + 2, temp.getDestination().y + 2, 12, 12);
+                        GameStateManager.Render.debugRenderer.rect(temp.getDestination().x + 2, temp.getDestination().y + 2, 12, 12);
                     }
                 }
             }
@@ -311,49 +346,49 @@ public class PlayState extends DialogStateExtention {
             for (int i = 0; i < Collisions.size(); i++) {
 
                 //The bottom
-                gsm.Render.debugRenderer.setColor(Color.YELLOW);
-                gsm.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
+                GameStateManager.Render.debugRenderer.setColor(Color.YELLOW);
+                GameStateManager.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
 
                 //The top of the Cube
-                gsm.Render.debugRenderer.setColor(Color.RED);
-                gsm.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().getDepth() / 2 + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
+                GameStateManager.Render.debugRenderer.setColor(Color.RED);
+                GameStateManager.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().getDepth() / 2 + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
 
-                gsm.Render.debugRenderer.setColor(Color.ORANGE);
+                GameStateManager.Render.debugRenderer.setColor(Color.ORANGE);
             }
 
             for (int i = 0; i < Entities.size(); i++) {
                 //gsm.Render.debugRenderer.box(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y, Entities.get(i).getHitbox().min.z, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight(), Entities.get(i).getHitbox().getDepth());
 
                 //The bottom
-                gsm.Render.debugRenderer.setColor(Color.GREEN);
-                gsm.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
+                GameStateManager.Render.debugRenderer.setColor(Color.GREEN);
+                GameStateManager.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
 
                 //The top of the Cube
-                gsm.Render.debugRenderer.setColor(Color.BLUE);
-                gsm.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().getDepth() / 2 + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
+                GameStateManager.Render.debugRenderer.setColor(Color.BLUE);
+                GameStateManager.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().getDepth() / 2 + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
 
             }
 
             //The bottom of the PLAYER
-            gsm.Render.debugRenderer.setColor(Color.YELLOW);
-            gsm.Render.debugRenderer.rect(player.getHitbox().min.x, player.getHitbox().min.y + player.getHitbox().min.z / 2, player.getHitbox().getWidth(), player.getHitbox().getHeight());
+            GameStateManager.Render.debugRenderer.setColor(Color.YELLOW);
+            GameStateManager.Render.debugRenderer.rect(player.getHitbox().min.x, player.getHitbox().min.y + player.getHitbox().min.z / 2, player.getHitbox().getWidth(), player.getHitbox().getHeight());
             //The top of the Cube
-            gsm.Render.debugRenderer.setColor(Color.RED);
-            gsm.Render.debugRenderer.rect(player.getHitbox().min.x, player.getHitbox().min.y + player.getHitbox().getDepth() / 2 + player.getHitbox().min.z / 2, player.getHitbox().getWidth(), player.getHitbox().getHeight());
+            GameStateManager.Render.debugRenderer.setColor(Color.RED);
+            GameStateManager.Render.debugRenderer.rect(player.getHitbox().min.x, player.getHitbox().min.y + player.getHitbox().getDepth() / 2 + player.getHitbox().min.z / 2, player.getHitbox().getWidth(), player.getHitbox().getHeight());
 
-            gsm.Render.debugRenderer.setColor(Color.PURPLE);
-            gsm.Render.debugRenderer.box(player.getIntereactBox().min.x, player.getIntereactBox().min.y, player.getIntereactBox().min.z, player.getIntereactBox().getWidth(), player.getIntereactBox().getHeight(), player.getIntereactBox().getDepth());
+            GameStateManager.Render.debugRenderer.setColor(Color.PURPLE);
+            GameStateManager.Render.debugRenderer.box(player.getIntereactBox().min.x, player.getIntereactBox().min.y, player.getIntereactBox().min.z, player.getIntereactBox().getWidth(), player.getIntereactBox().getHeight(), player.getIntereactBox().getDepth());
 
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) { //KeyHit
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
-            gsm.Render.debugRenderer.setColor(Color.WHITE);
-            gsm.Render.debugRenderer.rect(((int) pos.x / 16) * 16 + 1, ((int) pos.y / 16) * 16 + 1, 15, 15);
+            GameStateManager.Render.debugRenderer.setColor(Color.WHITE);
+            GameStateManager.Render.debugRenderer.rect(((int) pos.x / 16) * 16 + 1, ((int) pos.y / 16) * 16 + 1, 15, 15);
         }
 
-        gsm.Render.debugRenderer.end();
+        GameStateManager.Render.debugRenderer.end();
 
     }
 
@@ -362,13 +397,13 @@ public class PlayState extends DialogStateExtention {
         if(MenuOpen) {
             if (!gsm.UI.getState().equals(UI_state.INGAMEUI)) {
                 gsm.UI.setState(UI_state.INGAMEUI);
-                gsm.UI.stage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
+                gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
                 Gdx.input.setInputProcessor(gsm.UI.stage);
             }
         } else {
             if (!gsm.UI.getState().equals(UI_state.InGameHome)) {
                 gsm.UI.setState(UI_state.InGameHome);
-                gsm.UI.stage.setViewport(new FitViewport(gsm.UIWidth, gsm.UIHeight));
+                gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
                 Gdx.input.setInputProcessor(gsm.UI.stage);
             }
         }
@@ -486,9 +521,9 @@ public class PlayState extends DialogStateExtention {
 
         camera = new OrthographicCamera();
         GuiCam = new OrthographicCamera();
-        camera.setToOrtho(false, gsm.WorldWidth, gsm.WorldHeight);
+        camera.setToOrtho(false, GameStateManager.WorldWidth, GameStateManager.WorldHeight);
         camera.position.set(temppos);
-        GuiCam.setToOrtho(false, gsm.UIWidth, gsm.UIHeight);
+        GuiCam.setToOrtho(false, GameStateManager.UIWidth, GameStateManager.UIHeight);
         shaker = new ScreenShakeCameraController(camera);
 
     }

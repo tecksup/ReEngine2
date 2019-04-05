@@ -6,6 +6,7 @@ import com.badlogic.gdx.ai.msg.Telegram;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.gamestates.PlayState;
 import com.thecubecast.reengine.worldobjects.Bullet;
 import com.thecubecast.reengine.worldobjects.ai.Smart;
@@ -72,11 +73,7 @@ public enum PawnStates implements State<Smart> {
                 //Angle from CenterOfEntity to PlayerCenter for gun aiming
                 Vector3 Angle = new Vector3(CenterOfEntity).sub(PlayerCenter);
 
-                if (Angle.x < 0) {
-                    ((Pawn)ParrentAI.WorldObject).Facing = false;
-                } else {
-                    ((Pawn)ParrentAI.WorldObject).Facing = true;
-                }
+                ((Pawn) ParrentAI.WorldObject).Facing = !(Angle.x < 0);
 
                 Vector2 Loc = new Vector2(ParrentAI.WorldObject.getPosition().x, ParrentAI.WorldObject.getPosition().y);
                 Vector2 Dest = new Vector2(ParrentAI.getPath().get(2).x * 16, ParrentAI.getPath().get(2).y * 16);
@@ -138,11 +135,7 @@ public enum PawnStates implements State<Smart> {
             //Angle from CenterOfEntity to PlayerCenter for gun aiming
             Vector3 Angle = new Vector3(CenterOfEntity).sub(PlayerCenter);
 
-            if (Angle.x < 0) {
-                ((Pawn)ParrentAI.WorldObject).Facing = false;
-            } else {
-                ((Pawn)ParrentAI.WorldObject).Facing = true;
-            }
+            ((Pawn) ParrentAI.WorldObject).Facing = !(Angle.x < 0);
 
             Angle.clamp(0, MaxBulletSpeed);
 
@@ -181,10 +174,10 @@ public enum PawnStates implements State<Smart> {
                         ShotsFired = 0;
                     }
                     if (!((Pawn)ParrentAI.WorldObject).Facing) {
-                        ParrentAI.GState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x + 14, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
+                        GameState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x + 14, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
                         AudioM.play("gun");
                     } else {
-                        ParrentAI.GState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x - 4, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
+                        GameState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x - 4, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
                         AudioM.play("gun");
                     }
                     ShotsFired++;
@@ -196,10 +189,10 @@ public enum PawnStates implements State<Smart> {
                         ShotsFired = 0;
                     }
                     if (!((Pawn)ParrentAI.WorldObject).Facing) {
-                        ParrentAI.GState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x + 14, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
+                        GameState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x + 14, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
                         AudioM.play("gun");
                     } else {
-                        ParrentAI.GState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x - 4, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
+                        GameState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x - 4, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
                         AudioM.play("gun");
                     }
                     ShotsFired++;
@@ -218,5 +211,5 @@ public enum PawnStates implements State<Smart> {
         public boolean onMessage(Smart ParrentAI, Telegram telegram) {
             return false;
         }
-    };
+    }
 }

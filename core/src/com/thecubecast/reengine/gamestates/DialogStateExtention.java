@@ -84,7 +84,7 @@ public abstract class DialogStateExtention extends GameState {
 
         dialogBoxTitle = new TkLabel("", skin);
         dialogBoxTitle.setAlignment(Align.left);
-        dialogBoxFace = new Image(gsm.Render.getTexture("face"));
+        dialogBoxFace = new Image(GameStateManager.Render.getTexture("face"));
         dialogBoxFace.setSize(20, 20);
         dialogBoxText = new TypingLabel("{COLOR=GREEN}Hello", skin);
         dialogBoxText.setAlignment(Align.left);

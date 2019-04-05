@@ -16,7 +16,7 @@ import java.util.HashMap;
 public class Draw {
 
     public AssetManager manager = new AssetManager();
-    private TextureAtlas textureAtlas;
+    public TextureAtlas textureAtlas;
 
     private String textureAtlasFilename = "textureAtlas/atlas.atlas";
 
@@ -129,6 +129,15 @@ public class Draw {
             cachedTextureGroups.put(name, textures);
             return textures;
         }
+    }
+
+    public boolean hasTextures(String name) {
+        Array<TextureAtlas.AtlasRegion> textures = cachedTextureGroups.get(name);
+        textures = textureAtlas.findRegions(name);
+        if (textures.size == 0)
+            return false;
+
+        return true;
     }
 
     private String getRegionsNames() {

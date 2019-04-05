@@ -184,11 +184,7 @@ public class Trigger extends WorldObject {
             return;
         }
 
-        if (player.getHitbox().intersects(this.getHitbox())) {
-            TriggerActive = true;
-        } else {
-            TriggerActive = false;
-        }
+        TriggerActive = player.getHitbox().intersects(this.getHitbox());
 
         if (TriggerActive != TriggerRun && !TriggerRun) { //OnEntry
             if (ActivationType == TriggerType.OnEntry) {
@@ -318,7 +314,7 @@ public class Trigger extends WorldObject {
                 }
             } else if (Commands[i][0].equals("")) {
                 try {
-
+                    
                 } catch (Exception e) {
                     System.out.println("Exception " + e);
                 }
