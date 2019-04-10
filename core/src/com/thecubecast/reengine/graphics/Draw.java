@@ -18,15 +18,19 @@ public class Draw {
     public AssetManager manager = new AssetManager();
     public TextureAtlas textureAtlas;
 
-    private String textureAtlasFilename = "textureAtlas/atlas.atlas";
+    public String textureAtlasFilename = "textureAtlas/atlas.atlas";
 
     //Animation Variables
     public Animation<TextureRegion> LoadingAnimation; // Must declare frame type (TextureRegion)
     Texture LoadingSheet;
 
-    public BitmapFont font = new BitmapFont(Gdx.files.internal("Fonts/Pixel.fnt"), new TextureRegion(new Texture(Gdx.files.internal("Fonts/Pixel.png"))));
+    public BitmapFont font;
 
     public void Init() {
+        TextureRegion temptemp =  new TextureRegion(new Texture(Gdx.files.internal("Fonts/Pixel.png")));
+        temptemp.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        font = new BitmapFont(Gdx.files.internal("Fonts/Pixel.fnt"),temptemp);
+
         font.getData().markupEnabled = true;
 
         // load the texture atlas

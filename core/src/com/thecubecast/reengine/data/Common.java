@@ -10,8 +10,12 @@ import java.awt.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Formatter;
 
 public class Common {
+
+    public static StringBuilder stringBuilderObject = new StringBuilder();
+    public static Formatter FormatterObject = new Formatter(stringBuilderObject);
 
     public static void ProperShutdown(GameStateManager gsm) {
         Common.print("Proper Shutdown Commenced!");

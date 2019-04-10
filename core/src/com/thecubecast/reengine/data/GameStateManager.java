@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector3;
 import com.thecubecast.reengine.gamestates.*;
 import com.thecubecast.reengine.graphics.Draw;
 import com.thecubecast.reengine.graphics.scene2d.UIFSM;
@@ -22,6 +23,8 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameStateManager {
     public static boolean Debug = false;
+
+    public Vector3 PlayerSpawn = new Vector3(0,0,0);
 
     public String SaveSelected = "";
 
@@ -318,6 +321,7 @@ public class GameStateManager {
     }
 
     public void setWorldScale(int Scale) {
+        int DeltaScale = this.Scale - Scale;
         this.Scale = Scale;
 
         WorldWidth = Width / (Scale);
@@ -336,6 +340,20 @@ public class GameStateManager {
         if (gameState != null) {
             gameState.reSize(null, Height, Width);
         }
+
+
+        /*if (WorldFBO.getHeight() % 2 != 0) {
+            System.out.println("BET ITS BROKEN");
+            if (!Debug) {
+                if (DeltaScale > 0) {
+                    if (Scale - 1 > 0)
+                        setWorldScale(Scale - 1);
+                } else {
+                    setWorldScale(Scale + 1);
+                }
+            }
+        }*/
+
     }
 
     public void dispose() {

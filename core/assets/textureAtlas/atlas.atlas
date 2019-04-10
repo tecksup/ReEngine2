@@ -1,874 +1,916 @@
 
 atlas.png
-size: 1024,256
+size: 1024,128
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
+000
+  rotate: false
+  xy: 215, 6
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+001
+  rotate: false
+  xy: 871, 111
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+001
+  rotate: false
+  xy: 686, 81
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+001
+  rotate: false
+  xy: 889, 111
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+001
+  rotate: false
+  xy: 907, 111
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+002
+  rotate: false
+  xy: 853, 111
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+003
+  rotate: false
+  xy: 668, 81
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
 Beans
   rotate: false
-  xy: 8, 8
+  xy: 925, 111
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Beans
   rotate: false
-  xy: 32, 8
+  xy: 943, 111
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Beans
   rotate: false
-  xy: 56, 8
+  xy: 961, 111
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Beans
   rotate: false
-  xy: 80, 8
+  xy: 979, 111
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Beans
   rotate: false
-  xy: 104, 8
+  xy: 997, 111
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Beans
   rotate: false
-  xy: 128, 8
+  xy: 247, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Corn
   rotate: false
-  xy: 152, 8
+  xy: 247, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Corn
   rotate: false
-  xy: 176, 8
+  xy: 265, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Corn
   rotate: false
-  xy: 200, 8
+  xy: 265, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Corn
   rotate: false
-  xy: 224, 8
+  xy: 283, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Corn
   rotate: false
-  xy: 248, 8
+  xy: 283, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Corn
   rotate: false
-  xy: 272, 8
+  xy: 301, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Eggplant
   rotate: false
-  xy: 296, 8
+  xy: 301, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Eggplant
   rotate: false
-  xy: 320, 8
+  xy: 319, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Eggplant
   rotate: false
-  xy: 344, 8
+  xy: 319, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Eggplant
   rotate: false
-  xy: 368, 8
+  xy: 337, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Eggplant
   rotate: false
-  xy: 392, 8
+  xy: 337, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Eggplant
   rotate: false
-  xy: 416, 8
+  xy: 355, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Gunter
   rotate: false
-  xy: 789, 113
+  xy: 832, 108
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
   index: -1
-Orange
+Hoe
   rotate: false
-  xy: 440, 8
+  xy: 355, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Orange
   rotate: false
-  xy: 1000, 137
+  xy: 373, 58
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+Orange
+  rotate: false
+  xy: 373, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Orange
   rotate: false
-  xy: 1000, 113
+  xy: 391, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Orange
   rotate: false
-  xy: 1000, 89
+  xy: 391, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Orange
   rotate: false
-  xy: 1000, 65
+  xy: 409, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Orange
   rotate: false
-  xy: 754, 58
+  xy: 409, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Pinnaple
   rotate: false
-  xy: 754, 34
+  xy: 427, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Pinnaple
   rotate: false
-  xy: 782, 87
+  xy: 427, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Pinnaple
   rotate: false
-  xy: 806, 85
+  xy: 445, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Pinnaple
   rotate: false
-  xy: 830, 85
+  xy: 445, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Pinnaple
   rotate: false
-  xy: 854, 85
+  xy: 463, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Pinnaple
   rotate: false
-  xy: 878, 85
+  xy: 463, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Potatoe
   rotate: false
-  xy: 902, 85
+  xy: 481, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Potatoe
   rotate: false
-  xy: 926, 85
+  xy: 481, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Potatoe
   rotate: false
-  xy: 950, 85
+  xy: 499, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Potatoe
   rotate: false
-  xy: 726, 23
+  xy: 499, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Potatoe
   rotate: false
-  xy: 782, 63
+  xy: 517, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Potatoe
   rotate: false
-  xy: 806, 61
+  xy: 517, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Red_Marker
   rotate: false
-  xy: 830, 61
+  xy: 535, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 Shadow
   rotate: false
-  xy: 750, 18
+  xy: 625, 35
   size: 16, 8
   orig: 16, 8
   offset: 0, 0
   index: -1
 Strawberry
   rotate: false
-  xy: 854, 61
+  xy: 535, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Strawberry
   rotate: false
-  xy: 878, 61
+  xy: 553, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Strawberry
   rotate: false
-  xy: 902, 61
+  xy: 553, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Strawberry
   rotate: false
-  xy: 926, 61
+  xy: 247, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Strawberry
   rotate: false
-  xy: 950, 61
+  xy: 265, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Strawberry
   rotate: false
-  xy: 974, 59
+  xy: 283, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Tomato
   rotate: false
-  xy: 778, 39
+  xy: 301, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Tomato
   rotate: false
-  xy: 802, 37
+  xy: 319, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Tomato
   rotate: false
-  xy: 826, 37
+  xy: 337, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Tomato
   rotate: false
-  xy: 850, 37
+  xy: 355, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Tomato
   rotate: false
-  xy: 874, 37
+  xy: 373, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Tomato
   rotate: false
-  xy: 898, 37
+  xy: 391, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Turnip
   rotate: false
-  xy: 922, 37
+  xy: 409, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Turnip
   rotate: false
-  xy: 946, 37
+  xy: 427, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Turnip
   rotate: false
-  xy: 970, 35
+  xy: 445, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Turnip
   rotate: false
-  xy: 778, 15
+  xy: 463, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Turnip
   rotate: false
-  xy: 802, 13
+  xy: 481, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Turnip
   rotate: false
-  xy: 826, 13
+  xy: 499, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 Wheat
   rotate: false
-  xy: 850, 13
+  xy: 517, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Wheat
   rotate: false
-  xy: 874, 13
+  xy: 535, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Wheat
   rotate: false
-  xy: 898, 13
+  xy: 553, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Wheat
   rotate: false
-  xy: 922, 13
+  xy: 571, 58
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Wheat
   rotate: false
-  xy: 946, 13
+  xy: 571, 40
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Wheat
   rotate: false
-  xy: 970, 11
+  xy: 571, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
-World
-  rotate: false
-  xy: 8, 32
-  size: 432, 216
-  orig: 432, 216
-  offset: 0, 0
-  index: -1
 Yellow_Marker
   rotate: false
-  xy: 597, 9
+  xy: 589, 59
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 blood1
   rotate: false
-  xy: 448, 33
+  xy: 625, 28
   size: 6, 5
   orig: 6, 5
   offset: 0, 0
   index: -1
 blood2
   rotate: false
-  xy: 505, 8
+  xy: 222, 1
   size: 4, 3
   orig: 4, 3
   offset: 0, 0
   index: -1
 blood3
   rotate: false
-  xy: 464, 8
+  xy: 643, 73
   size: 2, 2
   orig: 2, 2
   offset: 0, 0
   index: -1
 bloodSplatter1
   rotate: false
-  xy: 597, 33
+  xy: 233, 17
   size: 10, 5
   orig: 10, 5
   offset: 0, 0
   index: -1
 bloodSplatter2
   rotate: false
-  xy: 1008, 181
+  xy: 1015, 119
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 bloodSplatter3
   rotate: false
-  xy: 717, 11
+  xy: 734, 100
   size: 6, 4
   orig: 6, 4
   offset: 0, 0
   index: -1
 bloodSplatter4
   rotate: false
-  xy: 492, 8
+  xy: 215, 1
   size: 5, 3
   orig: 5, 3
   offset: 0, 0
   index: -1
 brute
   rotate: false
-  xy: 648, 104
+  xy: 527, 99
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 0
 brute
   rotate: false
-  xy: 616, 68
+  xy: 557, 99
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 1
 brute
   rotate: false
-  xy: 972, 161
+  xy: 587, 99
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 2
 brute
   rotate: false
-  xy: 684, 104
+  xy: 617, 99
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: 3
 brute_idle
   rotate: false
-  xy: 652, 68
+  xy: 647, 99
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 brute_pistol
   rotate: false
-  xy: 720, 104
+  xy: 677, 99
   size: 28, 28
   orig: 28, 28
   offset: 0, 0
   index: -1
 bullet
   rotate: false
-  xy: 1008, 165
+  xy: 1015, 109
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
   index: -1
 deadTree
   rotate: false
-  xy: 688, 69
+  xy: 707, 100
   size: 25, 27
   orig: 25, 27
   offset: 0, 0
   index: -1
 explosion
   rotate: false
-  xy: 448, 46
+  xy: 1, 77
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 0
 explosion
   rotate: false
-  xy: 648, 198
+  xy: 1, 25
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 1
 explosion
   rotate: false
-  xy: 504, 46
+  xy: 51, 77
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 2
 explosion
   rotate: false
-  xy: 648, 140
+  xy: 51, 25
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 3
 explosion
   rotate: false
-  xy: 704, 198
+  xy: 101, 77
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 4
 explosion
   rotate: false
-  xy: 560, 46
+  xy: 101, 25
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 5
 explosion
   rotate: false
-  xy: 704, 140
+  xy: 151, 77
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 6
 explosion
   rotate: false
-  xy: 760, 198
+  xy: 151, 25
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 7
 explosion
   rotate: false
-  xy: 760, 140
+  xy: 201, 77
   size: 48, 50
   orig: 48, 50
   offset: 0, 0
   index: 8
 face
   rotate: false
-  xy: 492, 19
+  xy: 647, 78
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
   index: -1
 melon
   rotate: false
-  xy: 621, 16
+  xy: 589, 41
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 melon
   rotate: false
-  xy: 645, 16
+  xy: 607, 59
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 melon
   rotate: false
-  xy: 669, 16
+  xy: 589, 23
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 melon
   rotate: false
-  xy: 693, 16
+  xy: 607, 41
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 melon
   rotate: false
-  xy: 998, 41
+  xy: 625, 59
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 melon
   rotate: false
-  xy: 994, 17
+  xy: 607, 23
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 5
 pawn
   rotate: false
-  xy: 616, 40
+  xy: 581, 77
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 0
 pawn
   rotate: false
-  xy: 644, 40
+  xy: 788, 107
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 1
 pawn
   rotate: false
-  xy: 672, 40
+  xy: 603, 77
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 2
 pawn
   rotate: false
-  xy: 726, 47
+  xy: 810, 107
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: 3
 pawn_idle
   rotate: false
-  xy: 464, 18
+  xy: 625, 77
   size: 20, 20
   orig: 20, 20
   offset: 0, 0
   index: -1
 pawn_pistol
   rotate: false
-  xy: 972, 141
+  xy: 625, 45
   size: 15, 12
   orig: 15, 12
   offset: 0, 0
   index: -1
 player
   rotate: false
-  xy: 948, 109
+  xy: 55, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 0
 player
   rotate: false
-  xy: 700, 40
+  xy: 75, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 1
 player
   rotate: false
-  xy: 974, 112
+  xy: 95, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 2
 player
   rotate: false
-  xy: 519, 17
+  xy: 115, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: 3
 player_1 copy
   rotate: false
-  xy: 545, 17
+  xy: 135, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_2_dis
   rotate: false
-  xy: 571, 17
+  xy: 155, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_4 copy
   rotate: false
-  xy: 974, 83
+  xy: 175, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_idle
   rotate: false
-  xy: 756, 82
+  xy: 195, 1
   size: 18, 21
   orig: 18, 21
   offset: 0, 0
   index: -1
 player_roll
   rotate: false
-  xy: 756, 111
+  xy: 1, 1
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 0
 player_roll
   rotate: false
-  xy: 721, 75
+  xy: 527, 76
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 1
 player_roll
   rotate: false
-  xy: 816, 109
+  xy: 734, 106
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 2
 player_roll
   rotate: false
-  xy: 849, 109
+  xy: 28, 1
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 3
 player_roll
   rotate: false
-  xy: 882, 109
+  xy: 554, 76
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 4
 player_roll
   rotate: false
-  xy: 915, 109
+  xy: 761, 106
   size: 25, 21
   orig: 25, 21
   offset: 0, 0
   index: 5
 sword
   rotate: false
-  xy: 816, 197
+  xy: 201, 24
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 0
 sword
   rotate: false
-  xy: 868, 197
+  xy: 251, 76
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 1
 sword
   rotate: false
-  xy: 920, 197
+  xy: 297, 76
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 2
 sword
   rotate: false
-  xy: 972, 197
+  xy: 343, 76
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 3
 sword
   rotate: false
-  xy: 816, 138
+  xy: 389, 76
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 4
 sword
   rotate: false
-  xy: 868, 138
+  xy: 435, 76
   size: 44, 51
   orig: 44, 51
   offset: 0, 0
   index: 5
 sword_4 copy
   rotate: false
-  xy: 920, 138
+  xy: 481, 76
   size: 44, 51
   orig: 44, 51
-  offset: 0, 0
-  index: -1
-tileset
-  rotate: false
-  xy: 448, 104
-  size: 192, 144
-  orig: 192, 144
   offset: 0, 0
   index: -1

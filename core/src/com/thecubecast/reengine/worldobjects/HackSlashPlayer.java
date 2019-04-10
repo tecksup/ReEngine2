@@ -138,7 +138,8 @@ public class HackSlashPlayer extends WorldObject {
                 Roll.resume();
                 batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
                 //running animation
-                TextureRegion frame = Roll.getFrame(Gdx.graphics.getDeltaTime());
+                Roll.update(Gdx.graphics.getDeltaTime());
+                TextureRegion frame = Roll.getFrame();
                 // batch.draw(frame, Facing ? (int)getPosition().x + (frame.getRegionWidth()) : (int)getPosition().x, (int)getPosition().y + (int)getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
 
                 if (getVelocity().x < 0)
@@ -153,13 +154,14 @@ public class HackSlashPlayer extends WorldObject {
             } else {
                 if (AttackTime > 0.1f) {
                     Sword.resume();
-                    TextureRegion frameS = Sword.getFrame(Gdx.graphics.getDeltaTime());
+                    Sword.update(Gdx.graphics.getDeltaTime());
+                    TextureRegion frameS = Sword.getFrame();
                     batch.draw(frameS, Facing ? (int) getPosition().x - 33 + (frameS.getRegionWidth()) : (int) getPosition().x + 9, (int) getPosition().y - 22 + (int) getPosition().z / 2, 0f, 0f, (float) frameS.getRegionWidth(), (float) frameS.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
 
                 } else {
                     Sword.pause();
                     Sword.setFrame(0);
-                    TextureRegion frameS = Sword.getFrame(Gdx.graphics.getDeltaTime());
+                    TextureRegion frameS = Sword.getFrame();
 
                     //Degrees
 
@@ -170,7 +172,8 @@ public class HackSlashPlayer extends WorldObject {
                 if (Math.abs(this.getVelocity().y) >= 0.5f || Math.abs(this.getVelocity().x) >= 0.5f) {
                     batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
                     //running animation
-                    TextureRegion frame = Walking.getFrame(Gdx.graphics.getDeltaTime());
+                    Walking.update(Gdx.graphics.getDeltaTime());
+                    TextureRegion frame = Walking.getFrame();
                     batch.draw(frame, Facing ? (int) getPosition().x + (frame.getRegionWidth()) : (int) getPosition().x, (int) getPosition().y + (int) getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
                     if (JustPlayed > 0.25f) {
                         //if (Soundthing)
@@ -183,7 +186,8 @@ public class HackSlashPlayer extends WorldObject {
                 } else if (this.getVelocity().y < 0.5f || this.getVelocity().x < 0.5f) {
                     batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
                     //Idle animation
-                    TextureRegion frame = Idle.getFrame(Gdx.graphics.getDeltaTime());
+                    Idle.update(Gdx.graphics.getDeltaTime());
+                    TextureRegion frame = Idle.getFrame();
                     batch.draw(frame, Facing ? (int) getPosition().x + (frame.getRegionWidth()) : (int) getPosition().x, (int) getPosition().y + (int) getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
                 }
 

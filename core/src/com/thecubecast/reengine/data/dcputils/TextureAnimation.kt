@@ -56,7 +56,11 @@ open class TextureAnimation<T>(val frames: Array<T>, frameDuration: Float = 1f) 
         this.totalAnimationDuration = frameDuration * frames.size
     }
 
-    fun getFrame(delta: Float): T {
+    fun getFrame(): T {
+        return frameFromElapsedTime
+    }
+
+    fun update(delta: Float) {
         if (!isPaused) {
             when (type) {
                 Type.NORMAL -> {
@@ -104,8 +108,6 @@ open class TextureAnimation<T>(val frames: Array<T>, frameDuration: Float = 1f) 
                 }
             }
         }
-
-        return frameFromElapsedTime
     }
 
     /** Whether the animation finished playing forward

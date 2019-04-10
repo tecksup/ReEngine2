@@ -58,12 +58,8 @@ public class PlayState extends DialogStateExtention {
 
     public void init() {
 
-        WorldMap = new TkMap("Saves/Gilded.cube");
+        WorldMap = new TkMap("Saves/Untitled.cube");
         MapGraph = new FlatTiledGraph(WorldMap);
-
-        player = new HackSlashPlayer(10 * 16, 3 * 16, gsm);
-
-        Entities.add(player);
 
         ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects(MapGraph, gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
@@ -78,6 +74,10 @@ public class PlayState extends DialogStateExtention {
                 //System.out.println(WorldMap.getObjects().get(i).getPosition());
             }
         }
+
+        player = new HackSlashPlayer((int) gsm.PlayerSpawn.x, (int) gsm.PlayerSpawn.y, gsm);
+
+        Entities.add(player);
 
         for (int x = 0; x < WorldMap.getWidth(); x++) {
             for (int y = 0; y < WorldMap.getHeight(); y++) {

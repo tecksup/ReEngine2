@@ -43,7 +43,7 @@ public class TextWorldObject extends Interactable {
     @Override
     public void draw(SpriteBatch batch, float Time) {
         Font.setColor(color);
-        Font.draw(batch, Description, this.getPosition().x, this.getPosition().y);
+        Font.draw(batch, Description, (int) this.getPosition().x, (int) this.getPosition().y);
         Font.setColor(Color.WHITE);
     }
 

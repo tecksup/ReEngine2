@@ -72,21 +72,20 @@ public class Pawn extends PathfindingWorldObject {
     @Override
     public void draw(SpriteBatch batch, float Time) {
 
+        Sword.update(Gdx.graphics.getDeltaTime());
+
         Sword.resume();
-        TextureRegion frameS = Sword.getFrame(Gdx.graphics.getDeltaTime());
-        batch.draw(frameS, Facing ? (int)getPosition().x - 4 + (frameS.getRegionWidth()) : (int)getPosition().x + 10, (int)getPosition().y + (int)getPosition().z / 2, 0f, 0f, (float) frameS.getRegionWidth(), (float) frameS.getRegionHeight(), Facing ? -1f : 1f, 1f, degrees);
+        batch.draw(Sword.getFrame(), Facing ? (int)getPosition().x - 4 + (Sword.getFrame().getRegionWidth()) : (int)getPosition().x + 10, (int)getPosition().y + (int)getPosition().z / 2, 0f, 0f, (float) Sword.getFrame().getRegionWidth(), (float) Sword.getFrame().getRegionHeight(), Facing ? -1f : 1f, 1f, degrees);
 
 
         if(Math.abs(this.getVelocity().y) >= 0.5f || Math.abs(this.getVelocity().x) >= 0.5f) {
             batch.draw(Shadow, Facing ? (int)getPosition().x + 3: (int)getPosition().x + 3, (int)getPosition().y - 2 + (int)getZFloor() / 2);
             //running animation
-            TextureRegion frame = Walking.getFrame(Gdx.graphics.getDeltaTime());
-            batch.draw(frame, Facing ? (int)getPosition().x + 2 + (frame.getRegionWidth()) : (int)getPosition().x, (int)getPosition().y + (int)getPosition().z / 2, Facing ? -(frame.getRegionHeight()) : (frame.getRegionHeight()), (frame.getRegionHeight()));
+            batch.draw(Walking.getFrame(), Facing ? (int)getPosition().x + 2 + (Walking.getFrame().getRegionWidth()) : (int)getPosition().x, (int)getPosition().y + (int)getPosition().z / 2, Facing ? -(Walking.getFrame().getRegionHeight()) : (Walking.getFrame().getRegionHeight()), (Walking.getFrame().getRegionHeight()));
         } else if(this.getVelocity().y < 0.5f || this.getVelocity().x < 0.5f) {
             batch.draw(Shadow, Facing ? (int)getPosition().x +3 : (int)getPosition().x + 3, (int)getPosition().y - 2 + (int)getZFloor() / 2);
             //Idle animation
-            TextureRegion frame = Idle.getFrame(Gdx.graphics.getDeltaTime());
-            batch.draw(frame, Facing ? (int)getPosition().x + 2 + (frame.getRegionWidth()) : (int)getPosition().x, (int)getPosition().y + (int)getPosition().z / 2, Facing ? -(frame.getRegionHeight()) : (frame.getRegionHeight()), (frame.getRegionHeight()));
+            batch.draw(Idle.getFrame(), Facing ? (int)getPosition().x + 2 + (Idle.getFrame().getRegionWidth()) : (int)getPosition().x, (int)getPosition().y + (int)getPosition().z / 2, Facing ? -(Idle.getFrame().getRegionHeight()) : (Idle.getFrame().getRegionHeight()), (Idle.getFrame().getRegionHeight()));
         }
 
     }

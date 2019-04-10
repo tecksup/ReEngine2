@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.google.gson.*;
@@ -21,7 +22,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.text.DateFormat;
 import java.util.*;
 
 public class TkMap {
@@ -76,10 +76,10 @@ public class TkMap {
         TileSize = MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSize").getAsJsonObject().get("Width").getAsInt();
 
         Tileset = new TkTileset(MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("Name").getAsString(),
-                MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("FilePath").getAsString(),
                 MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSize").getAsJsonObject().get("Width").getAsInt(),
                 MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSize").getAsJsonObject().get("Height").getAsInt(),
-                MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSep").getAsInt()
+                MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSep").getAsInt(),
+                MapObject.get("Tilesets").getAsJsonArray().get(0).getAsJsonObject().get("TileSpeed").getAsFloat()
         );
 
         TilesetWidth = Tileset.TilesetWidth;
@@ -138,7 +138,7 @@ public class TkMap {
 
     }
 
-    public TkMap(String MapLocation, int Width, int Height, String TilesetLoc, int TileSize, int TilePadding) {
+    public TkMap(String MapLocation, int Width, int Height, String TilesetLoc, int TileSize, int TilePadding, float TileSpeed) {
 
         Created = Common.GetNow();
         LastEdit = Common.GetNow();
@@ -149,7 +149,7 @@ public class TkMap {
         this.Height = Height;
         this.TileSize = TileSize;
 
-        Tileset = new TkTileset("World", TilesetLoc, TileSize, TileSize, TilePadding);
+        Tileset = new TkTileset("World", TileSize, TileSize, TilePadding, TileSpeed);
 
         Ground = new int[Width][Height];
         Foreground = new int[Width][Height];
@@ -323,13 +323,6 @@ public class TkMap {
 
     public void Draw(OrthographicCamera cam, SpriteBatch batch) {
 
-        Rectangle drawView;
-        if (cam != null) {
-            drawView = new Rectangle(cam.position.x - cam.viewportWidth, cam.position.y - cam.viewportHeight, cam.viewportWidth + cam.viewportWidth, cam.viewportHeight + cam.viewportHeight);
-        } else {
-            drawView = new Rectangle(0, 0, Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 4);
-        }
-
         //Draw the Ground
         DrawGround(cam, batch, 1);
         //Draw the Foreground
@@ -351,7 +344,7 @@ public class TkMap {
                 if (Ground[x][y] != -1) {
                     if (drawView.overlaps(new Rectangle(x * 16, y * 16, 16, 16))) {
                         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, Opp);
-                        batch.draw(Tileset.Tiles[Ground[x][y]], x * 16, y * 16);
+                        batch.draw(Tileset.getTile(Ground[x][y]).getFrame(), x * 16, y * 16);
                         batch.setColor(Color.WHITE);
                     }
                 }
@@ -374,7 +367,7 @@ public class TkMap {
                 if (Foreground[x][y] != -1) {
                     if (drawView.overlaps(new Rectangle(x * 16, y * 16, 16, 16))) {
                         batch.setColor(batch.getColor().r, batch.getColor().g, batch.getColor().b, Opp);
-                        batch.draw(Tileset.Tiles[Foreground[x][y]], x * 16, y * 16);
+                        batch.draw(Tileset.getTile(Foreground[x][y]).getFrame(), x * 16, y * 16);
                         batch.setColor(Color.WHITE);
                     }
                 }
@@ -465,6 +458,10 @@ public class TkMap {
                 temp.add(new FarmTile(X,Y,Z, Description));
             } else {
 
+                if (Name.equals("Player")) {
+                    gsm.PlayerSpawn = new Vector3(X,Y,Z);
+                }
+
                 Interactable tempObj = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);
                 tempObj.setTexLocation(tempImgLoc);
                 tempObj.Name = Name;
@@ -496,12 +493,12 @@ public class TkMap {
         JsonArray Tilesets = new JsonArray();
         JsonObject TilesetObject = new JsonObject();
         TilesetObject.addProperty("Name", Tileset.Name);
-        TilesetObject.addProperty("FilePath", Tileset.FilePath);
         JsonObject Size = new JsonObject();
         Size.addProperty("Width", Tileset.TileSizeW);
         Size.addProperty("Height", Tileset.TileSizeH);
         TilesetObject.add("TileSize", Size);
         TilesetObject.addProperty("TileSep", Tileset.TileSep);
+        TilesetObject.addProperty("TileSpeed", Tileset.TileSpeed);
         Tilesets.add(TilesetObject);
         Output.add("Tilesets", Tilesets);
 

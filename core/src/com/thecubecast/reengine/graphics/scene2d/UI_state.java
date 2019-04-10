@@ -830,6 +830,7 @@ public enum UI_state implements State<UIFSM> {
             TextArea Tileset = new TextArea("tileset", entity.skin);
             TextArea TileSize = new TextArea("16", entity.skin);
             TextArea TilePadding = new TextArea("2", entity.skin);
+            TextArea TileSpeed = new TextArea("1", entity.skin);
 
             SavesList.add(new Label("Save name", entity.skin)).pad(2).padTop(10);
             SavesList.add(FileName).pad(2).padTop(10).row();
@@ -843,6 +844,8 @@ public enum UI_state implements State<UIFSM> {
             SavesList.add(TileSize).pad(2).row();
             SavesList.add(new Label("Tile padding", entity.skin)).pad(2).padTop(10);
             SavesList.add(TilePadding).pad(2).row();
+            SavesList.add(new Label("Animation Speed", entity.skin)).pad(2).padTop(10);
+            SavesList.add(TileSpeed).pad(2).row();
 
             table.add(RecipeScroll).row();
             table.pack();
@@ -862,7 +865,7 @@ public enum UI_state implements State<UIFSM> {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     System.out.println("Open UI to create a new map");
-                    TkMap temp = new TkMap("Saves/" + FileName.getText() + ".cube", Integer.parseInt(Width.getText()), Integer.parseInt(Height.getText()), Tileset.getText(), Integer.parseInt(TileSize.getText()), Integer.parseInt(TilePadding.getText()));
+                    TkMap temp = new TkMap("Saves/" + FileName.getText() + ".cube", Integer.parseInt(Width.getText()), Integer.parseInt(Height.getText()), Tileset.getText(), Integer.parseInt(TileSize.getText()), Integer.parseInt(TilePadding.getText()), Float.parseFloat(TileSpeed.getText()));
 
                     temp.SaveMap(null);
                     entity.gsm.SaveSelected = FileName.getText();

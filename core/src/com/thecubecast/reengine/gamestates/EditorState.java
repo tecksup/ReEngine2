@@ -4,7 +4,6 @@ package com.thecubecast.reengine.gamestates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
@@ -22,8 +21,8 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -35,7 +34,6 @@ import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.graphics.scene2d.TkImageButton;
 import com.thecubecast.reengine.graphics.scene2d.TkTextButton;
-import com.thecubecast.reengine.graphics.scene2d.UIFSM;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
 import com.thecubecast.reengine.worldobjects.*;
@@ -235,9 +233,8 @@ public class EditorState extends GameState {
         g.setShader(null);
         g.begin();
 
-        //MapRenderer.renderLayer(g, Map, "Ground");
-        //MapRenderer.renderLayer(g, Map, "Foreground");
-        //tempshitgiggle.Draw(camera, g);
+        tempshitgiggle.Tileset.Update(Gdx.graphics.getDeltaTime());
+
         if (selected.equals(selection.Forground)) {
             tempshitgiggle.DrawGround(camera, g, 0.8f);
             tempshitgiggle.DrawForground(camera, g, 1f);
@@ -293,9 +290,11 @@ public class EditorState extends GameState {
         Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(pos312);
         if (selected.equals(selection.Ground) && !Erasing && !OverHud) {
-            g.draw(tempshitgiggle.Tileset.getTiles()[TileIDSelected], ((int) pos312.x / 16) * 16, ((int) pos312.y / 16) * 16);
+            TextureRegion frame = tempshitgiggle.Tileset.getTile(TileIDSelected).getFrame();
+            g.draw(frame, ((int) pos312.x / 16) * 16, ((int) pos312.y / 16) * 16);
         } else if (selected.equals(selection.Forground) && !Erasing && !OverHud) {
-            g.draw(tempshitgiggle.Tileset.getTiles()[TileIDSelected], ((int) pos312.x / 16) * 16, ((int) pos312.y / 16) * 16);
+            TextureRegion frame = tempshitgiggle.Tileset.getTile(TileIDSelected).getFrame();
+            g.draw(frame, ((int) pos312.x / 16) * 16, ((int) pos312.y / 16) * 16);
         }
 
         g.end();
@@ -309,25 +308,12 @@ public class EditorState extends GameState {
             Render.debugRenderer.setColor(Color.WHITE);
             Render.debugRenderer.rect(CameraFocusPointEdit.getPosition().x, CameraFocusPointEdit.getPosition().y, 2, 2);
 
-            for (int i = 0; i < Collisions.size(); i++) {
-
-                //The bottom
-                Render.debugRenderer.setColor(Color.YELLOW);
-                Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
-
-                //The top of the Cube
-                Render.debugRenderer.setColor(Color.RED);
-                Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().getDepth() / 2 + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
-
-                Render.debugRenderer.setColor(Color.ORANGE);
-            }
-
         }
 
         for (int i = 0; i < Entities.size(); i++) {
             //gsm.Render.debugRenderer.box(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y, Entities.get(i).getHitbox().min.z, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight(), Entities.get(i).getHitbox().getDepth());
 
-            if (GameStateManager.Debug || Entities.get(i).isDebugView()) {
+            if (Entities.get(i).isDebugView()) {
                 //The bottom
                 Render.debugRenderer.setColor(Color.GREEN);
                 Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
@@ -388,6 +374,20 @@ public class EditorState extends GameState {
     }
 
     private void handleInput() {
+
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+/*
+            TexturePacker.process("../../images/atlas", "textureAtlas", "atlas");
+
+            //Render.manager.load(Render.textureAtlasFilename, TextureAtlas.class);
+
+            Render.textureAtlas = new TextureAtlas(Render.textureAtlasFilename);
+
+            GameStateManager.Render.retrieveTextureAtlas();
+
+            tempshitgiggle.Tileset.RefreshAtlas();
+*/
+        }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.E) && UIStage.getKeyboardFocus() == null) {
             Erasing = !Erasing;
@@ -495,7 +495,7 @@ public class EditorState extends GameState {
                             float temptempy = pos312.y - (Prefab.getSize().y / 2);
                             Prefab.setPosition(((int)(temptempx/16))*16, ((int)(temptempy/16))*16, 0);
                         } else {
-                            Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
+                            Prefab.setPosition((int)pos312.x - (Prefab.getSize().x / 2), (int)pos312.y - (Prefab.getSize().y / 2), 0);
                         }
                         Entities.add(Prefab.CreateNew());
                     }
@@ -987,9 +987,10 @@ public class EditorState extends GameState {
         });
 
         //Ground stuff
-        for (int i = 1; i < tempshitgiggle.Tileset.getTiles().length + 1; i++) {
+        for (int i = 1; i < tempshitgiggle.Tileset.getTilesSize() + 1; i++) {
             int tempi = i - 1;
-            ImageButton tempimage = new ImageButton(new TextureRegionDrawable(tempshitgiggle.Tileset.getTiles()[i - 1])) {
+            TextureRegion frame = tempshitgiggle.Tileset.getTile(i - 1).getFrame();
+            ImageButton tempimage = new ImageButton(new TextureRegionDrawable(frame)) {
                 int MYID = tempi;
 
                 @Override
@@ -1018,10 +1019,11 @@ public class EditorState extends GameState {
         }
 
         //Foreground stuff
-        for (int i = 1; i < tempshitgiggle.Tileset.getTiles().length + 1; i++) {
+        for (int i = 1; i < tempshitgiggle.Tileset.getTilesSize() + 1; i++) {
 
             int tempi = i - 1;
-            ImageButton tempimage = new ImageButton(new TextureRegionDrawable(tempshitgiggle.Tileset.getTiles()[i - 1])) {
+            TextureRegion frame = tempshitgiggle.Tileset.getTile(i - 1).getFrame();
+            ImageButton tempimage = new ImageButton(new TextureRegionDrawable(frame)) {
                 int MYID = tempi;
 
                 @Override

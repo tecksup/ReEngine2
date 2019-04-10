@@ -6,12 +6,12 @@
   "Tilesets": [
     {
       "Name": "World",
-      "FilePath": "World",
       "TileSize": {
         "Width": 16,
         "Height": 16
       },
-      "TileSep": 2
+      "TileSep": 2,
+      "TileSpeed": 3
     }
   ],
   "Ground": {

@@ -2,6 +2,7 @@ package com.thecubecast.reengine.worldobjects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
@@ -68,8 +69,12 @@ public class FarmTile extends Interactable {
                 int tempPlayer = (int) (tempObj.getPosition().x + tempObj.getSize().x / 2);
                 int tempThis = (int) (this.getPosition().x + this.getSize().x / 2);
 
+                //int previousStrength = RotateStrength;
+
                 RotateStrength = (int) Math.abs(tempObj.getPosition().dst(this.getPosition()));
                 RotateStrength = (int) StuffUtilsKt.mapToRange(RotateStrength, 0, 15, 15, 0);
+
+                //Interpolation.bounce.apply(RotateStrength);
                 //System.out.println(RotateStrength);
 
                 if (tempThis - tempPlayer < 0) {
