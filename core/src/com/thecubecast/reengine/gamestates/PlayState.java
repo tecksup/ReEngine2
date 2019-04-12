@@ -111,39 +111,6 @@ public class PlayState extends DialogStateExtention {
 
         //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
 
-        Entities.add(new FarmTile(2*16, 2*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(3*16, 2*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(4*16, 2*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(5*16, 2*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(6*16, 2*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(2*16, 3*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(3*16, 3*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(4*16, 3*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(5*16, 3*16, 0, "Eggplant"));
-        Entities.add(new FarmTile(6*16, 3*16, 0, "Eggplant"));
-
-        Entities.add(new FarmTile(2*16, 4*16, 0, "Tomato"));
-        Entities.add(new FarmTile(3*16, 4*16, 0, "Tomato"));
-        Entities.add(new FarmTile(4*16, 4*16, 0, "Tomato"));
-        Entities.add(new FarmTile(5*16, 4*16, 0, "Tomato"));
-        Entities.add(new FarmTile(6*16, 4*16, 0, "Tomato"));
-        Entities.add(new FarmTile(2*16, 5*16, 0, "Tomato"));
-        Entities.add(new FarmTile(3*16, 5*16, 0, "Tomato"));
-        Entities.add(new FarmTile(4*16, 5*16, 0, "Tomato"));
-        Entities.add(new FarmTile(5*16, 5*16, 0, "Tomato"));
-        Entities.add(new FarmTile(6*16, 5*16, 0, "Tomato"));
-
-        Entities.add(new FarmTile(2*16, 6*16, 0, "Wheat"));
-        Entities.add(new FarmTile(3*16, 6*16, 0, "Wheat"));
-        Entities.add(new FarmTile(4*16, 6*16, 0, "Wheat"));
-        Entities.add(new FarmTile(5*16, 6*16, 0, "Wheat"));
-        Entities.add(new FarmTile(6*16, 6*16, 0, "Wheat"));
-        Entities.add(new FarmTile(2*16, 7*16, 0, "Wheat"));
-        Entities.add(new FarmTile(3*16, 7*16, 0, "Wheat"));
-        Entities.add(new FarmTile(4*16, 7*16, 0, "Wheat"));
-        Entities.add(new FarmTile(5*16, 7*16, 0, "Wheat"));
-        Entities.add(new FarmTile(6*16, 7*16, 0, "Wheat"));
-
     }
 
     public void update() {

@@ -312,9 +312,11 @@ public class Trigger extends WorldObject {
                 } catch (Exception e) {
                     System.out.println("Exception " + e);
                 }
-            } else if (Commands[i][0].equals("")) {
+            } else if (Commands[i][0].equals("MapChange")) {
                 try {
-                    
+                    if (Commands[i][1].equals("kill")) {
+
+                    }
                 } catch (Exception e) {
                     System.out.println("Exception " + e);
                 }

@@ -179,40 +179,43 @@ public class EditorState extends GameState {
 
         Particles.Update();
 
-        for (int i = 0; i < Entities.size(); i++) {
-            Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
+        if (SelectedObjects.size() == 0) {
 
-            Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(pos);
-            if (selected.equals(selection.Object)) {
-                if (Entities.get(i).getHitbox().contains(new Vector3(pos.x, pos.y, 2))) {
-                    //Entities.get(i).setDebugView(true);
-                    if (SelectedArea == null && Gdx.input.isTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT) && Prefab == null && !DraggingObject) {
-                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                            SelectedObjects.add(Entities.get(i));
-                            Entities.get(i).setDebugView(true);
-                        } else {
+            for (int i = 0; i < Entities.size(); i++) {
+                Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
 
-                            if (SelectedObjects.size() == 1) {
-                                if (SelectedObjects.get(0).equals(Entities.get(i))) {
-                                    break;
+                Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                camera.unproject(pos);
+                if (selected.equals(selection.Object)) {
+                    if (Entities.get(i).getHitbox().contains(new Vector3(pos.x, pos.y, 2))) {
+                        //Entities.get(i).setDebugView(true);
+                        if (SelectedArea == null && Gdx.input.isTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT) && Prefab == null && !DraggingObject) {
+                            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                                SelectedObjects.add(Entities.get(i));
+                                Entities.get(i).setDebugView(true);
+                            } else {
+
+                                if (SelectedObjects.size() == 1) {
+                                    if (SelectedObjects.get(0).equals(Entities.get(i))) {
+                                        break;
+                                    }
                                 }
-                            }
 
-                            for (int j = 0; j < SelectedObjects.size(); j++) {
-                                SelectedObjects.get(j).setDebugView(false);
-                            }
-                            SelectedObjects.clear();
+                                for (int j = 0; j < SelectedObjects.size(); j++) {
+                                    SelectedObjects.get(j).setDebugView(false);
+                                }
+                                SelectedObjects.clear();
 
-                            SelectedObjects.add(Entities.get(i));
-                            Entities.get(i).setDebugView(true);
-                            HiddenButtonTriggeresLoading.init(0, 0);
-                            break;
+                                SelectedObjects.add(Entities.get(i));
+                                Entities.get(i).setDebugView(true);
+                                HiddenButtonTriggeresLoading.init(0, 0);
+                                break;
+                            }
                         }
                     }
                 }
-            }
 
+            }
         }
 
         cameraUpdate(MainCameraFocusPoint, camera, Entities, 0, 0, tempshitgiggle.getWidth() * tempshitgiggle.getTileSize(), tempshitgiggle.getHeight() * tempshitgiggle.getTileSize());
@@ -326,12 +329,47 @@ public class EditorState extends GameState {
 
         }
 
+        if (SelectedObjects.size() > 0) {
+
+            float LowestX, LowestY, HighestX, HighestY;
+
+            LowestX = SelectedObjects.get(0).getPosition().x;
+            LowestY = SelectedObjects.get(0).getPosition().y;
+            HighestX = SelectedObjects.get(0).getHitbox().max.x + SelectedObjects.get(0).getHitboxOffset().x;
+            HighestY = SelectedObjects.get(0).getHitbox().max.y + SelectedObjects.get(0).getHitboxOffset().y;
+
+            for (int i = 1; i < SelectedObjects.size(); i++) {
+
+                if (LowestX > SelectedObjects.get(i).getPosition().x) {
+                    LowestX = SelectedObjects.get(i).getPosition().x;
+                } else if (HighestX < (SelectedObjects.get(i).getPosition().x + SelectedObjects.get(i).getSize().x)) {
+                    HighestX = SelectedObjects.get(i).getHitbox().max.x + SelectedObjects.get(i).getHitboxOffset().x;
+                }
+
+                if (LowestY > SelectedObjects.get(i).getPosition().y) {
+                    LowestY = SelectedObjects.get(i).getPosition().y;
+                } else if (HighestY < (SelectedObjects.get(i).getPosition().y + SelectedObjects.get(i).getSize().y)) {
+                    HighestY = SelectedObjects.get(i).getHitbox().max.y + SelectedObjects.get(i).getHitboxOffset().y;
+                }
+            }
+
+            BoundingBox PrismPla = new BoundingBox(new Vector3(LowestX, LowestY, 2), new Vector3(HighestX, HighestY, 4));
+
+            Render.debugRenderer.setColor(Color.GREEN);
+            Render.debugRenderer.rect(PrismPla.min.x, PrismPla.min.y + PrismPla.min.z / 2, PrismPla.getWidth(), PrismPla.getHeight());
+        }
+
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Prefab == null && SelectedObjects.size() == 0) {
             Render.debugRenderer.setColor(Color.WHITE);
             Render.debugRenderer.rect(((int) pos312.x / 16) * 16 + 1, ((int) pos312.y / 16) * 16 + 1, 15, 15);
         }
 
         if (Erasing) {
+            Render.debugRenderer.setColor(Color.WHITE);
+            Render.debugRenderer.rect(((int) pos312.x / 16) * 16 + 1, ((int) pos312.y / 16) * 16 + 1, 15, 15);
+        }
+
+        if (Prefab != null && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
             Render.debugRenderer.setColor(Color.WHITE);
             Render.debugRenderer.rect(((int) pos312.x / 16) * 16 + 1, ((int) pos312.y / 16) * 16 + 1, 15, 15);
         }
@@ -355,13 +393,7 @@ public class EditorState extends GameState {
             Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             GuiCam.unproject(pos312);
 
-            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                float temptempx = pos312.x - (Prefab.getSize().x / 2);
-                float temptempy = pos312.y - (Prefab.getSize().y / 2);
-                Prefab.setPosition(((int)(temptempx/16))*16, ((int)(temptempy/16))*16, 0);
-            } else {
-                Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
-            }
+            Prefab.setPosition(pos312.x - (Prefab.getSize().x / 2), pos312.y - (Prefab.getSize().y / 2), 0);
 
             Prefab.draw(g, Time);
         }
@@ -480,40 +512,156 @@ public class EditorState extends GameState {
             }
         }
 
-        if (Gdx.input.justTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) { //KeyHit
+        if (Gdx.input.isTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) { //KeyHit
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
 
             if (!OverHud) {
-                if (selected.equals(selection.Object)) {
+                if (selected.equals(selection.Ground)) {
+                    if (Fill) {
+                        if (Erasing) {
+                            tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
+                        } else {
+                            tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
+                        }
+                    } else {
+                        if (!Erasing) {
+                            tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected, BrushSize);
+                        } else {
+                            tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1, BrushSize);
+                        }
+                    }
+                } else if (selected.equals(selection.Forground)) {
+                    if (Fill) {
+                        if (Erasing) {
+                            tempshitgiggle.fillForegroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
+                        } else {
+                            tempshitgiggle.fillForegroundArea(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
+                        }
+                    } else {
+                        if (!Erasing) {
+                            tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected, BrushSize);
+                        } else {
+                            tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1, BrushSize);
+                        }
+                    }
+                } else if (selected.equals(selection.Collision)) {
+                    if (Fill) {
+
+                    } else {
+                        if (!Erasing) {
+                            tempshitgiggle.setCollision(((int) pos.x / 16), ((int) pos.y / 16), BrushSize);
+                        } else {
+                            tempshitgiggle.ClearCollision(((int) pos.x / 16), ((int) pos.y / 16), BrushSize);
+                        }
+                    }
+                } else if (selected.equals(selection.Object)) {
+
                     if (Prefab != null) {
                         Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                         camera.unproject(pos312);
 
-                        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                            float temptempx = pos312.x - (Prefab.getSize().x / 2);
-                            float temptempy = pos312.y - (Prefab.getSize().y / 2);
-                            Prefab.setPosition(((int)(temptempx/16))*16, ((int)(temptempy/16))*16, 0);
+                        if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                            Prefab.setPosition(((int) pos312.x / 16) * 16, ((int) pos312.y / 16) * 16, 0);
                         } else {
                             Prefab.setPosition((int)pos312.x - (Prefab.getSize().x / 2), (int)pos312.y - (Prefab.getSize().y / 2), 0);
                         }
                         Entities.add(Prefab.CreateNew());
-                    }
-                } else if (selected.equals(selection.Ground) && Fill) {
-                    if (Erasing) {
-                        tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
                     } else {
-                        tempshitgiggle.fillGroundArea(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
-                    }
-                } else if (selected.equals(selection.Forground)&& Fill) {
+                        if (SelectedObjects.size() > 0) {
 
-                    if (Erasing) {
-                        tempshitgiggle.fillForegroundArea(((int) pos.x / 16), ((int) pos.y / 16), -1);
-                    } else {
-                        tempshitgiggle.fillForegroundArea(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected);
+                            float LowestX, LowestY, HighestX, HighestY;
+
+                            LowestX = SelectedObjects.get(0).getPosition().x;
+                            LowestY = SelectedObjects.get(0).getPosition().y;
+                            HighestX = SelectedObjects.get(0).getHitbox().max.x + SelectedObjects.get(0).getHitboxOffset().x;
+                            HighestY = SelectedObjects.get(0).getHitbox().max.y + SelectedObjects.get(0).getHitboxOffset().y;
+
+                            for (int i = 1; i < SelectedObjects.size(); i++) {
+
+                                if (LowestX > SelectedObjects.get(i).getPosition().x) {
+                                    LowestX = SelectedObjects.get(i).getPosition().x;
+                                } else if (HighestX < (SelectedObjects.get(i).getPosition().x + SelectedObjects.get(i).getSize().x)) {
+                                    HighestX = SelectedObjects.get(i).getHitbox().max.x + SelectedObjects.get(i).getHitboxOffset().x;
+                                }
+
+                                if (LowestY > SelectedObjects.get(i).getPosition().y) {
+                                    LowestY = SelectedObjects.get(i).getPosition().y;
+                                } else if (HighestY < (SelectedObjects.get(i).getPosition().y + SelectedObjects.get(i).getSize().y)) {
+                                    HighestY = SelectedObjects.get(i).getHitbox().max.y + SelectedObjects.get(i).getHitboxOffset().y;
+                                }
+                            }
+
+                            BoundingBox PrismPla = new BoundingBox(new Vector3(LowestX, LowestY, 2), new Vector3(HighestX, HighestY, 4));
+
+                            if (PrismPla.contains(new Vector3(pos.x, pos.y, 2)) && SelectedArea == null) {
+                                //This is where your gonna move them around
+                                if (!DraggingObject) {
+                                    if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                                        draggingOffset[0] = (int) pos.x;
+                                        draggingOffset[1] = (int) pos.y;
+                                    } else {
+                                        draggingOffset[0] = (int) pos.x;
+                                        draggingOffset[1] = (int) pos.y;
+                                    }
+                                }
+                                DraggingObject = true;
+
+                            }
+                        }
+
+                        if (DraggingObject) {
+                            for (int i = 0; i < SelectedObjects.size(); i++) {
+
+                                Vector3 tempPos = SelectedObjects.get(i).getPosition();
+
+                                if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT)) {
+                                    tempPos.x += (draggingOffset[0] - (int) pos.x) * -1;
+                                    tempPos.y += (draggingOffset[1] - (int) pos.y) * -1;
+
+                                    SelectedObjects.get(i).setPosition(((int)tempPos.x/16)*16, ((int)tempPos.y/16)*16, SelectedObjects.get(i).getPosition().z);
+                                } else {
+                                    tempPos.x += (draggingOffset[0] - (int) pos.x) * -1;
+                                    tempPos.y += (draggingOffset[1] - (int) pos.y) * -1;
+
+                                    SelectedObjects.get(i).setPosition(tempPos.x, tempPos.y, SelectedObjects.get(i).getPosition().z);
+                                }
+                            /*
+                            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
+                                float temptempx = pos.x - draggingOffset[0];
+                                float temptempy = pos.y - draggingOffset[1];
+                                SelectedObjects.get(i).setPosition(((int)(SelectedObjects.get(i).getPosition().x + temptempx/16))*16, ((int)(SelectedObjects.get(i).getPosition().y + temptempy/16))*16, SelectedObjects.get(i).getPosition().z);
+                            } else {
+                                SelectedObjects.get(i).setPosition(pos.x, pos.y, SelectedObjects.get(i).getPosition().z);
+                            }
+                            */
+
+                                HiddenButtonTriggeresLoading.init(0,0);
+                            }
+                            draggingOffset[0] = (int) pos.x;
+                            draggingOffset[1] = (int) pos.y;
+                        }
+
+                        if (SelectionDragging && !DraggingObject) {
+
+                            if (SelectedArea == null) {
+                                SelectedArea = new Vector2[]{new Vector2(Gdx.input.getX(), Gdx.input.getY()), new Vector2(0, 0)};
+                            }
+
+                            if (SelectedArea != null) {
+                                SelectedArea[1].set(Gdx.input.getX(), Gdx.input.getY());
+                            }
+                        } else {
+                            SelectedArea = null;
+                        }
                     }
+                } else if (selected.equals(selection.None)) {
+
                 }
             }
+
+        } else {
+            DraggingObject = false;
         }
 
         if (Gdx.input.isButtonPressed(Input.Buttons.RIGHT)) { //KeyHit
@@ -525,78 +673,6 @@ public class EditorState extends GameState {
             } else if (selected.equals(selection.Forground)) {
                 TileIDSelected = tempshitgiggle.getForeground()[(int)pos.x/16][(int)pos.y/16];
             }
-        }
-
-        if (Gdx.input.isTouched() && Gdx.input.isButtonPressed(Input.Buttons.LEFT)) { //KeyHit
-            Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(pos);
-
-            if (!OverHud) {
-                if (selected.equals(selection.Ground)) {
-                    if (!Erasing) {
-                        tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected, BrushSize);
-                    } else {
-                        tempshitgiggle.setGroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1, BrushSize);
-                    }
-                } else if (selected.equals(selection.Forground)) {
-                    if (!Erasing) {
-                        tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), TileIDSelected, BrushSize);
-                    } else {
-                        tempshitgiggle.setForegroundCell(((int) pos.x / 16), ((int) pos.y / 16), -1, BrushSize);
-                    }
-                } else if (selected.equals(selection.Collision)) {
-                    if (!Erasing) {
-                        tempshitgiggle.setCollision(((int) pos.x / 16), ((int) pos.y / 16), BrushSize);
-                    } else {
-                        tempshitgiggle.ClearCollision(((int) pos.x / 16), ((int) pos.y / 16), BrushSize);
-                    }
-                } else if (selected.equals(selection.Object) && Prefab == null) {
-                    if (SelectionDragging && SelectedObjects.size() > 0) {
-                        if (SelectedObjects.get(0).getHitbox().contains(new Vector3(pos.x, pos.y, 2)) && SelectedArea == null) {
-                            //This is where your gonna move them around
-                            if (!DraggingObject) {
-                                draggingOffset[0] = (int) SelectedObjects.get(0).getPosition().x - (int) pos.x;
-                                draggingOffset[1] = (int) SelectedObjects.get(0).getPosition().y - (int) pos.y;
-                            }
-                            DraggingObject = true;
-
-                        }
-                    }
-
-                    if (DraggingObject) {
-                        for (int i = 0; i < SelectedObjects.size(); i++) {
-
-                            if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) {
-                                float temptempx = pos.x + draggingOffset[0];
-                                float temptempy = pos.y + draggingOffset[1];
-                                SelectedObjects.get(i).setPosition(((int)(temptempx/16))*16, ((int)(temptempy/16))*16, SelectedObjects.get(i).getPosition().z);
-                            } else {
-                                SelectedObjects.get(i).setPosition(pos.x + draggingOffset[0], pos.y + draggingOffset[1], SelectedObjects.get(i).getPosition().z);
-                            }
-
-                            HiddenButtonTriggeresLoading.init(0,0);
-                        }
-                    }
-
-                    if (SelectionDragging && !DraggingObject) {
-
-                        if (SelectedArea == null) {
-                            SelectedArea = new Vector2[]{new Vector2(Gdx.input.getX(), Gdx.input.getY()), new Vector2(0, 0)};
-                        }
-
-                        if (SelectedArea != null) {
-                            SelectedArea[1].set(Gdx.input.getX(), Gdx.input.getY());
-                        }
-                    } else {
-                        SelectedArea = null;
-                    }
-                } else if (selected.equals(selection.None)) {
-
-                }
-            }
-
-        } else {
-            DraggingObject = false;
         }
 
         if (Gdx.input.isButtonPressed(Input.Buttons.MIDDLE)) {
@@ -686,7 +762,7 @@ public class EditorState extends GameState {
                                 Entities.get(i).setDebugView(true);
                             }
                         }
-                    } else {
+                    } else if (!DraggingObject){
                         for (int j = 0; j < SelectedObjects.size(); j++) {
                             SelectedObjects.get(j).setDebugView(false);
                         }
