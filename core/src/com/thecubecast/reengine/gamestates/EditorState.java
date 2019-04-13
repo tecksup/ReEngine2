@@ -238,6 +238,10 @@ public class EditorState extends GameState {
 
         tempshitgiggle.Tileset.Update(Gdx.graphics.getDeltaTime());
 
+        if (!selected.equals(selection.Object)) {
+            Prefab = null;
+        }
+
         if (selected.equals(selection.Forground)) {
             tempshitgiggle.DrawGround(camera, g, 0.8f);
             tempshitgiggle.DrawForground(camera, g, 1f);
@@ -557,7 +561,7 @@ public class EditorState extends GameState {
                     }
                 } else if (selected.equals(selection.Object)) {
 
-                    if (Prefab != null) {
+                    if (Prefab != null && Gdx.input.justTouched()) {
                         Vector3 pos312 = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                         camera.unproject(pos312);
 
@@ -567,7 +571,7 @@ public class EditorState extends GameState {
                             Prefab.setPosition((int)pos312.x - (Prefab.getSize().x / 2), (int)pos312.y - (Prefab.getSize().y / 2), 0);
                         }
                         Entities.add(Prefab.CreateNew());
-                    } else {
+                    } else if (Prefab == null) {
                         if (SelectedObjects.size() > 0) {
 
                             float LowestX, LowestY, HighestX, HighestY;

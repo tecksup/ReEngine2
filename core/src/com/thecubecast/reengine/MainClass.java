@@ -33,7 +33,7 @@ public class MainClass extends ApplicationAdapter{
 
     @Override
     public void create() { // INIT FUNCTION
-/*
+
         String[] temp = new String[]{"", ""};
         if (Gdx.app.getPreferences("properties").contains("Resolution")) {
             temp = Gdx.app.getPreferences("properties").getString("Resolution").split("X");
@@ -52,7 +52,7 @@ public class MainClass extends ApplicationAdapter{
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             }
         }
-*/
+
         Cursor customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("cursor0.png")), 0, 0);
         Gdx.graphics.setCursor(customCursor);
 
