@@ -12,28 +12,19 @@ import com.thecubecast.reengine.gamestates.GameState;
 
 public class HackSlashPlayer extends WorldObject {
 
-    public int Health = 10000;
-
-    public int Energy = 100;
+    public int Health = 100;
 
     public float AttackTime;
 
     //True is left, False is right
     boolean Facing = true;
 
-    private boolean Soundthing = true;
-    private float JustPlayed = 0;
-
     public float RollingTime;
     public boolean Rolling;
-
-    int Degrees = 0;
 
     TextureAnimation<TextureAtlas.AtlasRegion> Walking;
     TextureAnimation<TextureAtlas.AtlasRegion> Roll;
     TextureAnimation<TextureAtlas.AtlasRegion> Idle;
-
-    TextureAnimation<TextureAtlas.AtlasRegion> Sword;
 
     TextureRegion Shadow;
 
@@ -45,7 +36,6 @@ public class HackSlashPlayer extends WorldObject {
         Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("player"), 0.1f);
         Roll = new TextureAnimation<>(GameStateManager.Render.getTextures("player_roll"), 0.05f);
         Idle = new TextureAnimation<>(GameStateManager.Render.getTextures("player_idle"), 0.1f);
-        Sword = new TextureAnimation<>(GameStateManager.Render.getTextures("sword"), 0.05f);
         Shadow = GameStateManager.Render.getTexture("Shadow");
     }
 
@@ -56,8 +46,6 @@ public class HackSlashPlayer extends WorldObject {
 
     @Override
     public void update(float delta, GameState G) {
-
-        JustPlayed += delta;
 
         if (AttackTime - delta > 0)
             AttackTime -= delta;
@@ -153,19 +141,8 @@ public class HackSlashPlayer extends WorldObject {
                 }
             } else {
                 if (AttackTime > 0.1f) {
-                    Sword.resume();
-                    Sword.update(Gdx.graphics.getDeltaTime());
-                    TextureRegion frameS = Sword.getFrame();
-                    batch.draw(frameS, Facing ? (int) getPosition().x - 33 + (frameS.getRegionWidth()) : (int) getPosition().x + 9, (int) getPosition().y - 22 + (int) getPosition().z / 2, 0f, 0f, (float) frameS.getRegionWidth(), (float) frameS.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
 
                 } else {
-                    Sword.pause();
-                    Sword.setFrame(0);
-                    TextureRegion frameS = Sword.getFrame();
-
-                    //Degrees
-
-                    batch.draw(frameS, Facing ? (int) getPosition().x - 33 + (frameS.getRegionWidth()) : (int) getPosition().x + 9, (int) getPosition().y - 22 + (int) getPosition().z / 2, 0f, 0f, (float) frameS.getRegionWidth(), (float) frameS.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
 
                 }
 
@@ -175,14 +152,6 @@ public class HackSlashPlayer extends WorldObject {
                     Walking.update(Gdx.graphics.getDeltaTime());
                     TextureRegion frame = Walking.getFrame();
                     batch.draw(frame, Facing ? (int) getPosition().x + (frame.getRegionWidth()) : (int) getPosition().x, (int) getPosition().y + (int) getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
-                    if (JustPlayed > 0.25f) {
-                        //if (Soundthing)
-                        //AudioM.playS("feet1.wav");
-                        //else
-                        //AudioM.playS("feet2.wav");
-                        JustPlayed = 0;
-                        Soundthing = !Soundthing;
-                    }
                 } else if (this.getVelocity().y < 0.5f || this.getVelocity().x < 0.5f) {
                     batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
                     //Idle animation

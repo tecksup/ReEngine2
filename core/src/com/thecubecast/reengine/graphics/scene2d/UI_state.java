@@ -503,6 +503,7 @@ public enum UI_state implements State<UIFSM> {
             return false;
         }
     },
+
     INGAMEUI() {
 
         private Table table;
@@ -517,9 +518,6 @@ public enum UI_state implements State<UIFSM> {
             table.setFillParent(true);
             table.top().left();
             entity.stage.addActor(table);
-
-            Health = new Label("HEALTH ", entity.skin);
-            Healthbar = new ProgressBar(0, 10, 1, false,entity.skin);
 
             Playing = new Table();
             Playing.add(Health).top().left();

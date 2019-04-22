@@ -42,7 +42,7 @@ public class PlayState extends DialogStateExtention {
     public static ParticleHandler Particles;
 
     //GameObjects
-    public HackSlashPlayer player;
+    public ProtoType_Player player;
 
     TkMap WorldMap;
 
@@ -58,7 +58,7 @@ public class PlayState extends DialogStateExtention {
 
     public void init() {
 
-        WorldMap = new TkMap("Saves/Untitled.cube");
+        WorldMap = new TkMap("Saves/Fight.cube");
         MapGraph = new FlatTiledGraph(WorldMap);
 
         ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects(MapGraph, gsm);
@@ -75,7 +75,7 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
-        player = new HackSlashPlayer((int) gsm.PlayerSpawn.x, (int) gsm.PlayerSpawn.y, gsm);
+        player = new ProtoType_Player((int) gsm.PlayerSpawn.x, (int) gsm.PlayerSpawn.y,0, this);
 
         Entities.add(player);
 
@@ -185,10 +185,10 @@ public class PlayState extends DialogStateExtention {
                             if(Entities.get(j) instanceof NPC) {
                                 Remove.add(Entities.get(i));
                                 ((NPC) Entities.get(j)).setHealth(((NPC) Entities.get(j)).getHealth()-10);
-                            } else if (Entities.get(j) instanceof HackSlashPlayer) {
-                                if (!((HackSlashPlayer) Entities.get(j)).Rolling) {
+                            } else if (Entities.get(j) instanceof ProtoType_Player) {
+                                if (!((ProtoType_Player) Entities.get(j)).Rolling) {
                                     Remove.add(Entities.get(i));
-                                    ((HackSlashPlayer) Entities.get(j)).Health--;
+                                    ((ProtoType_Player) Entities.get(j)).Health--;
                                 }
                             }
                         }
@@ -355,6 +355,14 @@ public class PlayState extends DialogStateExtention {
             GameStateManager.Render.debugRenderer.rect(((int) pos.x / 16) * 16 + 1, ((int) pos.y / 16) * 16 + 1, 15, 15);
         }
 
+        Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+        camera.unproject(pos);
+        GameStateManager.Render.debugRenderer.setColor(Color.WHITE);
+        GameStateManager.Render.debugRenderer.line(player.getPosition(), pos);
+        player.FacingAngle = (float) ((Math.atan2(player.getPosition().x - pos.x, -(player.getPosition().y - pos.y)) * 180.0d / Math.PI));
+        //System.out.println(player.FacingAngle);
+
+
         GameStateManager.Render.debugRenderer.end();
 
     }
@@ -428,12 +436,6 @@ public class PlayState extends DialogStateExtention {
                 player.Rolling = true;
                 player.RollingTime += 0.5f;
             }
-        }
-
-        if (Gdx.input.getX() < Gdx.graphics.getWidth()/2) {
-            player.setFacing(true);
-        } else {
-            player.setFacing(false);
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.C) || Gdx.input.justTouched()) { // ATTACK
