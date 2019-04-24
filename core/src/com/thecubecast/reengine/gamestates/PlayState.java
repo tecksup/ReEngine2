@@ -14,6 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.thecubecast.reengine.data.Cube;
+import com.thecubecast.reengine.data.FallingLayer;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.data.tkmap.TkMap;
@@ -42,9 +43,13 @@ public class PlayState extends DialogStateExtention {
     public static ParticleHandler Particles;
 
     //GameObjects
-    public HackSlashPlayer player;
+    public FallingPlayer player;
 
     TkMap WorldMap;
+
+    int Depth = 100;
+    int StartingX = 128;
+    FallingLayer[] Map;
 
     //ai
     FlatTiledGraph MapGraph;
@@ -58,8 +63,32 @@ public class PlayState extends DialogStateExtention {
 
     public void init() {
 
+        Map = new FallingLayer[Depth];
+        for (int i = 0; i < Map.length; i++) {
+            //I can randomly generate the width here when it comes time for that
+            Map[i] = new FallingLayer(14);
+        }
+
+        Collisions.add(new Cube(StartingX, 0, 2, 16, Map.length*16, 0));
+        Collisions.add(new Cube(StartingX+Map[0].getSize()*16-16, 0, 2, 16, Map.length*16, 0));
+
+        for (int i = 0; i < Map.length; i++) {
+            for (int j = 0; j < Map[i].getSize(); j++) {
+                if (Map[i].getTile(j) == 2) {
+                    Map[i].setTile(j, -1);
+                    Entities.add(new Spike(StartingX+ (j*16), i*16));
+                }
+            }
+        }
+
         WorldMap = new TkMap("Saves/Untitled.cube");
         MapGraph = new FlatTiledGraph(WorldMap);
+
+        player = new FallingPlayer();
+        player.setPositionY(Depth*16);
+        player.setPositionX(StartingX + (7*16));
+
+        Entities.add(player);
 
         ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects(MapGraph, gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
@@ -75,10 +104,6 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
-        player = new HackSlashPlayer((int) gsm.PlayerSpawn.x, (int) gsm.PlayerSpawn.y, gsm);
-
-        Entities.add(player);
-
         for (int x = 0; x < WorldMap.getWidth(); x++) {
             for (int y = 0; y < WorldMap.getHeight(); y++) {
                 if (WorldMap.getCollision()[x][y]) {
@@ -90,7 +115,7 @@ public class PlayState extends DialogStateExtention {
         //Setup Dialog Instance
         MenuInit(GameStateManager.UIWidth, GameStateManager.UIHeight);
 
-        gsm.DiscordManager.setPresenceDetails("topdown Demo - Level 1");
+        gsm.DiscordManager.setPresenceDetails("Jam Game - Level 1");
         gsm.DiscordManager.setPresenceState("In Game");
         gsm.DiscordManager.getPresence().largeImageText = "Level 1";
         gsm.DiscordManager.getPresence().startTimestamp = System.currentTimeMillis() / 1000;
@@ -115,10 +140,25 @@ public class PlayState extends DialogStateExtention {
 
     public void update() {
 
+        if (player.getPosition().y <= Depth*16 || MenuOpen) {
+            player.setState(WorldObject.type.Dynamic);
+            player.Falling = true;
+        } else {
+            player.setState(WorldObject.type.Static);
+            player.Falling = false;
+        }
+
         Particles.Update();
 
         for (int i = 0; i < Entities.size(); i++) {
-            if (Entities.get(i) instanceof PathfindingWorldObject) {
+            if (Entities.get(i) instanceof Spike) {
+                Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
+                if (player.getHitbox().intersects(Entities.get(i).getHitbox())) {
+                    player.Health--;
+                    Entities.remove(i);
+                    break;
+                }
+            } else if (Entities.get(i) instanceof PathfindingWorldObject) {
                 Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
                 if (!((NPC) Entities.get(i)).isAlive()) {
                     Entities.remove(i);
@@ -126,7 +166,6 @@ public class PlayState extends DialogStateExtention {
             } else if (Entities.get(i) instanceof NPC) {
                 if (!((NPC) Entities.get(i)).isAlive()) {
                     Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
-                    Particles.AddParticleEffect("Leaf", player.getIntereactBox().getCenterX(), player.getIntereactBox().getCenterY());
                     Entities.remove(i);
                 }
             } else if (Entities.get(i) instanceof Interactable) {
@@ -158,50 +197,6 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
-        List<WorldObject> Remove = new ArrayList<>();
-
-        for (int i = 0; i < Entities.size(); i++) {
-
-            if (Entities.get(i) instanceof Bullet) {
-
-                ((Bullet)Entities.get(i)).timeAlive += Gdx.graphics.getDeltaTime();
-
-                if (((Bullet)Entities.get(i)).timeAlive >= ((Bullet)Entities.get(i)).Lifespan){
-                    Remove.add(Entities.get(i));
-                    break;
-                }
-
-                WorldObject tempPar = ((Bullet)Entities.get(i)).Parrent;
-                if (Entities.get(i).checkCollision(new Vector3(Entities.get(i).getPosition().x, Entities.get(i).getPosition().y, 0), Collisions, true)) {
-                    Remove.add(Entities.get(i));
-                } else {
-                    for (int j = 0; j < Entities.size(); j++) {
-                        if (Entities.get(j).equals(tempPar)) {
-
-                        } else if (Entities.get(j) instanceof Bullet) {
-
-                        } else if (Entities.get(j).getHitbox().contains(Entities.get(i).getPosition())) {
-
-                            if(Entities.get(j) instanceof NPC) {
-                                Remove.add(Entities.get(i));
-                                ((NPC) Entities.get(j)).setHealth(((NPC) Entities.get(j)).getHealth()-10);
-                            } else if (Entities.get(j) instanceof HackSlashPlayer) {
-                                if (!((HackSlashPlayer) Entities.get(j)).Rolling) {
-                                    Remove.add(Entities.get(i));
-                                    ((HackSlashPlayer) Entities.get(j)).Health--;
-                                }
-                            }
-                        }
-                    }
-                }
-
-            }
-        }
-
-        for (int i = 0; i < Remove.size(); i++) {
-            Entities.remove(Remove.get(i));
-        }
-
         cameraUpdate(player, camera, Entities,8,8, WorldMap.getWidth()*WorldMap.getTileSize()-8, WorldMap.getHeight()*WorldMap.getTileSize()-8);
 
         if (player.Health > 0) {
@@ -219,7 +214,12 @@ public class PlayState extends DialogStateExtention {
         g.setShader(null);
         g.begin();
 
+
         WorldMap.Draw(camera, g);
+
+        for (int i = 0; i < Map.length; i++) {
+            Map[i].Draw(g, camera, gsm, StartingX,i*16);
+        }
 
         //Block of code renders all the entities
         WorldObjectComp entitySort = new WorldObjectComp();
@@ -259,7 +259,7 @@ public class PlayState extends DialogStateExtention {
 
         g.end();
 
-        //DEBUG CODE
+        //DEBUG CODE IS NOT CULLED | I LAG A LOT CAUSE MY MAP IS 1000X200 tiles
         GameStateManager.Render.debugRenderer.setProjectionMatrix(camera.combined);
         GameStateManager.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Line);
 
@@ -390,6 +390,11 @@ public class PlayState extends DialogStateExtention {
             MenuOpen = !MenuOpen;
         }
 
+        if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
+           player.Health--;
+           shaker.addDamage(0.5f);
+        }
+
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             if (DialogOpen) {
                 DialogNext();
@@ -423,56 +428,8 @@ public class PlayState extends DialogStateExtention {
             player.setVelocityX(player.getVelocity().x - 1);
         }
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
-            if (player.RollingTime < 0.1) {
-                player.Rolling = true;
-                player.RollingTime += 0.5f;
-            }
-        }
-
-        if (Gdx.input.getX() < Gdx.graphics.getWidth()/2) {
-            player.setFacing(true);
-        } else {
-            player.setFacing(false);
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.C) || Gdx.input.justTouched()) { // ATTACK
-
-            Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(pos);
-            //Get the direction of the attack based on whether mouse is on left or right of the screen.
-
-            if (player.AttackTime < .1f) {
-                for (int i = 0; i < Entities.size(); i++) {
-                    if (player.getAttackBox().intersects(Entities.get(i).getHitbox())) {
-                        if (Entities.get(i) instanceof NPC) {
-                            NPC Entitemp = (NPC) Entities.get(i);
-
-                            float HitVelocity = 40;
-
-                            Vector3 hitDirection = new Vector3(1 * HitVelocity, 0 * HitVelocity, 0);
-                            Entitemp.damage(10, hitDirection);
-                            shaker.addDamage(0.35f);
-                        } else if (Entities.get(i) instanceof Trigger) {
-                            if (((Trigger) Entities.get(i)).getActivationType().equals(Trigger.TriggerType.OnAttack)) {
-                                ((Trigger) Entities.get(i)).RunCommands(player, shaker, this, null, Particles, Entities);
-                                ((Trigger) Entities.get(i)).JustRan = true;
-                            }
-                        }
-                    }
-                }
-
-                player.AttackTime += 0.35f;
-            }
-        }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
             AddDialog("pawn", "It's working!");
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_7)) {
-            Bullet temp = new Bullet((int)player.getPosition().x, (int)player.getPosition().y, (int)player.getPosition().z, new Vector3(5,-5, 0), player);
-            Entities.add(temp);
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.T)) {

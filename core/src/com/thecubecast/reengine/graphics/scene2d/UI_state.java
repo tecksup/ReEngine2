@@ -23,6 +23,8 @@ import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.ControlerManager;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.gamestates.EditorState;
+import com.thecubecast.reengine.gamestates.PlayState;
+import javafx.scene.control.Tab;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -506,32 +508,57 @@ public enum UI_state implements State<UIFSM> {
     INGAMEUI() {
 
         private Table table;
-        private Label Health;
-        private ProgressBar Healthbar;
+        private Table Healthbar;
+        private Label Elevation;
+
+        private int playerHealth = 0;
 
         private Table Playing;
 
         @Override
         public void enter(UIFSM entity) {
+
             table = new Table();
             table.setFillParent(true);
             table.top().left();
             entity.stage.addActor(table);
 
-            Health = new Label("HEALTH ", entity.skin);
-            Healthbar = new ProgressBar(0, 10, 1, false,entity.skin);
+            Healthbar = new Table(entity.skin) {
+                @Override
+                public void act(float delta) {
+                    super.act(delta);
+                    if (entity.gsm.gameState instanceof PlayState) {
+                        if (playerHealth != ((PlayState) entity.gsm.gameState).player.Health) {
+                            playerHealth = ((PlayState) entity.gsm.gameState).player.Health;
+                            this.clear();
+                            for (int i = 0; i < playerHealth; i++) {
+                                this.add(new Image(entity.skin, "Heart")).pad(2);
+                            }
+                        }
+                    }
+                }
+            };
+
+            Elevation = new Label("", entity.skin) {
+                @Override
+                public void act(float delta) {
+                    super.act(delta);
+                    if (entity.gsm.gameState instanceof PlayState) {
+                        this.setText("Elevation " + (-1*(1000 - (int) ((PlayState) entity.gsm.gameState).player.getPosition().y)));
+                    }
+                }
+            };
 
             Playing = new Table();
-            Playing.add(Health).top().left();
-            Playing.add(Healthbar).top().left();
+            Playing.add(Healthbar).top().left().padTop(5);
+            Playing.row();
+            Playing.add(Elevation).top().left().padTop(5);
             table.add(Playing).top().left().padTop(2);
 
         }
 
         @Override
         public void update(UIFSM entity) {
-
-            ControllerCheck(table);
             entity.stage.act(Gdx.graphics.getDeltaTime());
         }
 

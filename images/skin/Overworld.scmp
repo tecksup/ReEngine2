@@ -674,6 +674,22 @@ atlasData: {
 			minHeight: 0
 			customized: false
 		}
+		{
+			file: D:/GitHub/ReEngine2/images/skin/Raw/Heart.png
+			bgColor: {
+				r: 1
+				g: 1
+				b: 1
+				a: 1
+			}
+			tint: null
+			tintName: null
+			name: Heart
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
 	]
 	fontDrawables: [
 		{
