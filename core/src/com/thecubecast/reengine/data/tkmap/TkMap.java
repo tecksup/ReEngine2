@@ -13,8 +13,6 @@ import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.gamestates.EditorState;
 import com.thecubecast.reengine.worldobjects.*;
-import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
-import com.thecubecast.reengine.worldobjects.entityprefabs.Pawn;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -55,12 +53,7 @@ public class TkMap {
         this.MapLocation = MapLocation;
         pixel = new Texture(Gdx.files.internal("white-pixel.png"));
         jsonReaderthing = new JsonParser();
-        try {
-            MapObject = jsonReaderthing.parse(new String(Files.readAllBytes(Paths.get(MapLocation)))).getAsJsonObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+        MapObject = jsonReaderthing.parse(new String(Gdx.files.internal(MapLocation).readString())).getAsJsonObject();
 
         Created = MapObject.get("Created").getAsString();
 
@@ -401,7 +394,7 @@ public class TkMap {
     }
 
     //Returns the objects that were in the map file
-    public ArrayList<WorldObject> getObjects(FlatTiledGraph Grid, GameStateManager gsm) {
+    public ArrayList<WorldObject> getObjects(GameStateManager gsm) {
         ArrayList<WorldObject> temp = new ArrayList<>();
         if (getMapObject() == null) {
             return temp;
@@ -450,12 +443,8 @@ public class TkMap {
                 TriggerType = Trigger.TriggerType.OnAttack;
             }
 
-            if (Description.equals("AI Pawn") && Grid != null) {
-                temp.add(new Pawn(Name, X, Y, Z, new Vector3(8,8,16), 1, 50, NPC.intractability.Silent, false, Grid, gsm));
-            } else if (Name.equals("Text")) {
+            if (Name.equals("Text")) {
                 temp.add(new TextWorldObject(X,Y,Z, Description, GameStateManager.Render.font));
-            } else if (Name.equals("Crop")) {
-                temp.add(new FarmTile(X,Y,Z, Description));
             } else {
 
                 if (Name.equals("Player")) {

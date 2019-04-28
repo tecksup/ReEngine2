@@ -34,6 +34,7 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
 import static com.thecubecast.reengine.data.Common.GetMonitorSizeH;
 import static com.thecubecast.reengine.data.Common.GetMonitorSizeW;
 import static com.thecubecast.reengine.data.GameStateManager.AudioM;
+import static com.thecubecast.reengine.data.GameStateManager.EasyMode;
 import static com.thecubecast.reengine.data.GameStateManager.ctm;
 
 public enum UI_state implements State<UIFSM> {
@@ -49,16 +50,11 @@ public enum UI_state implements State<UIFSM> {
             table.setFillParent(true);
             entity.stage.addActor(table);
 
+            table.add(new Label("[BLACK]UpFall", entity.skin));
+            table.row();
+
             final TkTextButton PlayState = new TkTextButton("Start", entity.skin);
             table.add(PlayState).pad(2);
-            table.row();
-
-            final TkTextButton Editor = new TkTextButton("Editor", entity.skin);
-            table.add(Editor).pad(2);
-            table.row();
-
-            final TkTextButton Multiplayer = new TkTextButton("Multiplayer", entity.skin);
-            table.add(Multiplayer).pad(2);
             table.row();
 
             final TkTextButton Options = new TkTextButton("Options", entity.skin);
@@ -74,21 +70,6 @@ public enum UI_state implements State<UIFSM> {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
                     entity.gsm.setState(GameStateManager.State.PLAY);
-                }
-            });
-
-            Editor.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    //entity.gsm.setState(GameStateManager.State.EDITOR);
-                    entity.setState(EditorChooser);
-                }
-            });
-
-            Multiplayer.addListener(new ClickListener() {
-                @Override
-                public void clicked(InputEvent event, float x, float y) {
-                    entity.setState(MULTIPLAYERUI);
                 }
             });
 
@@ -476,9 +457,20 @@ public enum UI_state implements State<UIFSM> {
             table.setFillParent(true);
             entity.stage.addActor(table);
 
+            final CheckBox Easy = new CheckBox("[BLACK]Assist Mode", entity.skin);
+            table.add(Easy).pad(2);
+            table.row();
+
             final TkTextButton back = new TkTextButton("Back", entity.skin);
             table.add(back).pad(2);
             table.row();
+
+            Easy.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    EasyMode = Easy.isChecked();
+                }
+            });
 
             back.addListener(new ClickListener() {
                 @Override
@@ -518,6 +510,8 @@ public enum UI_state implements State<UIFSM> {
         @Override
         public void enter(UIFSM entity) {
 
+            playerHealth = 0;
+
             table = new Table();
             table.setFillParent(true);
             table.top().left();
@@ -544,7 +538,7 @@ public enum UI_state implements State<UIFSM> {
                 public void act(float delta) {
                     super.act(delta);
                     if (entity.gsm.gameState instanceof PlayState) {
-                        this.setText("Elevation " + (-1*(1000 - (int) ((PlayState) entity.gsm.gameState).player.getPosition().y)));
+                        this.setText("Elevation " + (((((PlayState) entity.gsm.gameState).Depth + 14 - (int) ((PlayState) entity.gsm.gameState).player.getPosition().y/16)))*-1);
                     }
                 }
             };

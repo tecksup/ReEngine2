@@ -22,7 +22,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import com.badlogic.gdx.tools.texturepacker.TexturePacker;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -132,7 +131,7 @@ public class EditorState extends GameState {
 
         tempshitgiggle = new TkMap("Saves/" + SaveNameText + ".cube");
         //System.out.println("Loading Map Took " + ((System.nanoTime() - Started)/1000000000.0) + " seconds to complete");
-        ArrayList<WorldObject> tempobjsshit = tempshitgiggle.getObjects(null, gsm);
+        ArrayList<WorldObject> tempobjsshit = tempshitgiggle.getObjects(gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
             Entities.add(tempobjsshit.get(i));
 
@@ -1203,9 +1202,6 @@ public class EditorState extends GameState {
 
                         if (tempObj.Name.equals("Text")) {
                             tempObj = new TextWorldObject(0,0,0, "Text", Render.font);
-                        } else if (tempObj.Name.equals("Crop")) {
-                            tempObj = new FarmTile(0,0,0, "Wheat");
-                            ((FarmTile)tempObj).setCropLife(1);
                         }
 
                         Prefab = tempObj;

@@ -11,12 +11,6 @@ import com.thecubecast.reengine.MainClass;
 public class DesktopLauncher {
     public static void main(String[] args) {
 
-        //TexturePacker.process("../../images/atlas-T", "../../../core/assets/", "Tiles");
-
-
-        DcpTexturePackerManager texturePackerManager = new DcpTexturePackerManager();
-        texturePackerManager.checkWhetherToPackImages();
-
         //set variables from the settings file
         boolean Display_Fullscreen = false;
         boolean Display_WindowedFull = true;

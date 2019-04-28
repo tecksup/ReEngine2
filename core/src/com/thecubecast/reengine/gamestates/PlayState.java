@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -20,14 +21,15 @@ import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
-import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
-import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import static com.thecubecast.reengine.data.GameStateManager.AudioM;
+import static com.thecubecast.reengine.data.GameStateManager.EasyMode;
+import static com.thecubecast.reengine.data.GameStateManager.Render;
 
 public class PlayState extends DialogStateExtention {
 
@@ -47,50 +49,75 @@ public class PlayState extends DialogStateExtention {
 
     TkMap WorldMap;
 
-    int Depth = 100;
-    int StartingX = 128;
+    public int Depth = 972;
+    int StartingX = 512;
+    public int StartingY = 13*16;
     FallingLayer[] Map;
 
-    //ai
-    FlatTiledGraph MapGraph;
-
-    Music MusicID;
+    Music BGMusicID;
 
     public PlayState(GameStateManager gsm) {
         super(gsm);
-        gsm.setWorldScale(3);
+        gsm.setWorldScale(2);
     }
 
     public void init() {
 
         Map = new FallingLayer[Depth];
+        Random temprand = new Random();
         for (int i = 0; i < Map.length; i++) {
             //I can randomly generate the width here when it comes time for that
-            Map[i] = new FallingLayer(14);
+            if (i % (temprand.nextInt(2)+3) == 0)
+                if (i > 1 && Map[i-1].Prefab == 1000) {
+                    Map[i] = new FallingLayer(14, temprand.nextInt(5));
+                } else {
+                    Map[i] = new FallingLayer(14, 1000);
+                }
+            else
+                Map[i] = new FallingLayer(14, 1000);
         }
 
-        Collisions.add(new Cube(StartingX, 0, 2, 16, Map.length*16, 0));
-        Collisions.add(new Cube(StartingX+Map[0].getSize()*16-16, 0, 2, 16, Map.length*16, 0));
+        Collisions.add(new Cube(StartingX, StartingY + 0, 2, 16, Map.length*16, 0));
+        Collisions.add(new Cube(0, StartingY + Depth*16, 2, StartingX+16, 16, 0));
+        Collisions.add(new Cube(StartingX+Map[0].getSize()*16-16, StartingY + Depth*16, 2, StartingX, 16, 0));
+        Collisions.add(new Cube(StartingX+Map[0].getSize()*16-16, StartingY + 0, 2, 16, Map.length*16, 0));
 
         for (int i = 0; i < Map.length; i++) {
             for (int j = 0; j < Map[i].getSize(); j++) {
-                if (Map[i].getTile(j) == 2) {
-                    Map[i].setTile(j, -1);
-                    Entities.add(new Spike(StartingX+ (j*16), i*16));
+                if (Map[i].getTile(j) == 1 || Map[i].getTile(j) == 0) {
+                    Collisions.add(new Cube(StartingX + (j*16), StartingY + i*16, 2, 16, 16, 16));
+                }
+            }
+        }
+
+        for (int i = 1; i < Map.length+1; i++) {
+            for (int j = 0; j < Map[i-1].getSize(); j++) {
+                if (Map[i-1].getTile(j) == 0) {
+                    if (temprand.nextInt(5) == 1) {
+                        Entities.add(new Spike(StartingX + (j*16), StartingY + i*16));
+                    }
+                }
+            }
+        }
+
+        for (int i = 0; i < Map.length; i++) {
+            for (int j = 0; j < Map[i].getSize(); j++) {
+                if (Map[i].getTile(j) == 0) {
+                    if (temprand.nextInt(15) == 1) {
+                        Entities.add(new HealthPickup(StartingX + (j*16), StartingY + (i-1)*16));
+                    }
                 }
             }
         }
 
         WorldMap = new TkMap("Saves/Untitled.cube");
-        MapGraph = new FlatTiledGraph(WorldMap);
 
         player = new FallingPlayer();
-        player.setPositionY(Depth*16);
-        player.setPositionX(StartingX + (7*16));
+        player.setPositionY(StartingY + Depth*16+17);
 
         Entities.add(player);
 
-        ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects(MapGraph, gsm);
+        ArrayList<WorldObject> tempobjsshit = WorldMap.getObjects(gsm);
         for (int i = 0; i < tempobjsshit.size(); i++) {
             Entities.add(tempobjsshit.get(i));
             if (tempobjsshit.get(i).isCollidable()) {
@@ -115,7 +142,7 @@ public class PlayState extends DialogStateExtention {
         //Setup Dialog Instance
         MenuInit(GameStateManager.UIWidth, GameStateManager.UIHeight);
 
-        gsm.DiscordManager.setPresenceDetails("Jam Game - Level 1");
+        gsm.DiscordManager.setPresenceDetails("UpFall");
         gsm.DiscordManager.setPresenceState("In Game");
         gsm.DiscordManager.getPresence().largeImageText = "Level 1";
         gsm.DiscordManager.getPresence().startTimestamp = System.currentTimeMillis() / 1000;
@@ -134,7 +161,7 @@ public class PlayState extends DialogStateExtention {
         //Particles
         Particles = new ParticleHandler();
 
-        //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
+        BGMusicID = AudioM.playMusic("ingame2.wav", true, true);
 
     }
 
@@ -155,13 +182,20 @@ public class PlayState extends DialogStateExtention {
                 Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
                 if (player.getHitbox().intersects(Entities.get(i).getHitbox())) {
                     player.Health--;
+                    AudioM.play("Damage");
+                    shaker.addDamage(0.4f);
                     Entities.remove(i);
                     break;
                 }
-            } else if (Entities.get(i) instanceof PathfindingWorldObject) {
+            } else if (Entities.get(i) instanceof HealthPickup) {
                 Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
-                if (!((NPC) Entities.get(i)).isAlive()) {
+                if (player.getHitbox().intersects(Entities.get(i).getHitbox())) {
+                    player.Health++;
+                    player.HasJump = true;
+                    player.JumpCooling = -0.2f;
+                    AudioM.play("Heal");
                     Entities.remove(i);
+                    break;
                 }
             } else if (Entities.get(i) instanceof NPC) {
                 if (!((NPC) Entities.get(i)).isAlive()) {
@@ -199,7 +233,11 @@ public class PlayState extends DialogStateExtention {
 
         cameraUpdate(player, camera, Entities,8,8, WorldMap.getWidth()*WorldMap.getTileSize()-8, WorldMap.getHeight()*WorldMap.getTileSize()-8);
 
-        if (player.Health > 0) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            MenuOpen = !MenuOpen;
+        }
+
+        if (player.Health > 0 || EasyMode) {
             handleInput();
         }
     }
@@ -217,8 +255,12 @@ public class PlayState extends DialogStateExtention {
 
         WorldMap.Draw(camera, g);
 
+        g.draw(Render.getTexture("LeftTown"), 0,StartingY + Depth*16+16);
+        g.draw(Render.getTexture("Tower"), StartingX,StartingY + Depth*16+16);
+        g.draw(Render.getTexture("RightTown"), StartingX+15*16 - 2,StartingY + Depth*16+16);
+
         for (int i = 0; i < Map.length; i++) {
-            Map[i].Draw(g, camera, gsm, StartingX,i*16);
+            Map[i].Draw(g, camera, gsm, StartingX,StartingY + i*16);
         }
 
         //Block of code renders all the entities
@@ -240,7 +282,7 @@ public class PlayState extends DialogStateExtention {
         }
 
         //Particles
-        //Particles.Draw(g);
+        Particles.Draw(g);
 
         //Renders the GUI for entities
         for (int i = 0; i < Entities.size(); i++) {
@@ -265,60 +307,11 @@ public class PlayState extends DialogStateExtention {
 
         if (GameStateManager.Debug) {
 
-            //Gonna make a debug renderer for the MapGraph, or i guess now? changing that fixed the crashing
-
-            for (int y = 0; y < WorldMap.getHeight(); y++) {
-                for (int x = 0; x < WorldMap.getWidth(); x++) {
-                    switch (MapGraph.getNode(x, y).type) {
-                        case FlatTiledNode.GROUND:
-                            GameStateManager.Render.debugRenderer.setColor(Color.GREEN);
-                            GameStateManager.Render.debugRenderer.rect(x * 16, y * 16, 16, 16);
-                            break;
-                        case FlatTiledNode.COLLIDABLE:
-                            GameStateManager.Render.debugRenderer.setColor(Color.RED);
-                            GameStateManager.Render.debugRenderer.rect(x * 16, y * 16, 16, 16);
-                            break;
-                        default:
-                            //gsm.Render.debugRenderer.setColor(Color.WHITE);
-                            //gsm.Render.debugRenderer.rect(x * 16, y * 16, 16, 16);
-                            break;
-                    }
-                }
-            }
-
-            GameStateManager.Render.debugRenderer.setColor(Color.FIREBRICK);
-            for (int i = 0; i < Entities.size(); i++) {
-                if(Entities.get(i) instanceof PathfindingWorldObject) {
-                    PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
-                    int nodeCount = temp.getPath().getCount();
-                    for (int j = 0; j < nodeCount; j++) {
-                        FlatTiledNode node = temp.getPath().nodes.get(j);
-                        GameStateManager.Render.debugRenderer.rect(node.x * 16 + 4, node.y * 16 + 4, 4, 4);
-                    }
-                }
-            }
-
-            GameStateManager.Render.debugRenderer.setColor(Color.FOREST);
-            for (int i = 0; i < Entities.size(); i++) {
-                if(Entities.get(i) instanceof PathfindingWorldObject) {
-                    PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
-                    if (temp.getDestination() != null) {
-                        GameStateManager.Render.debugRenderer.rect(temp.getDestination().x + 2, temp.getDestination().y + 2, 12, 12);
-                    }
-                }
-            }
-
-
-
             for (int i = 0; i < Collisions.size(); i++) {
 
                 //The bottom
                 GameStateManager.Render.debugRenderer.setColor(Color.YELLOW);
                 GameStateManager.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
-
-                //The top of the Cube
-                GameStateManager.Render.debugRenderer.setColor(Color.RED);
-                GameStateManager.Render.debugRenderer.rect(Collisions.get(i).getPrism().min.x, Collisions.get(i).getPrism().min.y + Collisions.get(i).getPrism().getDepth() / 2 + Collisions.get(i).getPrism().min.z / 2, Collisions.get(i).getPrism().getWidth(), Collisions.get(i).getPrism().getHeight());
 
                 GameStateManager.Render.debugRenderer.setColor(Color.ORANGE);
             }
@@ -330,18 +323,11 @@ public class PlayState extends DialogStateExtention {
                 GameStateManager.Render.debugRenderer.setColor(Color.GREEN);
                 GameStateManager.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
 
-                //The top of the Cube
-                GameStateManager.Render.debugRenderer.setColor(Color.BLUE);
-                GameStateManager.Render.debugRenderer.rect(Entities.get(i).getHitbox().min.x, Entities.get(i).getHitbox().min.y + Entities.get(i).getHitbox().getDepth() / 2 + Entities.get(i).getHitbox().min.z / 2, Entities.get(i).getHitbox().getWidth(), Entities.get(i).getHitbox().getHeight());
-
             }
 
             //The bottom of the PLAYER
             GameStateManager.Render.debugRenderer.setColor(Color.YELLOW);
             GameStateManager.Render.debugRenderer.rect(player.getHitbox().min.x, player.getHitbox().min.y + player.getHitbox().min.z / 2, player.getHitbox().getWidth(), player.getHitbox().getHeight());
-            //The top of the Cube
-            GameStateManager.Render.debugRenderer.setColor(Color.RED);
-            GameStateManager.Render.debugRenderer.rect(player.getHitbox().min.x, player.getHitbox().min.y + player.getHitbox().getDepth() / 2 + player.getHitbox().min.z / 2, player.getHitbox().getWidth(), player.getHitbox().getHeight());
 
             GameStateManager.Render.debugRenderer.setColor(Color.PURPLE);
             GameStateManager.Render.debugRenderer.box(player.getIntereactBox().min.x, player.getIntereactBox().min.y, player.getIntereactBox().min.z, player.getIntereactBox().getWidth(), player.getIntereactBox().getHeight(), player.getIntereactBox().getDepth());
@@ -386,15 +372,6 @@ public class PlayState extends DialogStateExtention {
 
     private void handleInput() {
 
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            MenuOpen = !MenuOpen;
-        }
-
-        if (Gdx.input.isKeyJustPressed(Input.Keys.H)) {
-           player.Health--;
-           shaker.addDamage(0.5f);
-        }
-
         if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
             if (DialogOpen) {
                 DialogNext();
@@ -415,11 +392,20 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            player.setVelocityY(player.getVelocity().y + 1);
+        if (player.HasJump && player.JumpCooling > player.JumpCooldown) {
+            if (Gdx.input.isKeyPressed(Input.Keys.W) || Gdx.input.isKeyPressed(Input.Keys.SPACE)) {
+                player.setVelocityY(0);
+                player.setVelocityY(15);
+                player.JustJumped = 0;
+                player.JumpCooling = -0.2f;
+                player.HasJump = false;
+                player.LastOnGroundY = player.getPosition().y;
+                AudioM.play("Jump");
+                Particles.AddParticleEffect("Jump", player.getPosition().x + player.getSize().x/2, player.getPosition().y);
+            }
         }
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            player.setVelocityY(player.getVelocity().y - 1);
+            //player.setVelocityY(player.getVelocity().y - 1);
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
             player.setVelocityX(player.getVelocity().x + 1);
@@ -457,6 +443,10 @@ public class PlayState extends DialogStateExtention {
         Vector2 FocalPoint = new Vector2(mainFocus.getPosition().x, mainFocus.getPosition().y);
         float totalFocusPoints = 1;
 
+        if (mainFocus.getPosition().y < Depth*16-128) {
+            FocalPoint.y -= cam.viewportHeight/4;
+        }
+
         for (int i = 0; i < Entities.size(); i++) {
             if (Entities.get(i).FocusStrength != 0) {
                 if (mainFocus.getPosition().dst(Entities.get(i).getPosition()) <= 200) {
@@ -489,6 +479,7 @@ public class PlayState extends DialogStateExtention {
             FocalPoint.y = MaxY - cam.viewportHeight / 2;
         }
 
+        //(cam.position.x - FocalPoint.x) * 0.005f * Gdx.graphics.getDeltaTime();
         cam.position.set((int) (FocalPoint.x), (int) (FocalPoint.y), 0);
 
         cam.update();
@@ -498,12 +489,12 @@ public class PlayState extends DialogStateExtention {
     public void dispose() {
         Collisions.clear();
         Entities.clear();
-        AudioM.stopMusic(MusicID);
+        BGMusicID.stop();
     }
 
     @Override
     public void Shutdown() {
-        AudioM.stopMusic(MusicID);
+        BGMusicID.stop();
     }
 
 }

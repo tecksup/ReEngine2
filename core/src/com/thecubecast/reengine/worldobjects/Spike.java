@@ -23,6 +23,6 @@ public class Spike extends WorldObject {
 
     @Override
     public void draw(SpriteBatch batch, float Time) {
-        batch.draw(Render.getTexture("Gunter"), getPosition().x, getPosition().y);
+        batch.draw(Render.getTexture("011"), getPosition().x, getPosition().y);
     }
 }

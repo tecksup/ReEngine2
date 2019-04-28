@@ -19,6 +19,9 @@ public class SoundManager {
 
     //Define all sound objects
     Sound Click;
+    Sound Damage;
+    Sound Jump;
+    Sound Heal;
 
     //Define all your music objects
     private List<Music> HandledMusic = new ArrayList<>();
@@ -49,6 +52,9 @@ public class SoundManager {
         Gdx.app.getPreferences("properties").flush();
 
         Click = Gdx.audio.newSound(Gdx.files.internal("Music/Sound/menu-clik.wav"));
+        Jump = Gdx.audio.newSound(Gdx.files.internal("Music/Sound/jump.wav"));
+        Damage = Gdx.audio.newSound(Gdx.files.internal("Music/Sound/hurt.wav"));
+        Heal = Gdx.audio.newSound(Gdx.files.internal("Music/Sound/heal.wav"));
 
     }
 
@@ -75,12 +81,35 @@ public class SoundManager {
             long temp = Click.play(SoundVolume * MasterVolume);
             SoundIds.put(soundName, temp);
         }
+        if (soundName.equals("Jump")) {
+            long temp = Jump.play(SoundVolume * MasterVolume);
+            SoundIds.put(soundName, temp);
+        }
+        if (soundName.equals("Damage")) {
+            long temp = Damage.play(SoundVolume * MasterVolume);
+            SoundIds.put(soundName, temp);
+        }
+        if (soundName.equals("Heal")) {
+            long temp = Heal.play(SoundVolume * MasterVolume);
+            SoundIds.put(soundName, temp);
+        }
     }
 
     public void pause(String soundName) {
         if (soundName.equals("Click")) {
             long temp = SoundIds.get(soundName);
             Click.pause(temp);
+        }
+        if (soundName.equals("Jump")) {
+            long temp = SoundIds.get(soundName);
+            Jump.pause(temp);
+        }
+        if (soundName.equals("Damage")) {
+            long temp = SoundIds.get(soundName);
+            Damage.pause(temp);
+        }if (soundName.equals("Heal")) {
+            long temp = SoundIds.get(soundName);
+            Heal.pause(temp);
         }
     }
 

@@ -5,7 +5,7 @@ import com.thecubecast.reengine.gamestates.GameState;
 
 public class MovingSpike extends Spike {
 
-    public MovingSpike(int X, int Y) {
+    public MovingSpike(int X, int Y, int Range) {
         super(X, Y);
     }
 

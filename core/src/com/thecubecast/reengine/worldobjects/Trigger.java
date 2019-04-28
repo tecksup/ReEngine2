@@ -312,10 +312,10 @@ public class Trigger extends WorldObject {
                 } catch (Exception e) {
                     System.out.println("Exception " + e);
                 }
-            } else if (Commands[i][0].equals("MapChange")) {
+            } else if (Commands[i][0].equals("Win")) {
                 try {
-                    if (Commands[i][1].equals("kill")) {
-
+                    if (player instanceof FallingPlayer && ((FallingPlayer) player).Health == 1) {
+                        ((FallingPlayer) player).Health = 2;
                     }
                 } catch (Exception e) {
                     System.out.println("Exception " + e);

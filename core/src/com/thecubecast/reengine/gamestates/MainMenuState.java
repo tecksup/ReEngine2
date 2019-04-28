@@ -4,6 +4,7 @@ package com.thecubecast.reengine.gamestates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -12,12 +13,14 @@ import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.graphics.scene2d.UIFSM;
 
+import static com.thecubecast.reengine.data.GameStateManager.AudioM;
+
 
 public class MainMenuState extends GameState {
 
     OrthographicCamera cameraGui;
 
-    int BGMusicID;
+    Music BGMusicID;
 
     Texture Background = new Texture(Gdx.files.internal("Images/image_04.png"));
 
@@ -33,12 +36,12 @@ public class MainMenuState extends GameState {
         //Particles
         Particles = new ParticleHandler();
 
-        gsm.DiscordManager.setPresenceState("In Menus");
+        gsm.DiscordManager.setPresenceState("UpFall - In Menu");
 
         cameraGui = new OrthographicCamera();
         gsm.UI.stage.getViewport().setCamera(cameraGui);
 
-        //BGMusicID = AudioM.playMusic("menu.wav", true, true);
+        BGMusicID = AudioM.playMusic("menu.wav", true, true);
     }
 
     public void update() {
@@ -95,12 +98,12 @@ public class MainMenuState extends GameState {
 
     @Override
     public void Shutdown() {
-        //AudioM.stopMusic(BGMusicID);
+        BGMusicID.stop();
     }
 
     @Override
     public void dispose() {
-        //AudioM.stopMusic(BGMusicID);
+        BGMusicID.stop();
     }
 
 }

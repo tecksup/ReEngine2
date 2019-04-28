@@ -23,6 +23,7 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
 public class GameStateManager {
     public static boolean Debug = false;
+    public static boolean EasyMode = false;
 
     public Vector3 PlayerSpawn = new Vector3(0,0,0);
 
@@ -147,10 +148,6 @@ public class GameStateManager {
                 break;
             case EDITOR:
                 gameState = new EditorState(this);
-                gameState.init();
-                break;
-            case MULTI:
-                gameState = new MultiplayerTestState(this);
                 gameState.init();
                 break;
         }

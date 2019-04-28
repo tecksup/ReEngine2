@@ -1,103 +1,292 @@
 
 atlas.png
-size: 256,32
+size: 512,512
 format: RGBA8888
 filter: Nearest,Nearest
 repeat: none
 000
   rotate: false
-  xy: 43, 15
+  xy: 227, 200
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 001
   rotate: false
-  xy: 61, 15
+  xy: 483, 471
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 002
   rotate: false
-  xy: 79, 15
+  xy: 1, 1
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 003
   rotate: false
-  xy: 97, 15
+  xy: 22, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 004
   rotate: false
-  xy: 115, 15
+  xy: 227, 182
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 005
   rotate: false
-  xy: 133, 15
+  xy: 245, 200
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 006
   rotate: false
-  xy: 151, 15
+  xy: 483, 453
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 007
   rotate: false
-  xy: 169, 15
+  xy: 40, 22
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 008
   rotate: false
-  xy: 187, 15
+  xy: 227, 164
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
+009
+  rotate: false
+  xy: 245, 182
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+010
+  rotate: false
+  xy: 263, 200
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+011
+  rotate: false
+  xy: 483, 435
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+012
+  rotate: false
+  xy: 263, 168
+  size: 13, 12
+  orig: 13, 12
+  offset: 0, 0
+  index: 0
+012
+  rotate: false
+  xy: 281, 186
+  size: 13, 12
+  orig: 13, 12
+  offset: 0, 0
+  index: 1
+012
+  rotate: false
+  xy: 281, 186
+  size: 13, 12
+  orig: 13, 12
+  offset: 0, 0
+  index: 3
+012
+  rotate: false
+  xy: 299, 204
+  size: 13, 12
+  orig: 13, 12
+  offset: 0, 0
+  index: 2
+013
+  rotate: false
+  xy: 58, 22
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+014
+  rotate: false
+  xy: 227, 146
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+015
+  rotate: false
+  xy: 245, 164
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+016
+  rotate: false
+  xy: 263, 182
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+017
+  rotate: false
+  xy: 281, 200
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+018
+  rotate: false
+  xy: 483, 417
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+019
+  rotate: false
+  xy: 76, 22
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+020
+  rotate: false
+  xy: 227, 128
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Falling
+  rotate: false
+  xy: 94, 26
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 0
+JumpR
+  rotate: false
+  xy: 94, 26
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 0
+Falling
+  rotate: false
+  xy: 227, 114
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 1
+Falling
+  rotate: false
+  xy: 245, 132
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 2
 Gunter
   rotate: false
-  xy: 1, 12
+  xy: 483, 489
   size: 19, 19
   orig: 19, 19
   offset: 0, 0
   index: -1
 Heart
   rotate: false
-  xy: 43, 1
+  xy: 483, 403
   size: 13, 12
   orig: 13, 12
   offset: 0, 0
   index: -1
+JumpR
+  rotate: false
+  xy: 263, 154
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 1
+LeftTown
+  rotate: false
+  xy: 1, 332
+  size: 480, 176
+  orig: 480, 176
+  offset: 0, 0
+  index: -1
+RightTown
+  rotate: false
+  xy: 1, 218
+  size: 482, 112
+  orig: 482, 112
+  offset: 0, 0
+  index: -1
 Shadow
   rotate: false
-  xy: 223, 23
+  xy: 314, 208
   size: 16, 8
   orig: 16, 8
   offset: 0, 0
   index: -1
+Tower
+  rotate: false
+  xy: 1, 40
+  size: 224, 176
+  orig: 224, 176
+  offset: 0, 0
+  index: -1
+WalkingR
+  rotate: false
+  xy: 483, 389
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 0
+WalkingR
+  rotate: false
+  xy: 108, 26
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 1
+WalkingR
+  rotate: false
+  xy: 227, 100
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 2
+WalkingR
+  rotate: false
+  xy: 483, 375
+  size: 12, 12
+  orig: 12, 12
+  offset: 0, 0
+  index: 3
 Yellow_Marker
   rotate: false
-  xy: 205, 15
+  xy: 245, 146
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
 face
   rotate: false
-  xy: 22, 12
+  xy: 1, 19
   size: 19, 19
   orig: 19, 19
   offset: 0, 0

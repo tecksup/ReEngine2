@@ -25,6 +25,8 @@ public class FallingLayer {
     // -1 is empty space
     private int[] Tiles;
 
+    public int Prefab = -1;
+
 
     public FallingLayer(int size) {
         this.size = size;
@@ -39,8 +41,33 @@ public class FallingLayer {
                 Tiles[i] = -1;
                 if (tempRand.nextInt(10) == 1) {
                     Tiles[i] = 2;
+                } else if (tempRand.nextInt(3) == 1) {
+                    Tiles[i] = 1;
                 }
             }
+        }
+    }
+
+    public FallingLayer(int size, int Prefab) {
+        this.size = size;
+        this.Prefab = Prefab;
+        Tiles = new int[size];
+        switch (Prefab) {
+            default:
+                Tiles = new int[] {6,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,7};
+                break;
+            case 0:
+                Tiles = new int[] {6,-1,-1,-1,-1,-1,-1,-1,0,0,0,0,0,1};
+                break;
+            case 1:
+                Tiles = new int[] {1,0,0,0,0,0,-1,-1,-1,-1,-1,-1,-1,7};
+                break;
+            case 2:
+                Tiles = new int[] {6,-1,-1,-1,-1,0,0,0,0,0,-1,-1,-1,7};
+                break;
+            case 3:
+                Tiles = new int[] {1,0,0,0,-1,0,0,0,0,-1,-1,-1,-1,7};
+                break;
         }
     }
 
