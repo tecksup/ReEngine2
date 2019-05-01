@@ -286,28 +286,31 @@ public class PlayState extends DialogStateExtention {
                 }
             }
 
-            GameStateManager.Render.debugRenderer.setColor(Color.FIREBRICK);
-            for (int i = 0; i < Entities.size(); i++) {
-                if(Entities.get(i) instanceof PathfindingWorldObject) {
-                    PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
-                    int nodeCount = temp.getPath().getCount();
-                    for (int j = 0; j < nodeCount; j++) {
-                        FlatTiledNode node = temp.getPath().nodes.get(j);
-                        GameStateManager.Render.debugRenderer.rect(node.x * 16 + 4, node.y * 16 + 4, 4, 4);
+            if (false) {
+
+                GameStateManager.Render.debugRenderer.setColor(Color.FIREBRICK);
+                for (int i = 0; i < Entities.size(); i++) {
+                    if (Entities.get(i) instanceof PathfindingWorldObject) {
+                        PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
+                        int nodeCount = temp.getPath().getCount();
+                        for (int j = 0; j < nodeCount; j++) {
+                            FlatTiledNode node = temp.getPath().nodes.get(j);
+                            GameStateManager.Render.debugRenderer.rect(node.x * 16 + 4, node.y * 16 + 4, 4, 4);
+                        }
                     }
                 }
-            }
 
-            GameStateManager.Render.debugRenderer.setColor(Color.FOREST);
-            for (int i = 0; i < Entities.size(); i++) {
-                if(Entities.get(i) instanceof PathfindingWorldObject) {
-                    PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
-                    if (temp.getDestination() != null) {
-                        GameStateManager.Render.debugRenderer.rect(temp.getDestination().x + 2, temp.getDestination().y + 2, 12, 12);
+                GameStateManager.Render.debugRenderer.setColor(Color.FOREST);
+                for (int i = 0; i < Entities.size(); i++) {
+                    if (Entities.get(i) instanceof PathfindingWorldObject) {
+                        PathfindingWorldObject temp = (PathfindingWorldObject) Entities.get(i);
+                        if (temp.getDestination() != null) {
+                            GameStateManager.Render.debugRenderer.rect(temp.getDestination().x + 2, temp.getDestination().y + 2, 12, 12);
+                        }
                     }
                 }
-            }
 
+            }
 
 
             for (int i = 0; i < Collisions.size(); i++) {
@@ -358,8 +361,8 @@ public class PlayState extends DialogStateExtention {
         Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
         camera.unproject(pos);
         GameStateManager.Render.debugRenderer.setColor(Color.WHITE);
-        GameStateManager.Render.debugRenderer.line(player.getPosition(), pos);
-        player.FacingAngle = (float) ((Math.atan2(player.getPosition().x - pos.x, -(player.getPosition().y - pos.y)) * 180.0d / Math.PI));
+        //GameStateManager.Render.debugRenderer.line(new Vector3(player.getPosition().x + (player.getSize().x/2), player.getPosition().y + (player.getSize().y/2), player.getPosition().z), pos);
+        player.FacingAngle = (float) ((Math.atan2(player.getPosition().x + (player.getSize().x/2) - pos.x, -(player.getPosition().y + (player.getSize().y/2) - pos.y)) * 180.0d / Math.PI));
         //System.out.println(player.FacingAngle);
 
 

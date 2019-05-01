@@ -132,35 +132,99 @@ public class ProtoType_Player extends WorldObject {
 
         else if (FacingAngle >= 45 && FacingAngle <= 90) {
             System.out.println("2");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y-4,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y+6,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
         else if (FacingAngle >= 90 && FacingAngle <= 135) {
             System.out.println("3");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
         else if (FacingAngle >= 135 && FacingAngle <= 180) {
             System.out.println("4");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x-4,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+20,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
 
 
         else if (FacingAngle < 0 && FacingAngle >= -45) {
             System.out.println("5");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x-4,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+20,
+                            getPosition().y + getSize().y+14,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
         else if (FacingAngle < -45 && FacingAngle >= -90) {
             System.out.println("6");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+16,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
         else if (FacingAngle < -90 && FacingAngle >= -135) {
             System.out.println("7");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y-4,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+4,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
         else if (FacingAngle < -135 && FacingAngle >= -180) {
             System.out.println("8");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
-        RectPla = new BoundingBox(new Vector3(getPosition().x + (1 * getSize().x), getPosition().y - 12, getPosition().z), new Vector3(getPosition().x + (1 * getSize().x) + getSize().x, getPosition().y + getSize().y + 8, getPosition().z + getSize().z));
+        RectPla = new BoundingBox(
+                new Vector3(
+                    getPosition().x + (1 * getSize().x),
+                    getPosition().y - 12,
+                        getPosition().z),
+                new Vector3(
+                        getPosition().x + (1 * getSize().x) + getSize().x,
+                        getPosition().y + getSize().y + 8,
+                        getPosition().z + getSize().z));
 
         return RectPla;
     }
