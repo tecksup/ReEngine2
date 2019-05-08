@@ -1,8 +1,12 @@
 package com.thecubecast.reengine.worldobjects;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.thecubecast.reengine.data.GameStateManager;
+import com.thecubecast.reengine.data.dcputils.TextureAnimation;
 import com.thecubecast.reengine.gamestates.GameState;
 
 import static com.thecubecast.reengine.data.GameStateManager.Render;
@@ -21,12 +25,15 @@ public class ProtoType_Player extends WorldObject {
     public float RollingTime;
     public boolean Rolling;
 
+    TextureAnimation<TextureAtlas.AtlasRegion> Walking;
+
     GameState G;
 
     public ProtoType_Player(int x, int y, int z, GameState G) {
         super(x,y,z, new Vector3(16,16,2));
         this.setState(type.Dynamic);
         this.G = G;
+        Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("adventurer-run"), 0.1f);
     }
 
     @Override
@@ -107,7 +114,42 @@ public class ProtoType_Player extends WorldObject {
 
     @Override
     public void draw(SpriteBatch batch, float Time) {
-        batch.draw(Render.getTexture("Eggplant"), getPosition().x, getPosition().y, 0,0,16,16,1,1,FacingAngle);
+
+        Walking.update(Gdx.graphics.getDeltaTime());
+
+        batch.draw(Walking.getFrame(), getPosition().x, getPosition().y);
+        /*
+        if (FacingAngle >= 0 && FacingAngle < 22.5) {
+            System.out.println("1");
+            batch.draw(Walking.getFrame(), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 22.5 && FacingAngle < 67.5) {
+            System.out.println("2");
+            batch.draw(Render.getTexture("player_right"), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 67.5 && FacingAngle < 112.5) {
+            System.out.println("3");
+            batch.draw(Render.getTexture("player_up"), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 112.5 && FacingAngle < 157.5) {
+            System.out.println("4");
+            batch.draw(Render.getTexture("player_left"), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 157.5 && FacingAngle < 202.5) {
+            System.out.println("5");
+            batch.draw(Render.getTexture("player_left"), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 202.5 && FacingAngle < 247.5) {
+            System.out.println("6");
+            batch.draw(Render.getTexture("player_left"), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 247.5 && FacingAngle < 292.5) {
+            System.out.println("7");
+            batch.draw(Render.getTexture("player_down"), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 292.5 && FacingAngle < 337.5) {
+            System.out.println("8");
+            batch.draw(Render.getTexture("player_right"), getPosition().x, getPosition().y);
+        } else if (FacingAngle >= 337.5 && FacingAngle <= 360) {
+            System.out.println("9");
+            batch.draw(Render.getTexture("player_right"), getPosition().x, getPosition().y);
+        }
+
+        batch.draw(Render.getTexture("sword"), getPosition().x + getSize().x/2, getPosition().y, 0,0,32,32,1,1,FacingAngle);
+        */
     }
 
     public BoundingBox getAttackBox() {
@@ -118,82 +160,7 @@ public class ProtoType_Player extends WorldObject {
     public BoundingBox getIntereactBox() {
         BoundingBox RectPla;
 
-        if (FacingAngle >= 0 && FacingAngle <= 45) {
-            System.out.println("1");
-            RectPla = new BoundingBox(
-                    new Vector3(getPosition().x - 16,
-                                 getPosition().y+8,
-                                   getPosition().z),
-                    new Vector3(getPosition().x+8,
-                               getPosition().y + getSize().y+16,
-                               getPosition().z + getSize().z));
-            return RectPla;
-        }
-
-        else if (FacingAngle >= 45 && FacingAngle <= 90) {
-            System.out.println("2");
-            RectPla = new BoundingBox(
-                    new Vector3(getPosition().x - 16,
-                            getPosition().y-4,
-                            getPosition().z),
-                    new Vector3(getPosition().x+8,
-                            getPosition().y + getSize().y+6,
-                            getPosition().z + getSize().z));
-            return RectPla;
-        }
-
-        else if (FacingAngle >= 90 && FacingAngle <= 135) {
-            System.out.println("3");
-            RectPla = new BoundingBox(
-                    new Vector3(getPosition().x - 16,
-                            getPosition().y-16,
-                            getPosition().z),
-                    new Vector3(getPosition().x+8,
-                            getPosition().y + getSize().y-8,
-                            getPosition().z + getSize().z));
-            return RectPla;
-        }
-
-        else if (FacingAngle >= 135 && FacingAngle <= 180) {
-            System.out.println("4");
-            RectPla = new BoundingBox(
-                    new Vector3(getPosition().x-4,
-                            getPosition().y-16,
-                            getPosition().z),
-                    new Vector3(getPosition().x+20,
-                            getPosition().y + getSize().y-8,
-                            getPosition().z + getSize().z));
-            return RectPla;
-        }
-
-
-
-        else if (FacingAngle < 0 && FacingAngle >= -45) {
-            System.out.println("5");
-            RectPla = new BoundingBox(
-                    new Vector3(getPosition().x-4,
-                            getPosition().y+8,
-                            getPosition().z),
-                    new Vector3(getPosition().x+20,
-                            getPosition().y + getSize().y+14,
-                            getPosition().z + getSize().z));
-            return RectPla;
-        }
-
-        else if (FacingAngle < -45 && FacingAngle >= -90) {
-            System.out.println("6");
-            RectPla = new BoundingBox(
-                    new Vector3(getPosition().x+8,
-                            getPosition().y+8,
-                            getPosition().z),
-                    new Vector3(getPosition().x+32,
-                            getPosition().y + getSize().y+16,
-                            getPosition().z + getSize().z));
-            return RectPla;
-        }
-
-        else if (FacingAngle < -90 && FacingAngle >= -135) {
-            System.out.println("7");
+        if (FacingAngle >= 0 && FacingAngle < 22.5) {
             RectPla = new BoundingBox(
                     new Vector3(getPosition().x+8,
                             getPosition().y-4,
@@ -202,16 +169,77 @@ public class ProtoType_Player extends WorldObject {
                             getPosition().y + getSize().y+4,
                             getPosition().z + getSize().z));
             return RectPla;
-        }
-
-        else if (FacingAngle < -135 && FacingAngle >= -180) {
-            System.out.println("8");
+        } else if (FacingAngle >= 22.5 && FacingAngle < 67.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+16,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 67.5 && FacingAngle < 112.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x-4,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+20,
+                            getPosition().y + getSize().y+14,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 112.5 && FacingAngle < 157.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y+16,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 157.5 && FacingAngle < 202.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y-4,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y+6,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 202.5 && FacingAngle < 247.5) {
+            System.out.println(":5");
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 247.5 && FacingAngle < 292.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x-4,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+20,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 292.5 && FacingAngle < 337.5) {
             RectPla = new BoundingBox(
                     new Vector3(getPosition().x+8,
                             getPosition().y-16,
                             getPosition().z),
                     new Vector3(getPosition().x+32,
                             getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 337.5 && FacingAngle <= 360) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y-4,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+4,
                             getPosition().z + getSize().z));
             return RectPla;
         }

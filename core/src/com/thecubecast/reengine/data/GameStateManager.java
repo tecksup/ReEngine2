@@ -196,6 +196,8 @@ public class GameStateManager {
             gameState.update();
         }
 
+        UI.update();
+
         AudioM.update();
 
         DiscordManager.UpdatePresence();

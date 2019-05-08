@@ -68,11 +68,13 @@ public class UIFSM implements Telegraph {
 
     public void Draw() {
 
-        stateMachine.update();
-
         stage.getViewport().update(GameStateManager.UIWidth, GameStateManager.UIHeight, true);
         stage.draw();
         stage.getViewport().update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
+    }
+
+    public void update() {
+        stateMachine.update();
     }
 
     public void reSize() {

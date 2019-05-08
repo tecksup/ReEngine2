@@ -898,8 +898,10 @@ public enum UI_state implements State<UIFSM> {
         }
     };
 
+    public float ScrollingSpeed = 0;
+
     public void ControllerCheck(Table table) {
-        /*if (ctm.controllers.size() > 0) {
+        if (ctm.controllers.size() > 0) {
             for (int i = 0; i < table.getCells().size; i++) {
                 if (table.getCells().get(i).getActor() instanceof TkTextButton) {
                     int nextSelection = i;
@@ -907,11 +909,19 @@ public enum UI_state implements State<UIFSM> {
                         //Gdx.app.log("menu", "i is " + i);
                         if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) < -0.2f || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
                             ((TkTextButton) table.getCells().get(i).getActor()).Selected = false;
-                            nextSelection += 1;
+                            if (ScrollingSpeed % 5 == 0) {
+                                nextSelection += 1;
+                            }
+                            ScrollingSpeed++;
 
                         } else if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) > 0.2f || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
                             ((TkTextButton) table.getCells().get(i).getActor()).Selected = false;
-                            nextSelection -= 1;
+                            if (ScrollingSpeed % 5 == 0) {
+                                nextSelection -= 1;
+                            }
+                            ScrollingSpeed++;
+                        } else {
+                            ScrollingSpeed = 0;
                         }
 
                         if (nextSelection < 0)
@@ -924,7 +934,7 @@ public enum UI_state implements State<UIFSM> {
                         }
 
                         if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                            Gdx.app.debug("", "");
+                            //Gdx.app.debug("", "");
                             Array<EventListener> listeners = table.getCells().get(i).getActor().getListeners();
                             for (int b = 0; b < listeners.size; b++) {
                                 if (listeners.get(b) instanceof ClickListener) {
@@ -943,7 +953,7 @@ public enum UI_state implements State<UIFSM> {
                 }
             }
 
-        }*/
+        }
     }
 
 

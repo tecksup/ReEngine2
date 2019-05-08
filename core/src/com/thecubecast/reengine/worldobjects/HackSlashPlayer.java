@@ -15,27 +15,37 @@ public class HackSlashPlayer extends WorldObject {
     public int Health = 100;
 
     public float AttackTime;
+    public boolean Attacking;
 
     //True is left, False is right
     boolean Facing = true;
+
+    public float FacingAngle;
 
     public float RollingTime;
     public boolean Rolling;
 
     TextureAnimation<TextureAtlas.AtlasRegion> Walking;
     TextureAnimation<TextureAtlas.AtlasRegion> Roll;
+    TextureAnimation<TextureAtlas.AtlasRegion> Attack1;
+    TextureAnimation<TextureAtlas.AtlasRegion> Attack2;
+    TextureAnimation<TextureAtlas.AtlasRegion> Attack3;
     TextureAnimation<TextureAtlas.AtlasRegion> Idle;
 
     TextureRegion Shadow;
 
-    GameStateManager gsm;
-    public HackSlashPlayer(int x, int y, GameStateManager gsm) {
+    GameState G;
+
+    public HackSlashPlayer(int x, int y, int z, GameState G) {
         super(x,y,0, new Vector3(16,16,2));
         this.setState(type.Dynamic);
-        this.gsm = gsm;
-        Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("player"), 0.1f);
-        Roll = new TextureAnimation<>(GameStateManager.Render.getTextures("player_roll"), 0.05f);
-        Idle = new TextureAnimation<>(GameStateManager.Render.getTextures("player_idle"), 0.1f);
+        this.G = G;
+        Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("adventurer-run"), 0.1f);
+        Roll = new TextureAnimation<>(GameStateManager.Render.getTextures("adventurer-smrslt"), 0.05f);
+        Idle = new TextureAnimation<>(GameStateManager.Render.getTextures("adventurer-idle"), 0.1f);
+        Attack1 = new TextureAnimation<>(GameStateManager.Render.getTextures("adventurer-attack1"), 0.1f);
+        Attack2 = new TextureAnimation<>(GameStateManager.Render.getTextures("adventurer-attack2"), 0.1f);
+        Attack3 = new TextureAnimation<>(GameStateManager.Render.getTextures("adventurer-attack3"), 0.1f);
         Shadow = GameStateManager.Render.getTexture("Shadow");
     }
 
@@ -46,6 +56,19 @@ public class HackSlashPlayer extends WorldObject {
 
     @Override
     public void update(float delta, GameState G) {
+
+        if (Attack1.hasFinishedOneLoop()) {
+            Attacking = false;
+            Attack1.reset();
+        }
+
+        if (!Attacking) {
+            if (getVelocity().x > 0.1f ) {
+                Facing = false;
+            } else if (getVelocity().x < -0.1f) {
+                Facing = true;
+            }
+        }
 
         if (AttackTime - delta > 0)
             AttackTime -= delta;
@@ -59,6 +82,10 @@ public class HackSlashPlayer extends WorldObject {
         }
 
         if (getState().equals(type.Dynamic)) {
+
+            if (Attacking) {
+                setVelocity(0,0,0);
+            }
 
             super.setVelocityX((getVelocity().x + getVelocity().x * -1 * 0.25f));
             super.setVelocityY((getVelocity().y + getVelocity().y * -1 * 0.25f));
@@ -131,33 +158,36 @@ public class HackSlashPlayer extends WorldObject {
                 // batch.draw(frame, Facing ? (int)getPosition().x + (frame.getRegionWidth()) : (int)getPosition().x, (int)getPosition().y + (int)getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
 
                 if (getVelocity().x < 0)
-                    batch.draw(frame, (int) getPosition().x + (frame.getRegionWidth()), (int) getPosition().y + (int) getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), -1f, 1f, 0f);
+                    batch.draw(frame,  Facing ? (int) getPosition().x+34: (int) getPosition().x-(37/2)+4, getPosition().y-6, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
                 else
-                    batch.draw(frame, (int) getPosition().x, (int) getPosition().y + (int) getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), 1f, 1f, 0f);
+                    batch.draw(frame,  Facing ? (int) getPosition().x+34: (int) getPosition().x-(37/2)+4, getPosition().y-6, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
                 if (Roll.hasFinishedOneLoop()) {
                     Rolling = false;
                     Roll.reset();
                     Roll.pause();
                 }
             } else {
-                if (AttackTime > 0.1f) {
-
-                } else {
-
-                }
-
-                if (Math.abs(this.getVelocity().y) >= 0.5f || Math.abs(this.getVelocity().x) >= 0.5f) {
+                if (Attacking) {
                     batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
                     //running animation
-                    Walking.update(Gdx.graphics.getDeltaTime());
-                    TextureRegion frame = Walking.getFrame();
-                    batch.draw(frame, Facing ? (int) getPosition().x + (frame.getRegionWidth()) : (int) getPosition().x, (int) getPosition().y + (int) getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
-                } else if (this.getVelocity().y < 0.5f || this.getVelocity().x < 0.5f) {
-                    batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
-                    //Idle animation
-                    Idle.update(Gdx.graphics.getDeltaTime());
-                    TextureRegion frame = Idle.getFrame();
-                    batch.draw(frame, Facing ? (int) getPosition().x + (frame.getRegionWidth()) : (int) getPosition().x, (int) getPosition().y + (int) getPosition().z / 2, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
+                    Attack1.update(Gdx.graphics.getDeltaTime());
+                    TextureRegion frame = Attack1.getFrame();
+                    batch.draw(frame, Facing ? (int) getPosition().x+34: (int) getPosition().x-(37/2)+4, getPosition().y, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
+
+                } else {
+                    if (Math.abs(this.getVelocity().y) >= 0.5f || Math.abs(this.getVelocity().x) >= 0.5f) {
+                        batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
+                        //running animation
+                        Walking.update(Gdx.graphics.getDeltaTime());
+                        TextureRegion frame = Walking.getFrame();
+                        batch.draw(frame,  Facing ? (int) getPosition().x+34: (int) getPosition().x-(37/2)+4, getPosition().y, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
+                    } else if (this.getVelocity().y < 0.5f || this.getVelocity().x < 0.5f) {
+                        batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
+                        //Idle animation
+                        Idle.update(Gdx.graphics.getDeltaTime());
+                        TextureRegion frame = Idle.getFrame();
+                        batch.draw(frame,  Facing ? (int) getPosition().x+34: (int) getPosition().x-(37/2)+4, getPosition().y, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
+                    }
                 }
 
 
@@ -175,15 +205,106 @@ public class HackSlashPlayer extends WorldObject {
     }
 
     public BoundingBox getIntereactBox() {
-        BoundingBox RectPla = new BoundingBox();
+        BoundingBox RectPla;
 
-        if (isFacing()) {
-            RectPla = new BoundingBox(new Vector3(getPosition().x + (-1 * getSize().x), getPosition().y - 12, getPosition().z), new Vector3(getPosition().x + (-1 * getSize().x) + getSize().x, getPosition().y + getSize().y + 8, getPosition().z + getSize().z));
-        } else {
-            RectPla = new BoundingBox(new Vector3(getPosition().x + (1 * getSize().x), getPosition().y - 12, getPosition().z), new Vector3(getPosition().x + (1 * getSize().x) + getSize().x, getPosition().y + getSize().y + 8, getPosition().z + getSize().z));
+        if (FacingAngle >= 0 && FacingAngle < 22.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y-4,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+4,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 22.5 && FacingAngle < 67.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+16,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 67.5 && FacingAngle < 112.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x-4,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+20,
+                            getPosition().y + getSize().y+14,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 112.5 && FacingAngle < 157.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y+8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y+16,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 157.5 && FacingAngle < 202.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y-4,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y+6,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 202.5 && FacingAngle < 247.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 247.5 && FacingAngle < 292.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x-4,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+20,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 292.5 && FacingAngle < 337.5) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y-16,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y-8,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else if (FacingAngle >= 337.5 && FacingAngle <= 360) {
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y-4,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+4,
+                            getPosition().z + getSize().z));
+            return RectPla;
         }
 
+        RectPla = new BoundingBox(
+                new Vector3(
+                        getPosition().x + (1 * getSize().x),
+                        getPosition().y - 12,
+                        getPosition().z),
+                new Vector3(
+                        getPosition().x + (1 * getSize().x) + getSize().x,
+                        getPosition().y + getSize().y + 8,
+                        getPosition().z + getSize().z));
+
         return RectPla;
+    }
+
+    public void Attack() {
+
     }
 
     public void setFacing(boolean facing) {

@@ -180,8 +180,7 @@ public class ControlerManager implements ControllerListener {
 
     public boolean isButtonJustDown(int player, buttons butt) {
         if (player < controllers.size()) {
-//            return controllers.get(player).justPressedbuttons[getButtonToId(butt, player)];
-            return false;
+            return controllers.get(player).justPressedbuttons[getButtonToId(butt, player)];
         } else {
             return false;
         }
@@ -352,9 +351,6 @@ public class ControlerManager implements ControllerListener {
     public class eachController implements ControllerListener {
         private Controller controller;
 
-        private buttons butts;
-
-        private boolean buttonJustPressed;
         private boolean[] justPressedbuttons = new boolean[256];
 
         public eachController(Controller contr) {
