@@ -37,7 +37,8 @@ public class TextWorldObject extends Interactable {
 
     @Override
     public void update(float delta, GameState G) {
-        this.setSize(new Vector3(Font.getSpaceWidth() * Description.length(), -Font.getLineHeight(), 1));
+        //TODO: fix this and make the width correct
+        this.setSize(new Vector3(Font.getData().getGlyph(Description.charAt(0)).width * Description.length(), -Font.getLineHeight(), 1));
     }
 
     @Override

@@ -142,7 +142,9 @@ public class ControlerManager implements ControllerListener {
 
     }
 
-    public void testInput() {
+
+
+    public void testButtons() {
         for (int test = 0; test < 20; test++) {
             for (int test2 = 0; test2 < controllers.size(); test2++) {
                 if (Controllers.getControllers().get(test2).getButton(test)) {
@@ -151,7 +153,9 @@ public class ControlerManager implements ControllerListener {
                 }
             }
         }
+    }
 
+    public void testInput() {
         for (int test = 0; test < 10; test++) {
             for (int test2 = 0; test2 < controllers.size(); test2++) {
                 if (Math.abs(Controllers.getControllers().get(test2).getAxis(test)) > 0.2) {

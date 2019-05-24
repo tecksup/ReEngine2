@@ -14,8 +14,31 @@ public class HackSlashPlayer extends WorldObject {
 
     public int Health = 100;
 
-    public float AttackTime;
-    public boolean Attacking;
+    public enum AttackPhases {first,second,third;
+
+        public boolean Attacking = false;
+
+        public boolean GoodCombo = false;
+
+        public boolean AttackOnNextHit = true;
+
+        public boolean BrokeCombo = false;
+
+        public AttackPhases moveUpCombo() { //AKA the combo length
+            switch (this) {
+                case first:
+                    return second;
+                case second:
+                    return third;
+                case third:
+                    return first;
+                default:
+                    return first;
+            }
+        };
+    };
+
+    public AttackPhases AttackPhase= AttackPhases.first; //AKA the combo length
 
     //True is left, False is right
     boolean Facing = true;
@@ -57,34 +80,40 @@ public class HackSlashPlayer extends WorldObject {
     @Override
     public void update(float delta, GameState G) {
 
-        if (Attack1.hasFinishedOneLoop()) {
-            Attacking = false;
+        if (Attack1.hasFinishedOneLoop() || Attack2.hasFinishedOneLoop() || Attack3.hasFinishedOneLoop()) {
             Attack1.reset();
-        }
-
-        if (!Attacking) {
-            if (getVelocity().x > 0.1f ) {
-                Facing = false;
-            } else if (getVelocity().x < -0.1f) {
-                Facing = true;
+            Attack2.reset();
+            Attack3.reset();
+            if (!AttackPhase.BrokeCombo && AttackPhase.GoodCombo) {
+                AttackPhase = AttackPhase.moveUpCombo();
+                AttackPhase.Attacking = true;
+            } else {
+                AttackPhase.BrokeCombo = false;
+                AttackPhase.Attacking = false;
             }
+            AttackPhase.GoodCombo = false;
+            AttackPhase.AttackOnNextHit = true;
         }
 
-        if (AttackTime - delta > 0)
-            AttackTime -= delta;
         if (RollingTime - delta > 0)
             RollingTime -= delta;
 
         if (Rolling) {
-            getVelocity().clamp(-5, 5);
+            getVelocity().clamp(-10, 10);
         } else {
 
         }
 
         if (getState().equals(type.Dynamic)) {
 
-            if (Attacking) {
+            if (AttackPhase.Attacking) {
                 setVelocity(0,0,0);
+            } else {
+                if (getVelocity().x > 0.1f ) {
+                    Facing = false;
+                } else if (getVelocity().x < -0.1f) {
+                    Facing = true;
+                }
             }
 
             super.setVelocityX((getVelocity().x + getVelocity().x * -1 * 0.25f));
@@ -167,11 +196,25 @@ public class HackSlashPlayer extends WorldObject {
                     Roll.pause();
                 }
             } else {
-                if (Attacking) {
+                if (AttackPhase.Attacking) {
                     batch.draw(Shadow, Facing ? (int) getPosition().x + 1 : (int) getPosition().x + 3, (int) getPosition().y - 2 + (int) getZFloor() / 2);
-                    //running animation
-                    Attack1.update(Gdx.graphics.getDeltaTime());
+                    //Attacking animation
                     TextureRegion frame = Attack1.getFrame();
+                    switch (AttackPhase) {
+                        case first:
+                            Attack1.update(Gdx.graphics.getDeltaTime());
+                            frame = Attack1.getFrame();
+                            break;
+                        case second:
+                            Attack2.update(Gdx.graphics.getDeltaTime());
+                            frame = Attack2.getFrame();
+                            break;
+                        case third:
+                            Attack3.update(Gdx.graphics.getDeltaTime());
+                            frame = Attack3.getFrame();
+                            break;
+                    }
+
                     batch.draw(frame, Facing ? (int) getPosition().x+34: (int) getPosition().x-(37/2)+4, getPosition().y, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
 
                 } else {
@@ -189,11 +232,6 @@ public class HackSlashPlayer extends WorldObject {
                         batch.draw(frame,  Facing ? (int) getPosition().x+34: (int) getPosition().x-(37/2)+4, getPosition().y, 0f, 0f, (float) frame.getRegionWidth(), (float) frame.getRegionHeight(), Facing ? -1f : 1f, 1f, 0f);
                     }
                 }
-
-
-                if (this.getVelocity().x + this.getVelocity().y >= 1) {
-                    //Attack animation
-                }
             }
         }
 
@@ -207,6 +245,29 @@ public class HackSlashPlayer extends WorldObject {
     public BoundingBox getIntereactBox() {
         BoundingBox RectPla;
 
+        if (Facing) {
+            //Left
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 16,
+                            getPosition().y-8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+8,
+                            getPosition().y + getSize().y+10,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else {
+            //Right
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x+8,
+                            getPosition().y-8,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + getSize().y+8,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        }
+
+        /*
         if (FacingAngle >= 0 && FacingAngle < 22.5) {
             RectPla = new BoundingBox(
                     new Vector3(getPosition().x+8,
@@ -290,6 +351,7 @@ public class HackSlashPlayer extends WorldObject {
             return RectPla;
         }
 
+
         RectPla = new BoundingBox(
                 new Vector3(
                         getPosition().x + (1 * getSize().x),
@@ -301,17 +363,60 @@ public class HackSlashPlayer extends WorldObject {
                         getPosition().z + getSize().z));
 
         return RectPla;
+        */
     }
 
-    public void Attack() {
+    public boolean Attack() {
 
-    }
+        boolean WillWeAttack = AttackPhase.AttackOnNextHit;
 
-    public void setFacing(boolean facing) {
-        Facing = facing;
-    }
+        switch (AttackPhase) {
+            case first:
+                AttackPhase.AttackOnNextHit = false;
+                if (AttackPhase.Attacking) {
+                    if (Attack1.getFrameIndex() >= Attack1.getNumberOfFrames()-2) {
+                        WillWeAttack = true;
+                        AttackPhase.moveUpCombo();
+                        AttackPhase.GoodCombo = true;
+                    } else {
+                        AttackPhase.BrokeCombo = true;
+                        AttackPhase.GoodCombo = false;
+                        System.out.println("BrokeCombo 1");
+                    }
+                }
+                break;
+            case second:
+                AttackPhase.AttackOnNextHit = false;
+                if (AttackPhase.Attacking) {
+                    if (Attack2.getFrameIndex() >= Attack2.getNumberOfFrames() - 2) {
+                        WillWeAttack = true;
+                        AttackPhase.moveUpCombo();
+                        AttackPhase.GoodCombo = true;
+                    } else {
+                        AttackPhase.BrokeCombo = true;
+                        AttackPhase.GoodCombo = false;
+                        System.out.println("BrokeCombo 2");
+                    }
+                } else {
+                    AttackPhase = AttackPhases.first;
+                    AttackPhase.GoodCombo = false;
+                    AttackPhase.BrokeCombo = false;
+                }
+                break;
+            case third:
+                AttackPhase.AttackOnNextHit = false;
+                if (!AttackPhase.Attacking) {
+                    AttackPhase = AttackPhases.first;
+                    AttackPhase.GoodCombo = false;
+                    AttackPhase.BrokeCombo = false;
+                }
+                break;
 
-    public boolean isFacing() {
-        return Facing;
+        }
+
+        AttackPhase.Attacking = true;
+
+        return WillWeAttack;
+
     }
 }

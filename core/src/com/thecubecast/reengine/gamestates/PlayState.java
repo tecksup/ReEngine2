@@ -24,6 +24,7 @@ import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.*;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Dummy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,6 +82,8 @@ public class PlayState extends DialogStateExtention {
         player = new HackSlashPlayer((int) gsm.PlayerSpawn.x, (int) gsm.PlayerSpawn.y,0,this);
 
         Entities.add(player);
+
+        Entities.add(new Dummy("Dummy", 16*16, 16*16,0, new Vector3(2,2,2), 100, 100, NPC.intractability.Silent, true));
 
         for (int x = 0; x < WorldMap.getWidth(); x++) {
             for (int y = 0; y < WorldMap.getHeight(); y++) {
@@ -243,7 +246,7 @@ public class PlayState extends DialogStateExtention {
         }
 
         //Particles
-        //Particles.Draw(g);
+        Particles.Draw(g);
 
         //Renders the GUI for entities
         for (int i = 0; i < Entities.size(); i++) {
@@ -411,8 +414,8 @@ public class PlayState extends DialogStateExtention {
         //Draws things on the screen, and not the world positions
         g.setProjectionMatrix(GuiCam.combined);
         g.begin();
-
-        MenuDraw(g, Gdx.graphics.getDeltaTime());
+        if (MenuOpen)
+            MenuDraw(g, Gdx.graphics.getDeltaTime());
         g.end();
         gsm.UI.Draw();
     }
@@ -424,8 +427,7 @@ public class PlayState extends DialogStateExtention {
         }
 
         if (MenuOpen) {
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.F)) {
+            if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.C) || Gdx.input.justTouched()) { // ATTACK
                 if (DialogOpen) {
                     DialogNext();
                 } else {
@@ -442,63 +444,74 @@ public class PlayState extends DialogStateExtention {
                             }
                         }
                     }
+
+                    Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                    camera.unproject(pos);
+                    //Get the direction of the attack based on whether mouse is on left or right of the screen.
+
+                    if (player.Attack()) {
+                        for (int i = 0; i < Entities.size(); i++) {
+                            if (player.getAttackBox().intersects(Entities.get(i).getHitbox())) {
+                                if (Entities.get(i) instanceof NPC) {
+                                    NPC Entitemp = (NPC) Entities.get(i);
+
+                                    Particles.AddParticleEffect("sparkle", Entitemp.getPosition().x+8, Entitemp.getPosition().y+8);
+
+                                    float HitVelocity = 40;
+
+                                    Vector3 hitDirection = new Vector3(1 * HitVelocity, 0 * HitVelocity, 0);
+                                    Entitemp.damage(10, hitDirection);
+                                    shaker.addDamage(0.35f);
+                                } else if (Entities.get(i) instanceof Trigger) {
+                                    if (((Trigger) Entities.get(i)).getActivationType().equals(Trigger.TriggerType.OnAttack)) {
+                                        ((Trigger) Entities.get(i)).RunCommands(player, shaker, this, null, Particles, Entities);
+                                        ((Trigger) Entities.get(i)).JustRan = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.W) || gsm.ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) > 0.2) {
-                player.setVelocityY(player.getVelocity().y + 1);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.S) || gsm.ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) < -0.2) {
-                player.setVelocityY(player.getVelocity().y - 1);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.D) || gsm.ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_X) > 0.2) {
-                player.setVelocityX(player.getVelocity().x + 1);
-            }
-            if (Gdx.input.isKeyPressed(Input.Keys.A) || gsm.ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_X) < -0.2) {
-                player.setVelocityX(player.getVelocity().x - 1);
+            if (ctm.controllers.size() > 0) {
+                float AxisX = 0;
+                float AxisY = 0;
+                if (Math.abs(ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_X)) > 0.15) {
+                    AxisX = ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_X);
+                }
+                if (Math.abs(ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y)) > 0.15) {
+                    AxisY = ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y);
+                }
+                if (AxisX != 0 || AxisY != 0) {
+                    player.setVelocity(new Vector3(player.getVelocity()).add(new Vector3(AxisX*1.4f, AxisY*1.4f, 0)));
+                }
+
+
+            } else {
+                if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+                    player.setVelocityY(player.getVelocity().y + 1);
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+                    player.setVelocityY(player.getVelocity().y - 1);
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+                    player.setVelocityX(player.getVelocity().x + 1);
+                }
+                if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+                    player.setVelocityX(player.getVelocity().x - 1);
+                }
             }
 
-            //ctm.testInput();
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_L3)) {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE) || ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_B)) {
                 if (player.RollingTime < 0.1) {
                     player.Rolling = true;
                     player.RollingTime += 0.5f;
                 }
             }
 
-            if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.C) || Gdx.input.justTouched()) { // ATTACK
-
-                Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
-                camera.unproject(pos);
-                //Get the direction of the attack based on whether mouse is on left or right of the screen.
-
-                if (!player.Attacking) {
-                    for (int i = 0; i < Entities.size(); i++) {
-                        if (player.getAttackBox().intersects(Entities.get(i).getHitbox())) {
-                            if (Entities.get(i) instanceof NPC) {
-                                NPC Entitemp = (NPC) Entities.get(i);
-
-                                float HitVelocity = 40;
-
-                                Vector3 hitDirection = new Vector3(1 * HitVelocity, 0 * HitVelocity, 0);
-                                Entitemp.damage(10, hitDirection);
-                                shaker.addDamage(0.35f);
-                            } else if (Entities.get(i) instanceof Trigger) {
-                                if (((Trigger) Entities.get(i)).getActivationType().equals(Trigger.TriggerType.OnAttack)) {
-                                    ((Trigger) Entities.get(i)).RunCommands(player, shaker, this, null, Particles, Entities);
-                                    ((Trigger) Entities.get(i)).JustRan = true;
-                                }
-                            }
-                        }
-                    }
-
-                    player.Attacking = true;
-                }
-            }
-
             if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_6)) {
-                AddDialog("pawn", "It's working!");
+                AddDialog("pawn", "{SICK}It's working!");
             }
 
             if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.T)) {
