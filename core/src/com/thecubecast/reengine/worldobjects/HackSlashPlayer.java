@@ -20,7 +20,7 @@ public class HackSlashPlayer extends WorldObject {
 
         public boolean GoodCombo = false;
 
-        public boolean AttackOnNextHit = true;
+        public boolean AttackOnNextHit = false;
 
         public boolean BrokeCombo = false;
 
@@ -87,12 +87,12 @@ public class HackSlashPlayer extends WorldObject {
             if (!AttackPhase.BrokeCombo && AttackPhase.GoodCombo) {
                 AttackPhase = AttackPhase.moveUpCombo();
                 AttackPhase.Attacking = true;
+                AttackPhase.AttackOnNextHit = true;
             } else {
-                AttackPhase.BrokeCombo = false;
                 AttackPhase.Attacking = false;
             }
             AttackPhase.GoodCombo = false;
-            AttackPhase.AttackOnNextHit = true;
+            AttackPhase.BrokeCombo = false;
         }
 
         if (RollingTime - delta > 0)
@@ -249,20 +249,20 @@ public class HackSlashPlayer extends WorldObject {
             //Left
             RectPla = new BoundingBox(
                     new Vector3(getPosition().x - 16,
-                            getPosition().y-8,
+                            getPosition().y,
                             getPosition().z),
                     new Vector3(getPosition().x+8,
-                            getPosition().y + getSize().y+10,
+                            getPosition().y + getSize().y+18,
                             getPosition().z + getSize().z));
             return RectPla;
         } else {
             //Right
             RectPla = new BoundingBox(
                     new Vector3(getPosition().x+8,
-                            getPosition().y-8,
+                            getPosition().y,
                             getPosition().z),
                     new Vector3(getPosition().x+32,
-                            getPosition().y + getSize().y+8,
+                            getPosition().y + getSize().y+16,
                             getPosition().z + getSize().z));
             return RectPla;
         }
@@ -366,47 +366,41 @@ public class HackSlashPlayer extends WorldObject {
         */
     }
 
-    public boolean Attack() {
-
-        boolean WillWeAttack = AttackPhase.AttackOnNextHit;
+    public void Attack() {
 
         switch (AttackPhase) {
             case first:
-                AttackPhase.AttackOnNextHit = false;
                 if (AttackPhase.Attacking) {
                     if (Attack1.getFrameIndex() >= Attack1.getNumberOfFrames()-2) {
-                        WillWeAttack = true;
-                        AttackPhase.moveUpCombo();
                         AttackPhase.GoodCombo = true;
                     } else {
                         AttackPhase.BrokeCombo = true;
                         AttackPhase.GoodCombo = false;
-                        System.out.println("BrokeCombo 1");
                     }
+                } else {
+                    AttackPhase.AttackOnNextHit = true;
                 }
                 break;
             case second:
-                AttackPhase.AttackOnNextHit = false;
                 if (AttackPhase.Attacking) {
                     if (Attack2.getFrameIndex() >= Attack2.getNumberOfFrames() - 2) {
-                        WillWeAttack = true;
-                        AttackPhase.moveUpCombo();
                         AttackPhase.GoodCombo = true;
                     } else {
                         AttackPhase.BrokeCombo = true;
                         AttackPhase.GoodCombo = false;
-                        System.out.println("BrokeCombo 2");
                     }
                 } else {
+                    System.out.println("Attack on next hit TRUE");
                     AttackPhase = AttackPhases.first;
+                    AttackPhase.AttackOnNextHit = true;
                     AttackPhase.GoodCombo = false;
                     AttackPhase.BrokeCombo = false;
                 }
                 break;
             case third:
-                AttackPhase.AttackOnNextHit = false;
                 if (!AttackPhase.Attacking) {
                     AttackPhase = AttackPhases.first;
+                    AttackPhase.AttackOnNextHit = true;
                     AttackPhase.GoodCombo = false;
                     AttackPhase.BrokeCombo = false;
                 }
@@ -415,8 +409,7 @@ public class HackSlashPlayer extends WorldObject {
         }
 
         AttackPhase.Attacking = true;
-
-        return WillWeAttack;
+        System.out.println(AttackPhase.AttackOnNextHit);
 
     }
 }

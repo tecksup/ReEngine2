@@ -124,6 +124,33 @@ public class PlayState extends DialogStateExtention {
         Particles.Update();
 
         for (int i = 0; i < Entities.size(); i++) {
+            if (player.AttackPhase.AttackOnNextHit) {
+                if (player.getAttackBox().intersects(Entities.get(i).getHitbox())) {
+                    if (Entities.get(i) instanceof NPC) {
+                        NPC Entitemp = (NPC) Entities.get(i);
+
+                        System.out.println("Got Hit");
+
+                        Particles.AddParticleEffect("sparkle", Entitemp.getPosition().x + 8, Entitemp.getPosition().y + 8);
+
+                        float HitVelocity = 40;
+
+                        Vector3 hitDirection = new Vector3(1 * HitVelocity, 0 * HitVelocity, 0);
+                        Entitemp.damage(10, hitDirection);
+                        shaker.addDamage(0.35f);
+                    } else if (Entities.get(i) instanceof Trigger) {
+                        if (((Trigger) Entities.get(i)).getActivationType().equals(Trigger.TriggerType.OnAttack)) {
+                            ((Trigger) Entities.get(i)).RunCommands(player, shaker, this, null, Particles, Entities);
+                            ((Trigger) Entities.get(i)).JustRan = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        player.AttackPhase.AttackOnNextHit = false;
+
+        for (int i = 0; i < Entities.size(); i++) {
             if (Entities.get(i) instanceof PathfindingWorldObject) {
                 Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
                 if (!((NPC) Entities.get(i)).isAlive()) {
@@ -449,28 +476,8 @@ public class PlayState extends DialogStateExtention {
                     camera.unproject(pos);
                     //Get the direction of the attack based on whether mouse is on left or right of the screen.
 
-                    if (player.Attack()) {
-                        for (int i = 0; i < Entities.size(); i++) {
-                            if (player.getAttackBox().intersects(Entities.get(i).getHitbox())) {
-                                if (Entities.get(i) instanceof NPC) {
-                                    NPC Entitemp = (NPC) Entities.get(i);
+                    player.Attack();
 
-                                    Particles.AddParticleEffect("sparkle", Entitemp.getPosition().x+8, Entitemp.getPosition().y+8);
-
-                                    float HitVelocity = 40;
-
-                                    Vector3 hitDirection = new Vector3(1 * HitVelocity, 0 * HitVelocity, 0);
-                                    Entitemp.damage(10, hitDirection);
-                                    shaker.addDamage(0.35f);
-                                } else if (Entities.get(i) instanceof Trigger) {
-                                    if (((Trigger) Entities.get(i)).getActivationType().equals(Trigger.TriggerType.OnAttack)) {
-                                        ((Trigger) Entities.get(i)).RunCommands(player, shaker, this, null, Particles, Entities);
-                                        ((Trigger) Entities.get(i)).JustRan = true;
-                                    }
-                                }
-                            }
-                        }
-                    }
                 }
             }
 
