@@ -1,0 +1,11 @@
+[
+  // Bot 1 (minimal configuration):
+  {
+    "nickname": "test2",
+    "server": "irc.testbot.org",
+    "discordToken": "botwantsin123",
+    "channelMapping": {
+      "#other-discord": "#new-irc-channel"
+    }
+  }
+]

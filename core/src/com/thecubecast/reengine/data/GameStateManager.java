@@ -14,10 +14,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.thecubecast.reengine.gamestates.*;
 import com.thecubecast.reengine.graphics.Draw;
 import com.thecubecast.reengine.graphics.scene2d.UIFSM;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
+
+import java.util.HashMap;
 
 import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 
@@ -70,6 +74,8 @@ public class GameStateManager {
     public CursorType OldCursor = CursorType.Normal;
     public CursorType Cursor = CursorType.Normal;
 
+    public static HashMap<Integer, Item> ItemPresets;
+
     //screen
     private int Width;
     private int Height;
@@ -83,6 +89,27 @@ public class GameStateManager {
     public static int UIHeight;
 
     public GameStateManager(int W, int H) {
+
+        //Load Itemes.dat file and populate the hashmap
+        ItemPresets = new HashMap<>();
+        JsonParser temp = new JsonParser();
+        JsonArray tempJson = temp.parse(Gdx.files.internal("Items.dat").readString()).getAsJsonArray();
+        for (int i = 0; i < tempJson.size(); i++) {
+            String Name = tempJson.get(i).getAsJsonObject().get("Name").getAsString();
+            String TexLocation = tempJson.get(i).getAsJsonObject().get("TexLocation").getAsString();
+            String Desc = tempJson.get(i).getAsJsonObject().get("Description").getAsString();
+            boolean Struct = tempJson.get(i).getAsJsonObject().get("Structure").getAsBoolean();
+            int Max = tempJson.get(i).getAsJsonObject().get("Max").getAsInt();
+            int ID = tempJson.get(i).getAsJsonObject().get("ID").getAsInt();
+            if (tempJson.get(i).getAsJsonObject().get("Equipment").getAsBoolean()) {
+                Equipment tempItem = new Equipment(Name, ID, TexLocation, Desc);
+                ItemPresets.put(ID, tempItem);
+            } else {
+                Item tempItem = new Item(Name, ID, TexLocation, Desc, Struct);
+                tempItem.setMax(Max);
+                ItemPresets.put(ID, tempItem);
+            }
+        }
 
         Width = W;
         Height = H;
@@ -192,6 +219,11 @@ public class GameStateManager {
             com.badlogic.gdx.graphics.Cursor customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("cursor" + CursorID + ".png")), 0, 0);
             Gdx.graphics.setCursor(customCursor);
         }
+
+        if (gameState instanceof PlayState) {
+            UI.player = ((PlayState) gameState).player;
+        }
+
         if (gameState != null) {
             gameState.update();
         }

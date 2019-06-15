@@ -6,13 +6,17 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
+import com.thecubecast.reengine.data.Item;
 import com.thecubecast.reengine.data.dcputils.TextureAnimation;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.gamestates.GameState;
 
-public class HackSlashPlayer extends WorldObject {
+public class SeedPlayer extends WorldObject {
 
     public int Health = 100;
+
+    public Item[] Inventory = new Item[30];
+    public Item[] Equipment = new Item[4];
 
     public enum AttackPhases {first,second,third;
 
@@ -59,7 +63,7 @@ public class HackSlashPlayer extends WorldObject {
 
     GameState G;
 
-    public HackSlashPlayer(int x, int y, int z, GameState G) {
+    public SeedPlayer(int x, int y, int z, GameState G) {
         super(x,y,0, new Vector3(16,16,2));
         this.setState(type.Dynamic);
         this.G = G;
@@ -390,7 +394,6 @@ public class HackSlashPlayer extends WorldObject {
                         AttackPhase.GoodCombo = false;
                     }
                 } else {
-                    System.out.println("Attack on next hit TRUE");
                     AttackPhase = AttackPhases.first;
                     AttackPhase.AttackOnNextHit = true;
                     AttackPhase.GoodCombo = false;
@@ -409,7 +412,86 @@ public class HackSlashPlayer extends WorldObject {
         }
 
         AttackPhase.Attacking = true;
-        System.out.println(AttackPhase.AttackOnNextHit);
 
+    }
+
+    public int getItemQuant(int ItemId) {
+        int StoredResource = 0;
+
+        for (int j = 0; j < Inventory.length; j++) {
+            if (Inventory[j] != null) {
+                if (Inventory[j].getID() == ItemId) {
+                    //Found matching item
+                    StoredResource += Inventory[j].getQuantity();
+                }
+            }
+        }
+
+        return StoredResource;
+    }
+
+    public boolean AddToInventory(Item item) {
+
+        boolean found = false;
+
+        //Finds first Matching spot
+        for (int j = 0; j < Inventory.length; j++) {
+            if (Inventory[j] != null) {
+                if (Inventory[j].getID() == item.getID()) {
+                    Inventory[j].setQuantity(Inventory[j].getQuantity() + item.getQuantity());
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            for (int j = 0; j < Inventory.length; j++) {
+                if (Inventory[j] == null) {
+                    Item tempItem = new Item(item);
+                    Inventory[j] = tempItem;
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        return found;
+    }
+
+    public boolean DeductFromInventory(int ItemID, int Quant) {
+        boolean Success = false;
+
+        if (getItemQuant(ItemID) >= Quant) {
+
+            int ResourceRemaining = Quant;
+
+            for (int j = 0; j < Inventory.length; j++) {
+                if (Inventory[j] != null) {
+                    if (Inventory[j].getID() == ItemID) { //Found matching item
+                        if (Inventory[j].getQuantity() < ResourceRemaining) { //if that item Quant is less then needed
+                            ResourceRemaining -= Inventory[j].getQuantity();
+                            Inventory[j] = null;
+                        } else if (Inventory[j].getQuantity() == ResourceRemaining) {
+                            ResourceRemaining = 0;
+                            Inventory[j] = null;
+                            break;
+                        } else {
+                            Inventory[j].setQuantity(Inventory[j].getQuantity() - ResourceRemaining);
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (ResourceRemaining == 0) {
+                Success = true;
+            }
+
+        } else {
+            return false;
+        }
+
+        return Success;
     }
 }

@@ -10,6 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.thecubecast.reengine.data.GameStateManager;
+import com.thecubecast.reengine.data.dcputils.StuffUtilsKt;
 import com.thecubecast.reengine.data.dcputils.TextureAnimation;
 import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.graphics.scene2d.TkLabel;
@@ -23,7 +24,7 @@ public class Dummy extends NPC {
     //True is left, False is right
     public boolean Facing = true;
 
-    public float degrees;
+    int RotateStrength = 0;
 
     Vector3 Size = new Vector3(10,8,16);
 

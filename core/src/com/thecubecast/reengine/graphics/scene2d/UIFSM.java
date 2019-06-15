@@ -11,9 +11,15 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.thecubecast.reengine.data.GameStateManager;
+import com.thecubecast.reengine.data.Item;
+import com.thecubecast.reengine.worldobjects.SeedPlayer;
+import com.thecubecast.reengine.worldobjects.Storage;
 
 public class UIFSM implements Telegraph {
 
+    public SeedPlayer player;
+    public Storage StorageOpen;
+    public static Item CursorItem;
     public boolean ClickedOutsideInventory = true;
 
     //-1 if nothing selected, positive numbers including 0 are for actual crafting ids

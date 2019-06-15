@@ -20,8 +20,6 @@ import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.utils.Array;
-import com.thecubecast.reengine.data.ogmo.OelGridLayer;
-import com.thecubecast.reengine.data.ogmo.OelMap;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 
 import static com.thecubecast.reengine.worldobjects.ai.pathfinding.TiledNode.COLLIDABLE;
@@ -44,14 +42,6 @@ public class FlatTiledGraph implements TiledGraph<FlatTiledNode> {
     public FlatTiledGraph(TiledMap map) {
         sizeX = map.getProperties().get("width", Integer.class);
         sizeY = map.getProperties().get("height", Integer.class);
-        this.nodes = new Array<FlatTiledNode>(sizeX * sizeY);
-        this.diagonal = false;
-        this.startNode = null;
-    }
-
-    public FlatTiledGraph(OelMap map) {
-        sizeX = map.getWidth() / 8;
-        sizeY = map.getHeight() / 8;
         this.nodes = new Array<FlatTiledNode>(sizeX * sizeY);
         this.diagonal = false;
         this.startNode = null;
@@ -82,32 +72,6 @@ public class FlatTiledGraph implements TiledGraph<FlatTiledNode> {
                 if (y > 0) addConnection(nodes.get(colOffset + y), 0, -1);
                 if (x < sizeX - 1) addConnection(nodes.get(colOffset + y), 1, 0);
                 if (y < sizeY - 1) addConnection(nodes.get(colOffset + y), 0, 1);
-            }
-        }
-    }
-
-    public void init(OelMap map) {
-        for (int i = 0; i < map.getLayers().size(); i++) {
-            if (map.getLayers().get(i).getName().equals("Collision")) {
-                OelGridLayer temp = (OelGridLayer) map.getLayers().get(i);
-                for (int x = 0; x < sizeX; x++) {
-                    for (int y = 0; y < sizeY; y++) {
-                        nodes.add(new FlatTiledNode(x, y, temp.getCell(x, y), 8));
-                    }
-                }
-
-                // Each node has up to 4 neighbors, therefore no diagonal movement is possible
-                for (int x = 0; x < sizeX; x++) {
-                    int colOffset = x * sizeY;
-                    for (int y = 0; y < sizeY; y++) {
-                        if (x > 0) addConnection(nodes.get(colOffset + y), -1, 0);
-                        if (y > 0) addConnection(nodes.get(colOffset + y), 0, -1);
-                        if (x < sizeX - 1) addConnection(nodes.get(colOffset + y), 1, 0);
-                        if (y < sizeY - 1) addConnection(nodes.get(colOffset + y), 0, 1);
-                    }
-                }
-
-                return;
             }
         }
     }

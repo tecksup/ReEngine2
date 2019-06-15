@@ -8,12 +8,14 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Graphics;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Window;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.EventListener;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -23,6 +25,10 @@ import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.ControlerManager;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.gamestates.EditorState;
+import com.thecubecast.reengine.gamestates.PlayState;
+import com.thecubecast.reengine.worldobjects.Storage;
+import com.thecubecast.reengine.worldobjects.WorldItem;
+import com.thecubecast.reengine.worldobjects.WorldObject;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -33,6 +39,7 @@ import static com.thecubecast.reengine.data.Common.GetMonitorSizeH;
 import static com.thecubecast.reengine.data.Common.GetMonitorSizeW;
 import static com.thecubecast.reengine.data.GameStateManager.AudioM;
 import static com.thecubecast.reengine.data.GameStateManager.ctm;
+import static com.thecubecast.reengine.graphics.scene2d.UIFSM.CursorItem;
 
 public enum UI_state implements State<UIFSM> {
 
@@ -890,6 +897,352 @@ public enum UI_state implements State<UIFSM> {
         @Override
         public void exit(UIFSM entity) {
             entity.stage.clear();
+        }
+
+        @Override
+        public boolean onMessage(UIFSM entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    Inventory() {
+
+        Skin BackupSkin;
+
+        private Table Screen;
+        private Table InventoryWindow;
+
+        private Table InventoryTable;
+        private Table EquipmentTable;
+
+        ClickListener StageListener;
+
+        @Override
+        public void enter(UIFSM entity) {
+
+            StageListener = new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    //drop out of inventory
+                    if (entity.ClickedOutsideInventory) {
+                        //Drop item in CursorItem
+                        if (CursorItem != null) {
+
+                            if (CursorItem.isStructure()) {
+
+                                //GET CORRECT POSITION ON WORLD
+                                Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+                                PlayState.camera.unproject(pos);
+
+                                Storage tempObj = new Storage((int) pos.x, (int) pos.y, (int) pos.z, new Vector3(11, 8, 8), WorldObject.type.Static, true);
+                                tempObj.setTexLocation("Sprites/Map/Objects_04.png");
+                                tempObj.Name = CursorItem.getName();
+                                tempObj.Description = CursorItem.getDescription();
+
+                                tempObj.setHitboxOffset(new Vector3(3, 0, 0));
+
+                                PlayState.Entities.add(tempObj);
+                                if (CursorItem.getQuantity() > 1)
+                                    CursorItem.setQuantity(CursorItem.getQuantity() - 1);
+                                else
+                                    CursorItem = null;
+                                Vector3 tempVec = tempObj.getPosition();
+                                Vector3 tempVecOffset = tempObj.getHitboxOffset();
+                                Vector3 tempVecSize = tempObj.getSize();
+                                //PlayState.Collisions.add(new Cube((int) tempVec.x + (int) tempVecOffset.x, (int) tempVec.y + (int) tempVecOffset.y, (int) tempVec.z + (int) tempVecOffset.z, (int) tempVecSize.x, (int) tempVecSize.y, (int) tempVecSize.z));
+
+
+                            } else {
+
+                                WorldItem temp = new WorldItem(0, 0, (int) entity.player.getIntereactBox().max.z, CursorItem);
+                                temp = new WorldItem((int) entity.player.getIntereactBox().min.x, (int) entity.player.getIntereactBox().min.y, (int) entity.player.getIntereactBox().max.z, CursorItem);
+
+                                PlayState.Entities.add(temp);
+                                CursorItem = null;
+                            }
+                        }
+                    }
+
+                    entity.ClickedOutsideInventory = true;
+                }
+            };
+
+            BackupSkin = entity.skin;
+            Screen = new Table(entity.skin);
+            Screen.setFillParent(true);
+            entity.stage.addActor(Screen);
+
+            InventoryWindow = new Table(entity.skin);
+            InventoryWindow.setBackground("Window_grey_back");
+            InventoryWindow.pad(2);
+
+            entity.stage.addListener(StageListener);
+
+            InventoryWindow.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    //Place
+                    entity.ClickedOutsideInventory = false;
+                    /*if (entity.CursorItem != null) {
+                        WorldItem temp = new WorldItem((int) player.getIntereactBox().max.x, (int) player.getIntereactBox().max.y, (int) player.getIntereactBox().max.z, entity.CursorItem);
+                        PlayState.Entities.add(temp);
+                        entity.CursorItem = null;
+                    }*/
+                }
+            });
+
+            InventoryTable = new Table(entity.skin);
+
+            for (int i = 1; i < entity.player.Inventory.length + 1; i++) {
+                int tempi = i;
+
+                Table ItemBox = new Table(entity.skin);
+                ItemBox.setBackground("Table_dialog");
+
+                TkItem temp = new TkItem(entity.skin, tempi - 1, entity.player);
+
+                ItemBox.add(temp).size(32);
+
+                InventoryTable.add(ItemBox).size(36).pad(0.5f);
+                if (i % 6 == 0)
+                    InventoryTable.row();
+            }
+
+            EquipmentTable = new Table(entity.skin);
+
+            for (int i = 1; i < entity.player.Equipment.length + 1; i++) {
+                int tempi = i;
+
+                Table ItemBox = new Table(entity.skin);
+                ItemBox.setBackground("Table_dialog");
+
+                TkItem temp = new TkItem(entity.skin, tempi - 1, entity.player, true);
+
+                ItemBox.add(temp).size(32);
+
+                EquipmentTable.add(ItemBox).size(36).pad(0.5f).row();
+            }
+
+            InventoryWindow.add(InventoryTable);
+            InventoryWindow.add(EquipmentTable).row();
+
+            Screen.add(InventoryWindow);
+
+            //__________________________________________________________
+
+            final TkTextButton Close = new TkTextButton("Close", entity.skin);
+            InventoryWindow.add(Close);
+            InventoryWindow.row();
+
+            Close.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.Visible = false;
+                }
+            });
+
+        }
+
+        @Override
+        public void update(UIFSM entity) {
+            Screen.setVisible(entity.Visible);
+            ControllerCheck(Screen);
+            entity.stage.act(Gdx.graphics.getDeltaTime());
+
+        }
+
+        @Override
+        public void exit(UIFSM entity) {
+
+            for (int j = 0; j < entity.player.Inventory.length; j++) {
+                if (entity.player.Inventory[j] == null) {
+                    entity.player.Inventory[j] = CursorItem;
+                    CursorItem = null;
+                    break;
+                }
+            }
+
+            entity.stage.clear();
+            entity.stage.removeListener(StageListener);
+        }
+
+        @Override
+        public boolean onMessage(UIFSM entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    InventoryAndStorage() {
+
+        Skin BackupSkin;
+
+        private Table Screen;
+        private Table InventoryWindow;
+
+        private Table InventoryTable;
+        private Table EquipmentTable;
+
+        private Table StorageInventoryWindow;
+
+        private Table StorageInventoryTable;
+
+        ClickListener StageListener;
+
+        @Override
+        public void enter(UIFSM entity) {
+
+            StageListener = new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    //drop out of inventory
+                    if (entity.ClickedOutsideInventory) {
+                        //Drop item in CursorItem
+                        if (CursorItem != null) {
+                            WorldItem temp = new WorldItem(0, 0, (int) entity.player.getIntereactBox().max.z, CursorItem);
+                            temp = new WorldItem((int) entity.player.getIntereactBox().min.x, (int) entity.player.getIntereactBox().min.y, (int) entity.player.getIntereactBox().max.z, CursorItem);
+                            PlayState.Entities.add(temp);
+                            CursorItem = null;
+                        }
+                    }
+
+                    entity.ClickedOutsideInventory = true;
+                }
+            };
+
+            BackupSkin = entity.skin;
+            Screen = new Table(entity.skin);
+            Screen.setFillParent(true);
+            entity.stage.addActor(Screen);
+
+            InventoryWindow = new Table(entity.skin);
+            InventoryWindow.setBackground("Window_grey_back");
+            InventoryWindow.pad(2);
+
+            entity.stage.addListener(StageListener);
+
+            InventoryWindow.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    //Place
+                    entity.ClickedOutsideInventory = false;
+                    /*if (entity.CursorItem != null) {
+                        WorldItem temp = new WorldItem((int) player.getIntereactBox().max.x, (int) player.getIntereactBox().max.y, (int) player.getIntereactBox().max.z, entity.CursorItem);
+                        PlayState.Entities.add(temp);
+                        entity.CursorItem = null;
+                    }*/
+                }
+            });
+
+            InventoryTable = new Table(entity.skin);
+
+            for (int i = 1; i < entity.player.Inventory.length + 1; i++) {
+                int tempi = i;
+
+                Table ItemBox = new Table(entity.skin);
+                ItemBox.setBackground("Table_dialog");
+
+                TkItem temp = new TkItem(entity.skin, tempi - 1, entity.player);
+
+                ItemBox.add(temp).size(32);
+
+                InventoryTable.add(ItemBox).size(36).pad(0.5f);
+                if (i % 6 == 0)
+                    InventoryTable.row();
+            }
+
+            EquipmentTable = new Table(entity.skin);
+
+            for (int i = 1; i < entity.player.Equipment.length + 1; i++) {
+                int tempi = i;
+
+                Table ItemBox = new Table(entity.skin);
+                ItemBox.setBackground("Table_dialog");
+
+                TkItem temp = new TkItem(entity.skin, tempi - 1, entity.player, true);
+
+                ItemBox.add(temp).size(32);
+
+                EquipmentTable.add(ItemBox).size(36).pad(0.5f).row();
+            }
+
+            InventoryWindow.add(InventoryTable);
+            InventoryWindow.add(EquipmentTable).row();
+
+            Screen.add(InventoryWindow);
+
+            StorageInventoryWindow = new Table(entity.skin);
+            StorageInventoryWindow.setBackground("Window_grey_back");
+            StorageInventoryWindow.pad(2);
+
+            StorageInventoryWindow.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    //Place
+                    entity.ClickedOutsideInventory = false;
+                    /*if (entity.CursorItem != null) {
+                        WorldItem temp = new WorldItem((int) player.getIntereactBox().max.x, (int) player.getIntereactBox().max.y, (int) player.getIntereactBox().max.z, entity.CursorItem);
+                        PlayState.Entities.add(temp);
+                        entity.CursorItem = null;
+                    }*/
+                }
+            });
+
+            StorageInventoryTable = new Table(entity.skin);
+
+            for (int i = 1; i < entity.StorageOpen.getInventory().length + 1; i++) {
+                int tempi = i;
+
+                Table ItemBox = new Table(entity.skin);
+                ItemBox.setBackground("Table_dialog");
+
+                TkItem temp = new TkItem(entity.skin, tempi - 1, entity.player, entity.StorageOpen);
+
+                ItemBox.add(temp).size(32);
+
+                StorageInventoryTable.add(ItemBox).size(36).pad(0.5f);
+                if (i % 6 == 0)
+                    StorageInventoryTable.row();
+            }
+
+            StorageInventoryWindow.add(StorageInventoryTable);
+            Screen.add(StorageInventoryWindow);
+
+            //__________________________________________________________
+
+            final TkTextButton Close = new TkTextButton("Close", entity.skin);
+            InventoryWindow.add(Close);
+            InventoryWindow.row();
+
+            Close.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.Visible = false;
+                }
+            });
+
+        }
+
+        @Override
+        public void update(UIFSM entity) {
+            Screen.setVisible(entity.Visible);
+            ControllerCheck(Screen);
+            entity.stage.act(Gdx.graphics.getDeltaTime());
+
+        }
+
+        @Override
+        public void exit(UIFSM entity) {
+
+            for (int j = 0; j < entity.player.Inventory.length; j++) {
+                if (entity.player.Inventory[j] == null) {
+                    entity.player.Inventory[j] = CursorItem;
+                    CursorItem = null;
+                    break;
+                }
+            }
+
+            entity.stage.clear();
+            entity.stage.removeListener(StageListener);
         }
 
         @Override

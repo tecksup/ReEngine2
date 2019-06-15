@@ -5,6 +5,7 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
@@ -20,13 +21,30 @@ public class Draw {
 
     public String textureAtlasFilename = "textureAtlas/atlas.atlas";
 
+    public static ShaderProgram OutlineShader;
+    public static ShaderProgram FillColorShader;
+
     //Animation Variables
     public Animation<TextureRegion> LoadingAnimation; // Must declare frame type (TextureRegion)
     Texture LoadingSheet;
 
     public BitmapFont font;
 
+    public void LoadShaders() {
+        String OutlineShadervertexShader = Gdx.files.internal("Shaders/Outline/vertex.glsl").readString();
+        String OutlineShaderfragmentShader = Gdx.files.internal("Shaders/Outline/fragment.glsl").readString();
+        OutlineShader = new ShaderProgram(OutlineShadervertexShader, OutlineShaderfragmentShader);
+
+        String FillColorShadervertexShader = Gdx.files.internal("Shaders/Fill_Color/vertex.glsl").readString();
+        String FillColorShaderfragmentShader = Gdx.files.internal("Shaders/Fill_Color/fragment.glsl").readString();
+        FillColorShader = new ShaderProgram(FillColorShadervertexShader, FillColorShaderfragmentShader);
+
+    }
+
     public void Init() {
+
+        LoadShaders();
+
         TextureRegion temptemp =  new TextureRegion(new Texture(Gdx.files.internal("Fonts/Pixel.png")));
         temptemp.getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
         font = new BitmapFont(Gdx.files.internal("Fonts/Pixel.fnt"),temptemp);
@@ -152,4 +170,25 @@ public class Draw {
 
         return names.toString("; ");
     }
+
+    public static void setOutlineShaderColor(Color outlineColor) {
+        OutlineShader.setUniform1fv("outline_Color", new float[]{outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a}, 0, 4);
+    }
+
+    public static void setOutlineShaderColor(Color outlineColor, float Alpha) {
+        OutlineShader.setUniform1fv("outline_Color", new float[]{outlineColor.r, outlineColor.g, outlineColor.b, Alpha}, 0, 4);
+    }
+
+    public static void setFillColorShaderColor(Color outlineColor) {
+        FillColorShader.begin();
+        FillColorShader.setUniform4fv("outline_Color", new float[]{outlineColor.r, outlineColor.g, outlineColor.b, outlineColor.a}, 0, 4);
+        FillColorShader.end();
+    }
+
+    public static void setFillColorShaderColor(Color outlineColor, float Alpha) {
+        FillColorShader.begin();
+        FillColorShader.setUniform4fv("outline_Color", new float[]{outlineColor.r, outlineColor.g, outlineColor.b, Alpha}, 0, 4);
+        FillColorShader.end();
+    }
+
 }

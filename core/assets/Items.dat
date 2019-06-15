@@ -1,0 +1,56 @@
+[
+  {
+    "Name": "Evil",
+    "ID": 0,
+    "TexLocation": "Sprites/evil.png",
+    "Equipment": false,
+    "Structure": false,
+    "Description": "Will Kill you",
+    "Max": 64
+  },
+  {
+    "Name": "{color=green}Green",
+    "ID": 1,
+    "TexLocation": "Sprites/green.png",
+    "Equipment": false,
+    "Structure": false,
+    "Description": "{color=green}Legendary color,{CLEARCOLOR} This is also a test of how {WAVE}long{ENDWAVE} i can make text before it gets REALLY fucked up. Now i will make it that much longer, we need that scroll!!!",
+    "Max": 64
+  },
+  {
+    "Name": "Blue",
+    "ID": 2,
+    "TexLocation": "Sprites/blue.png",
+    "Equipment": false,
+    "Structure": false,
+    "Description": "Blue",
+    "Max": 64
+  },
+  {
+    "Name": "Happy",
+    "ID": 3,
+    "TexLocation": "Sprites/face.png",
+    "Equipment": false,
+    "Structure": false,
+    "Description": "",
+    "Max": 64
+  },
+  {
+    "Name": "Chest",
+    "ID": 4,
+    "TexLocation": "Sprites/map/Objects_04.png",
+    "Equipment": false,
+    "Structure": true,
+    "Description": "Can store a bunch of items!",
+    "Max": 64
+  },
+  {
+    "Name": "Wood",
+    "ID": 5,
+    "TexLocation": "Sprites/Resource_Wood.png",
+    "Equipment": false,
+    "Structure": false,
+    "Description": "Great for carpentry... or setting fires!",
+    "Max": 64
+  }
+]

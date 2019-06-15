@@ -7,16 +7,14 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.thecubecast.reengine.data.ControlerManager;
-import com.thecubecast.reengine.data.Cube;
-import com.thecubecast.reengine.data.GameStateManager;
-import com.thecubecast.reengine.data.ParticleHandler;
+import com.thecubecast.reengine.data.*;
 import com.thecubecast.reengine.data.dcputils.DcpTilKt;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
@@ -30,12 +28,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.thecubecast.reengine.data.GameStateManager.AudioM;
+import static com.thecubecast.reengine.data.GameStateManager.ItemPresets;
 import static com.thecubecast.reengine.data.GameStateManager.ctm;
+import static com.thecubecast.reengine.graphics.Draw.FillColorShader;
+import static com.thecubecast.reengine.graphics.Draw.setFillColorShaderColor;
 
 public class PlayState extends DialogStateExtention {
 
     //GUI
     boolean MenuOpen = true;
+    boolean HudOpen = true;
 
     //Camera
     OrthographicCamera GuiCam;
@@ -46,7 +48,7 @@ public class PlayState extends DialogStateExtention {
     public static ParticleHandler Particles;
 
     //GameObjects
-    public HackSlashPlayer player;
+    public SeedPlayer player;
 
     TkMap WorldMap;
 
@@ -79,7 +81,7 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
-        player = new HackSlashPlayer((int) gsm.PlayerSpawn.x, (int) gsm.PlayerSpawn.y,0,this);
+        player = new SeedPlayer((int) gsm.PlayerSpawn.x, (int) gsm.PlayerSpawn.y,0,this);
 
         Entities.add(player);
 
@@ -151,7 +153,26 @@ public class PlayState extends DialogStateExtention {
         player.AttackPhase.AttackOnNextHit = false;
 
         for (int i = 0; i < Entities.size(); i++) {
-            if (Entities.get(i) instanceof PathfindingWorldObject) {
+            if (Entities.get(i) instanceof WorldItem) {
+                Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
+                WorldItem Entitemp = (WorldItem) Entities.get(i);
+
+                if (Entitemp.JustDroppedDelay <= 0) {
+
+                    Vector3 tempCenter = new Vector3(player.getPosition().x + player.getSize().x / 2 + 4, player.getPosition().y + player.getSize().y / 2, player.getPosition().z + player.getSize().z / 2);
+                    Vector3 CBS = new Vector3(48, 48, 32); //CollectionBoxSize
+
+                    if (Entitemp.ifColliding(new Rectangle(tempCenter.x - CBS.x / 2, tempCenter.y - CBS.y / 2, CBS.x, CBS.y))) {
+                        Entitemp.setPosition(new Vector3(tempCenter).sub(Entitemp.getPosition()).clamp(0, 2).add(Entitemp.getPosition()));
+                    }
+
+                    if (Entitemp.getHitbox().intersects(player.getHitbox())) {
+                        //Add the item to inventory
+                        player.AddToInventory(Entitemp.item);
+                        Entities.remove(i);
+                    }
+                }
+            } else if (Entities.get(i) instanceof PathfindingWorldObject) {
                 Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
                 if (!((NPC) Entities.get(i)).isAlive()) {
                     Entities.remove(i);
@@ -178,7 +199,15 @@ public class PlayState extends DialogStateExtention {
                             ((Interactable) Entities.get(i)).RunCommands(player, shaker, this, null, Particles, Entities);
                             ((Interactable) Entities.get(i)).JustRan = true;
                         }
-                        if (Entities.get(i) instanceof Interactable) {
+
+                        if (Entities.get(i) instanceof Storage) {
+                            System.out.println("Huh?");
+                            gsm.UI.StorageOpen = (Storage) Entities.get(i);
+                            MenuOpen = !MenuOpen;
+                            HudOpen = !HudOpen;
+                            gsm.UI.setState(UI_state.InventoryAndStorage);
+                            gsm.UI.setVisable(true);
+                        } else if (Entities.get(i) instanceof Interactable) {
                             Interactable temp = (Interactable) Entities.get(i);
                             temp.Activated();
                         }
@@ -382,6 +411,13 @@ public class PlayState extends DialogStateExtention {
             GameStateManager.Render.debugRenderer.setColor(Color.PURPLE);
             GameStateManager.Render.debugRenderer.box(player.getIntereactBox().min.x, player.getIntereactBox().min.y, player.getIntereactBox().min.z, player.getIntereactBox().getWidth(), player.getIntereactBox().getHeight(), player.getIntereactBox().getDepth());
 
+            //Item Collection
+            gsm.Render.debugRenderer.setColor(Color.DARK_GRAY);
+            Vector3 tempCenter = new Vector3(player.getPosition().x + player.getSize().x / 2 + 4, player.getPosition().y + player.getSize().y / 2, player.getPosition().z + player.getSize().z / 2);
+            Vector3 CBS = new Vector3(48, 48, 32); //CollectionBoxSize
+            gsm.Render.debugRenderer.rect(tempCenter.x - CBS.x / 2, tempCenter.y - CBS.y / 2, CBS.x, CBS.y);
+
+
             Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(pos);
             GameStateManager.Render.debugRenderer.setColor(Color.LIGHT_GRAY);
@@ -430,9 +466,15 @@ public class PlayState extends DialogStateExtention {
                 gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
                 Gdx.input.setInputProcessor(gsm.UI.stage);
             }
+            HudOpen = true;
         } else {
-            if (!gsm.UI.getState().equals(UI_state.InGameHome)) {
-                gsm.UI.setState(UI_state.InGameHome);
+            if (HudOpen) {
+                if (!gsm.UI.getState().equals(UI_state.InGameHome)) {
+                    gsm.UI.setState(UI_state.InGameHome);
+                    gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
+                    Gdx.input.setInputProcessor(gsm.UI.stage);
+                }
+            } else {
                 gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
                 Gdx.input.setInputProcessor(gsm.UI.stage);
             }
@@ -445,12 +487,40 @@ public class PlayState extends DialogStateExtention {
             MenuDraw(g, Gdx.graphics.getDeltaTime());
         g.end();
         gsm.UI.Draw();
+
+        if (gsm.UI.CursorItem != null) {
+            Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            GuiCam.unproject(pos);
+            if (!gsm.UI.CursorItem.isStructure()) {
+                g.begin();
+                g.draw(new Texture(Gdx.files.internal(gsm.UI.CursorItem.getTexLocation())), pos.x / 2, pos.y / 2, 16, 16);
+            } else {
+                g.flush();
+                g.setShader(FillColorShader);
+                setFillColorShaderColor(Color.GREEN, 0.6f);
+                g.begin();
+                g.draw(new Texture(Gdx.files.internal(gsm.UI.CursorItem.getTexLocation())), pos.x / 2, pos.y / 2);
+                g.setShader(null);
+            }
+            g.end();
+        }
     }
 
     private void handleInput() {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_START)) {
             MenuOpen = !MenuOpen;
+            HudOpen = true;
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
+            Entities.add(new WorldItem(100, 100, 5, ItemPresets.get(4)));
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
+            gsm.UI.setState(UI_state.Inventory);
+            MenuOpen = !MenuOpen;
+            HudOpen = !HudOpen;
         }
 
         if (MenuOpen) {

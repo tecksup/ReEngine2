@@ -1,16 +1,10 @@
 package com.thecubecast.reengine.worldobjects;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.math.Interpolation;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
-import com.sun.scenario.effect.Crop;
 import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.data.dcputils.StuffUtilsKt;
 import com.thecubecast.reengine.gamestates.DialogStateExtention;
-import com.thecubecast.reengine.gamestates.EditorState;
 import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.gamestates.PlayState;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
@@ -55,7 +49,7 @@ public class FarmTile extends Interactable {
             WorldObject tempObj = null;
 
             for (int i = 0; i < ((PlayState) G).Entities.size(); i++) {
-                if (((PlayState) G).Entities.get(i) instanceof NPC || ((PlayState) G).Entities.get(i) instanceof HackSlashPlayer) {
+                if (((PlayState) G).Entities.get(i) instanceof NPC || ((PlayState) G).Entities.get(i) instanceof SeedPlayer) {
                     Collidingwith = ((PlayState) G).Entities.get(i).getHitbox().intersects(this.getHitbox());
                     if (Collidingwith) {
                         tempObj = ((PlayState) G).Entities.get(i);
