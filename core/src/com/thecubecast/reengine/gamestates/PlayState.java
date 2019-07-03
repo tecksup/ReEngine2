@@ -23,6 +23,7 @@ import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.*;
 import com.thecubecast.reengine.worldobjects.entityprefabs.Dummy;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Firepit;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,7 +86,7 @@ public class PlayState extends DialogStateExtention {
 
         Entities.add(player);
 
-        Entities.add(new Dummy("Dummy", 16*16, 16*16,0, new Vector3(2,2,2), 100, 100, NPC.intractability.Silent, true));
+        //Entities.add(new Dummy("Dummy", 16*16, 16*16,0, new Vector3(2,2,2), 100, 100, NPC.intractability.Silent, true));
 
         for (int x = 0; x < WorldMap.getWidth(); x++) {
             for (int y = 0; y < WorldMap.getHeight(); y++) {
@@ -116,6 +117,7 @@ public class PlayState extends DialogStateExtention {
 
         //Particles
         Particles = new ParticleHandler();
+        Particles.AddParticleEffect("Spinning_Fire", 400, 200);
 
         //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
 
@@ -201,7 +203,6 @@ public class PlayState extends DialogStateExtention {
                         }
 
                         if (Entities.get(i) instanceof Storage) {
-                            System.out.println("Huh?");
                             gsm.UI.StorageOpen = (Storage) Entities.get(i);
                             MenuOpen = !MenuOpen;
                             HudOpen = !HudOpen;

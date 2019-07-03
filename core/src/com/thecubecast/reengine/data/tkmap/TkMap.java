@@ -14,6 +14,7 @@ import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.gamestates.EditorState;
 import com.thecubecast.reengine.worldobjects.*;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Firepit;
 import com.thecubecast.reengine.worldobjects.entityprefabs.Pawn;
 
 import java.io.IOException;
@@ -456,10 +457,13 @@ public class TkMap {
                 temp.add(new TextWorldObject(X,Y,Z, Description, GameStateManager.Render.font));
             } else if (Name.equals("Crop")) {
                 temp.add(new FarmTile(X,Y,Z, Description));
+            } else if (Name.equals("Firepit")) {
+                temp.add(new Firepit(X,Y,Z));
             } else {
 
                 if (Name.equals("Player")) {
                     gsm.PlayerSpawn = new Vector3(X,Y,Z);
+                    break;
                 }
 
                 Interactable tempObj = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);
@@ -472,11 +476,6 @@ public class TkMap {
             }
         }
         return temp;
-    }
-
-    //Returns the Areas that were in the map file
-    public void getAreas() {
-
     }
 
     public String SerializeMap(List<WorldObject> entities) {

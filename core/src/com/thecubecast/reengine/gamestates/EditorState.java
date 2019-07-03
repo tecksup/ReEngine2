@@ -1142,7 +1142,7 @@ public class EditorState extends GameState {
                 JsonObject tempObject = MapPrefabs.get(tempi).getAsJsonObject();
                 TextureAtlas.AtlasRegion Image;
                 if (tempObject.get("TexLocation").getAsString().equals(""))
-                    Image = null;
+                    Image = Render.getTexture("trans");
                 else if (tempObject.get("TexLocation").getAsString().contains(".png")) {
                     Texture tempimage = new Texture(Gdx.files.internal(tempObject.get("TexLocation").getAsString()));
                     Image = new TextureAtlas.AtlasRegion(tempimage, 0, 0, tempimage.getWidth(), tempimage.getHeight());

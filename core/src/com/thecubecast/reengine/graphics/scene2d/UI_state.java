@@ -909,6 +909,8 @@ public enum UI_state implements State<UIFSM> {
 
         Skin BackupSkin;
 
+        int InventoryIdSelected;
+
         private Table Screen;
         private Table InventoryWindow;
 
@@ -1309,5 +1311,60 @@ public enum UI_state implements State<UIFSM> {
         }
     }
 
+    public void ControllerCheckInventory(Table table, int Index) {
+        if (ctm.controllers.size() > 0) {
+            for (int i = 0; i < table.getCells().size; i++) {
+                if (table.getCells().get(i).getActor() instanceof TkTextButton) {
+                    int nextSelection = i;
+                    if (((TkTextButton) table.getCells().get(i).getActor()).Selected) {
+                        //Gdx.app.log("menu", "i is " + i);
+                        if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) < -0.2f || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                            ((TkTextButton) table.getCells().get(i).getActor()).Selected = false;
+                            if (ScrollingSpeed % 5 == 0) {
+                                nextSelection += 1;
+                            }
+                            ScrollingSpeed++;
+
+                        } else if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) > 0.2f || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                            ((TkTextButton) table.getCells().get(i).getActor()).Selected = false;
+                            if (ScrollingSpeed % 5 == 0) {
+                                nextSelection -= 1;
+                            }
+                            ScrollingSpeed++;
+                        } else {
+                            ScrollingSpeed = 0;
+                        }
+
+                        if (nextSelection < 0)
+                            nextSelection = table.getCells().size - 1;
+                        if (nextSelection >= table.getCells().size)
+                            nextSelection = 0;
+
+                        if (table.getCells().get(nextSelection).getActor() instanceof TkTextButton) {
+                            ((TkTextButton) table.getCells().get(nextSelection).getActor()).Selected = true;
+                        }
+
+                        if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                            //Gdx.app.debug("", "");
+                            Array<EventListener> listeners = table.getCells().get(i).getActor().getListeners();
+                            for (int b = 0; b < listeners.size; b++) {
+                                if (listeners.get(b) instanceof ClickListener) {
+                                    ((ClickListener) listeners.get(b)).clicked(null, 0, 0);
+                                }
+                            }
+                        }
+
+                        break;
+                    } else if (i == table.getCells().size - 1) {
+                        if (table.getCells().get(0).getActor() instanceof TkTextButton)
+                            ((TkTextButton) table.getCells().get(0).getActor()).Selected = true;
+                        else
+                            ((TkTextButton) table.getCells().get(i).getActor()).Selected = true;
+                    }
+                }
+            }
+
+        }
+    }
 
 }

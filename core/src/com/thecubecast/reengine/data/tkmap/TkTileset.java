@@ -49,7 +49,10 @@ public class TkTileset {
 
     public TextureAnimation<TextureAtlas.AtlasRegion> getTile(int ID) {
         if (Tiles[ID] != null)
-            return Tiles[ID];
+            if (ID == -1)
+                return Tiles[0];
+            else
+                return Tiles[ID];
         else
             return Tiles[0];
     }
