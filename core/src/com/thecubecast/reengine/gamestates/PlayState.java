@@ -117,7 +117,6 @@ public class PlayState extends DialogStateExtention {
 
         //Particles
         Particles = new ParticleHandler();
-        Particles.AddParticleEffect("Spinning_Fire", 400, 200);
 
         //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
 

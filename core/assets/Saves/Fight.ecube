@@ -222,7 +222,7 @@
       "HeightOffset": 8.0,
       "Depth": 8.0,
       "DepthOffset": 0.0,
-      "TexLocation": "",
+      "TexLocation": "Sprites/Firepit.png",
       "Physics": "Static",
       "Collidable": true,
       "TriggerType": "None",
