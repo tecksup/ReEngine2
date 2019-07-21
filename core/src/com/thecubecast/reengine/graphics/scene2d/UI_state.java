@@ -24,7 +24,6 @@ import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.ControlerManager;
 import com.thecubecast.reengine.data.tkmap.TkMap;
-import com.thecubecast.reengine.gamestates.EditorState;
 import com.thecubecast.reengine.gamestates.PlayState;
 import com.thecubecast.reengine.worldobjects.Storage;
 import com.thecubecast.reengine.worldobjects.WorldItem;
@@ -38,7 +37,9 @@ import static com.badlogic.gdx.scenes.scene2d.actions.Actions.removeActor;
 import static com.thecubecast.reengine.data.Common.GetMonitorSizeH;
 import static com.thecubecast.reengine.data.Common.GetMonitorSizeW;
 import static com.thecubecast.reengine.data.GameStateManager.AudioM;
+import static com.thecubecast.reengine.data.GameStateManager.ItemPresets;
 import static com.thecubecast.reengine.data.GameStateManager.ctm;
+import static com.thecubecast.reengine.graphics.scene2d.UIFSM.InventorySlotSelected;
 import static com.thecubecast.reengine.graphics.scene2d.UIFSM.CursorItem;
 
 public enum UI_state implements State<UIFSM> {
@@ -200,6 +201,7 @@ public enum UI_state implements State<UIFSM> {
             return false;
         }
     },
+
     Options() {
 
         private Table table;
@@ -280,6 +282,7 @@ public enum UI_state implements State<UIFSM> {
             return false;
         }
     },
+
     Audio() {
 
         private Table table;
@@ -1039,7 +1042,7 @@ public enum UI_state implements State<UIFSM> {
             Close.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    entity.Visible = false;
+                    entity.setState(UI_state.INGAMEUI);
                 }
             });
 
@@ -1218,7 +1221,7 @@ public enum UI_state implements State<UIFSM> {
             Close.addListener(new ClickListener() {
                 @Override
                 public void clicked(InputEvent event, float x, float y) {
-                    entity.Visible = false;
+                    entity.setState(UI_state.INGAMEUI);
                 }
             });
 
@@ -1245,6 +1248,368 @@ public enum UI_state implements State<UIFSM> {
 
             entity.stage.clear();
             entity.stage.removeListener(StageListener);
+        }
+
+        @Override
+        public boolean onMessage(UIFSM entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    SeedInventory() {
+
+        Skin BackupSkin;
+
+        private Table Screen;
+        private Table UIWindow;
+        private Table CraftingWindow;
+
+        private Table RecipeList;
+        private Table CraftingDescription;
+
+        Table Container;
+
+        int SelectedIndex = 0;
+        int TotalRows = 1;
+
+        int ControllerDelay = 0;
+
+        @Override
+        public void enter(UIFSM entity) {
+
+            BackupSkin = entity.skin;
+            Screen = new Table(entity.skin);
+            Screen.setFillParent(true);
+            entity.stage.addActor(Screen);
+
+            UIWindow = new Table(entity.skin);
+            UIWindow.setBackground("Window_grey_back");
+
+            CraftingWindow = new Table(entity.skin);
+            UIWindow.add(CraftingWindow).fill();
+
+            //--------------------
+
+            CraftingDescription = new Table(entity.skin);
+            CraftingDescription.setBackground("Window_red");
+
+            Table CraftingDescTop = new Table(entity.skin);
+            TypingLabel ItemName = new TypingLabel("", entity.skin);
+            ItemName.setWidth(CraftingDescTop.getWidth());
+            ItemName.setName("ItemTitle");
+            if (InventorySlotSelected != -1) {
+                ItemName.restart(ItemPresets.get(entity.player.Inventory[InventorySlotSelected].getID()).getName());
+                ItemName.skipToTheEnd();
+            } else {
+                ItemName.restart("");
+                ItemName.skipToTheEnd();
+            }
+            CraftingDescTop.add(ItemName).pad(5).row();
+
+            TkItemIcon CrafintItemIcon = new TkItemIcon(entity.skin, -1);
+            CrafintItemIcon.setName("CraftingIcon");
+            CraftingDescTop.add(CrafintItemIcon).size(48).center().row();
+            CraftingDescTop.row();
+
+            CraftingDescription.add(CraftingDescTop).row();
+            Table CraftingDescBottom = new Table(entity.skin);
+            CraftingDescBottom.setBackground("Window_grey_TopOutline");
+            CraftingDescription.add(CraftingDescBottom).padTop(5).expand().row();
+
+            TypingLabel RescourLable = new TypingLabel("Description", entity.skin);
+            RescourLable.skipToTheEnd();
+            CraftingDescBottom.add(RescourLable).row();
+
+            TypingLabel ItemDescription = new TypingLabel("Choose an item to view it's infomation!", entity.skin);
+            ItemDescription.setWrap(true);
+            ScrollPane DescPane = new ScrollPane(ItemDescription, entity.skin);
+            DescPane.setScrollingDisabled(true, false);
+            DescPane.addListener(new ClickListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    super.enter(event, x, y, pointer, fromActor);
+                    entity.stage.setScrollFocus(DescPane);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    super.exit(event, x, y, pointer, toActor);
+                    entity.stage.setScrollFocus(null);
+                }
+            });
+            CraftingDescBottom.add(DescPane).width(130).expandY().pad(5).row();
+
+            //--------------------
+            RecipeList = new Table(entity.skin);
+            ScrollPane RecipeScroll = new ScrollPane(RecipeList, entity.skin);
+            RecipeScroll.setupOverscroll(5, 50f, 100f);
+            RecipeScroll.addListener(new ClickListener() {
+                @Override
+                public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                    super.enter(event, x, y, pointer, fromActor);
+                    entity.stage.setScrollFocus(RecipeScroll);
+                }
+
+                @Override
+                public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                    super.exit(event, x, y, pointer, toActor);
+                    entity.stage.setScrollFocus(null);
+                }
+            });
+
+            CraftingWindow.add(RecipeScroll).width(150).height(200).padRight(1);
+
+            Container = new Table(entity.skin);
+            for (int i = 0; i < entity.player.Inventory.length; i++) {
+
+                if (entity.player.Inventory[i] == null) {
+                    continue;
+                }
+
+                int tempi = i;
+
+                Table ItemGroup = new Table(entity.skin);
+
+                TkItemIcon ItemIcon = new TkItemIcon(entity.skin, entity.player.Inventory[i].getID());
+                ItemGroup.add(new Label(entity.player.Inventory[i].getQuantity() + "", entity.skin)).padRight(5);
+                ItemGroup.add(ItemIcon).size(16);
+                ItemGroup.add(new Label(entity.player.Inventory[i].getName(), entity.skin)).size(16).padLeft(5);
+                Container.add(ItemGroup).left();
+                ItemGroup.addListener(new ClickListener() {
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        InventorySlotSelected = tempi;
+                        TkItemIcon temp = CraftingDescTop.findActor("CraftingIcon");
+                        temp.reload(entity.player.Inventory[InventorySlotSelected].getID());
+                        ItemDescription.restart(ItemPresets.get(entity.player.Inventory[InventorySlotSelected].getID()).getDescription());
+                        ItemDescription.skipToTheEnd();
+                        ItemName.restart(ItemPresets.get(entity.player.Inventory[InventorySlotSelected].getID()).getName());
+                        ItemName.skipToTheEnd();
+                    }
+
+                    @Override
+                    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                        super.enter(event, x, y, pointer, fromActor);
+                        ItemGroup.setBackground("Window_grey");
+                        if (ctm.controllers.size() < 1)
+                            SelectedIndex = tempi;
+                    }
+
+                    @Override
+                    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                        super.exit(event, x, y, pointer, toActor);
+                        ItemGroup.setBackground((Drawable) null);
+                    }
+                });
+                ItemGroup.pack();
+
+                Container.row();
+                TotalRows++;
+            }
+
+            RecipeList.add(Container);
+
+            RecipeList.row();
+
+
+            //--------------------------------------
+
+            CraftingWindow.add(CraftingDescription).top().width(150).height(200).padLeft(1);
+
+            //--------------------------------------
+            Screen.add(UIWindow);
+
+            UIWindow.row();
+            final TkTextButton Close = new TkTextButton("Close", entity.skin);
+            UIWindow.add(Close).padTop(2);
+
+            Close.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.setState(UI_state.INGAMEUI);
+                }
+            });
+
+        }
+
+        @Override
+        public void update(UIFSM entity) {
+            ControllerDelay++;
+            Screen.setVisible(entity.Visible);
+            if (ControllerDelay >= 5)
+                SelectedIndex = ControllerCheckSeed(Container, SelectedIndex, TotalRows, entity);
+            entity.stage.act(Gdx.graphics.getDeltaTime());
+
+            for (int i = 0; i < Container.getCells().size; i++) {
+                if (i == SelectedIndex) {
+                    ((Table)Container.getCells().get(i).getActor()).setBackground("Window_grey");
+                } else {
+                    ((Table)Container.getCells().get(i).getActor()).setBackground((Drawable) null);
+                }
+            }
+
+
+        }
+
+        @Override
+        public void exit(UIFSM entity) {
+            entity.stage.clear();
+            SelectedIndex = 0;
+            TotalRows = 1;
+            ControllerDelay = 0;
+        }
+
+        @Override
+        public boolean onMessage(UIFSM entity, Telegram telegram) {
+            return false;
+        }
+    },
+
+    SeedSelection() {
+
+        Skin BackupSkin;
+
+        private Table Screen;
+        private Table InventoryWindow;
+
+        private Table InventoryTable;
+
+        int SelectedIndex = 0;
+        int TotalRows = 1;
+
+        int ControllerDelay = 0;
+
+        ClickListener StageListener;
+
+        @Override
+        public void enter(UIFSM entity) {
+
+            StageListener = new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    if (entity.ClickedOutsideInventory) {
+                        //Close the window
+                        entity.setState(UI_state.INGAMEUI);
+                    }
+                }
+            };
+
+            BackupSkin = entity.skin;
+            Screen = new Table(entity.skin);
+            Screen.setFillParent(true);
+            entity.stage.addActor(Screen);
+
+            InventoryWindow = new Table(entity.skin);
+            InventoryWindow.setBackground("Window_grey_back");
+            InventoryWindow.pad(2);
+
+            entity.stage.addListener(StageListener);
+
+            InventoryTable = new Table(entity.skin);
+
+            for (int i = 0; i < entity.player.Inventory.length; i++) {
+                int tempi = i;
+
+                if (entity.player.Inventory[i] == null) {
+                    continue;
+                }
+
+                Table ItemGroup = new Table(entity.skin);
+
+                TkItemIcon ItemIcon = new TkItemIcon(entity.skin, entity.player.Inventory[i].getID());
+                ItemGroup.add(new Label(entity.player.Inventory[i].getQuantity() + "", entity.skin)).padRight(5);
+                ItemGroup.add(ItemIcon).size(16);
+                ItemGroup.add(new Label(entity.player.Inventory[i].getName(), entity.skin)).size(16).padLeft(5);
+                InventoryTable.add(ItemGroup).left();
+                ItemGroup.addListener(new ClickListener() {
+
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        //Plant the seed
+                        if (entity.gsm.gameState instanceof PlayState) {
+                            if (((PlayState) entity.gsm.gameState).TryToPlantSeed(entity.player.Inventory[tempi].getID())) {
+                                entity.player.DeductFromInventory(entity.player.Inventory[tempi].getID(), 1);
+                                entity.LastUsedSeedType = entity.player.Inventory[tempi];
+                                entity.setState(UI_state.INGAMEUI);
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void enter(InputEvent event, float x, float y, int pointer, Actor fromActor) {
+                        super.enter(event, x, y, pointer, fromActor);
+                        ItemGroup.setBackground("Window_grey");
+                        if (ctm.controllers.size() < 1)
+                            SelectedIndex = tempi;
+                    }
+
+                    @Override
+                    public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
+                        super.exit(event, x, y, pointer, toActor);
+                        ItemGroup.setBackground((Drawable) null);
+                    }
+                });
+                ItemGroup.pack();
+
+                InventoryTable.row();
+                TotalRows++;
+            }
+
+            InventoryWindow.add(InventoryTable).row();
+
+            Screen.add(InventoryWindow).size(80, 160).row();
+
+            //__________________________________________________________
+
+            final TkTextButton Close = new TkTextButton("Close", entity.skin);
+            InventoryWindow.add(Close);
+
+            Close.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    entity.setState(UI_state.INGAMEUI);
+                }
+            });
+
+            InventoryWindow.pack();
+
+        }
+
+        @Override
+        public void update(UIFSM entity) {
+            ControllerDelay++;
+            Screen.setVisible(entity.Visible);
+            if (ControllerDelay >= 5)
+                SelectedIndex = ControllerCheckSeed(InventoryTable, SelectedIndex, TotalRows, entity);
+            entity.stage.act(Gdx.graphics.getDeltaTime());
+
+            for (int i = 0; i < InventoryTable.getCells().size; i++) {
+                if (i == SelectedIndex) {
+                    ((Table)InventoryTable.getCells().get(i).getActor()).setBackground("Window_grey");
+                } else {
+                    ((Table)InventoryTable.getCells().get(i).getActor()).setBackground((Drawable) null);
+                }
+            }
+
+        }
+
+        @Override
+        public void exit(UIFSM entity) {
+
+            for (int j = 0; j < entity.player.Inventory.length; j++) {
+                if (entity.player.Inventory[j] == null) {
+                    entity.player.Inventory[j] = CursorItem;
+                    CursorItem = null;
+                    break;
+                }
+            }
+
+            entity.stage.clear();
+            entity.stage.removeListener(StageListener);
+            ControllerDelay = 0;
+            TotalRows = 1;
+            SelectedIndex = 0;
         }
 
         @Override
@@ -1311,60 +1676,82 @@ public enum UI_state implements State<UIFSM> {
         }
     }
 
-    public void ControllerCheckInventory(Table table, int Index) {
+    public int ControllerCheckSeed(Table Inventorytable, int Index, int Size, UIFSM entity) {
         if (ctm.controllers.size() > 0) {
-            for (int i = 0; i < table.getCells().size; i++) {
-                if (table.getCells().get(i).getActor() instanceof TkTextButton) {
-                    int nextSelection = i;
-                    if (((TkTextButton) table.getCells().get(i).getActor()).Selected) {
-                        //Gdx.app.log("menu", "i is " + i);
-                        if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) < -0.2f || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
-                            ((TkTextButton) table.getCells().get(i).getActor()).Selected = false;
-                            if (ScrollingSpeed % 5 == 0) {
-                                nextSelection += 1;
-                            }
-                            ScrollingSpeed++;
 
-                        } else if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) > 0.2f || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
-                            ((TkTextButton) table.getCells().get(i).getActor()).Selected = false;
-                            if (ScrollingSpeed % 5 == 0) {
-                                nextSelection -= 1;
-                            }
-                            ScrollingSpeed++;
-                        } else {
-                            ScrollingSpeed = 0;
-                        }
-
-                        if (nextSelection < 0)
-                            nextSelection = table.getCells().size - 1;
-                        if (nextSelection >= table.getCells().size)
-                            nextSelection = 0;
-
-                        if (table.getCells().get(nextSelection).getActor() instanceof TkTextButton) {
-                            ((TkTextButton) table.getCells().get(nextSelection).getActor()).Selected = true;
-                        }
-
-                        if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                            //Gdx.app.debug("", "");
-                            Array<EventListener> listeners = table.getCells().get(i).getActor().getListeners();
-                            for (int b = 0; b < listeners.size; b++) {
-                                if (listeners.get(b) instanceof ClickListener) {
-                                    ((ClickListener) listeners.get(b)).clicked(null, 0, 0);
-                                }
-                            }
-                        }
-
-                        break;
-                    } else if (i == table.getCells().size - 1) {
-                        if (table.getCells().get(0).getActor() instanceof TkTextButton)
-                            ((TkTextButton) table.getCells().get(0).getActor()).Selected = true;
-                        else
-                            ((TkTextButton) table.getCells().get(i).getActor()).Selected = true;
-                    }
+            if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) < -0.2f || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                if (ScrollingSpeed % 5 == 0) {
+                    Index += 1;
                 }
+                ScrollingSpeed++;
+
+            } else if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) > 0.2f || Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                if (ScrollingSpeed % 5 == 0) {
+                    Index -= 1;
+                }
+                ScrollingSpeed++;
+            } else {
+                ScrollingSpeed = 0;
+            }
+
+        } else {
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
+                if (ScrollingSpeed % 5 == 0) {
+                    Index += 1;
+                }
+                ScrollingSpeed++;
+
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.UP)) {
+                if (ScrollingSpeed % 5 == 0) {
+                    Index -= 1;
+                }
+                ScrollingSpeed++;
+            } else {
+                ScrollingSpeed = 0;
             }
 
         }
+
+        if (Index < 0)
+            Index = Size - 1;
+        if (Index >= Size)
+            Index = 0;
+
+        if (ctm.controllers.size() > 0) {
+            if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                if (Index+1 != Size) {
+                    Array<EventListener> listeners = Inventorytable.getCells().get(Index).getActor().getListeners();
+                    for (int b = 0; b < listeners.size; b++) {
+                        if (listeners.get(b) instanceof ClickListener) {
+                            ((ClickListener) listeners.get(b)).clicked(null, 0, 0);
+                        }
+                    }
+                } else {
+                    entity.setState(UI_state.INGAMEUI);
+
+                }
+            }
+            if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_B)) {
+                entity.setState(UI_state.INGAMEUI);
+            }
+        } else {
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                if (Index+1 != Size) {
+                    Array<EventListener> listeners = Inventorytable.getCells().get(Index).getActor().getListeners();
+                    for (int b = 0; b < listeners.size; b++) {
+                        if (listeners.get(b) instanceof ClickListener) {
+                            ((ClickListener) listeners.get(b)).clicked(null, 0, 0);
+                        }
+                    }
+                } else {
+                    entity.setState(UI_state.INGAMEUI);
+                }
+            }
+        }
+
+
+        return Index;
     }
 
 }

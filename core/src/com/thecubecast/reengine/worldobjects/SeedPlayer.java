@@ -243,10 +243,6 @@ public class SeedPlayer extends WorldObject {
 
     public BoundingBox getAttackBox() {
 
-        return getIntereactBox();
-    }
-
-    public BoundingBox getIntereactBox() {
         BoundingBox RectPla;
 
         if (Facing) {
@@ -255,14 +251,14 @@ public class SeedPlayer extends WorldObject {
                     new Vector3(getPosition().x - 16,
                             getPosition().y,
                             getPosition().z),
-                    new Vector3(getPosition().x+8,
+                    new Vector3(getPosition().x+16,
                             getPosition().y + getSize().y+18,
                             getPosition().z + getSize().z));
             return RectPla;
         } else {
             //Right
             RectPla = new BoundingBox(
-                    new Vector3(getPosition().x+8,
+                    new Vector3(getPosition().x,
                             getPosition().y,
                             getPosition().z),
                     new Vector3(getPosition().x+32,
@@ -368,6 +364,32 @@ public class SeedPlayer extends WorldObject {
 
         return RectPla;
         */
+    }
+
+    public BoundingBox getIntereactBox() {
+        BoundingBox RectPla;
+
+        if (Facing) {
+            //Left
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x - 18,
+                            getPosition().y,
+                            getPosition().z),
+                    new Vector3(getPosition().x,
+                            getPosition().y + 12,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        } else {
+            //Right
+            RectPla = new BoundingBox(
+                    new Vector3(getPosition().x + 18,
+                            getPosition().y,
+                            getPosition().z),
+                    new Vector3(getPosition().x+32,
+                            getPosition().y + 12,
+                            getPosition().z + getSize().z));
+            return RectPla;
+        }
     }
 
     public void Attack() {

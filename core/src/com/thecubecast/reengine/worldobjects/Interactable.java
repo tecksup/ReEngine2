@@ -20,7 +20,7 @@ public class Interactable extends Trigger {
     public String Description = "";
 
     public boolean Highlight = false;
-    public Color HighlightColor = Color.YELLOW;
+    public Color HighlightColor = Color.WHITE;
 
     public String TexLocation = "";
 
@@ -74,6 +74,8 @@ public class Interactable extends Trigger {
             return temp;
         }
     }
+
+    public void drawGui(SpriteBatch batch, float Time) {}
 
     public void Activated() {
 

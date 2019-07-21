@@ -25,6 +25,8 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+import static com.thecubecast.reengine.data.GameStateManager.CropPresets;
+
 public class TkMap {
 
     private Stack<TkMapCommand> Undocommands = new Stack<>();
@@ -456,7 +458,12 @@ public class TkMap {
             } else if (Name.equals("Text")) {
                 temp.add(new TextWorldObject(X,Y,Z, Description, GameStateManager.Render.font));
             } else if (Name.equals("Crop")) {
-                temp.add(new FarmTile(X,Y,Z, Description));
+                for (int j = 0; j < CropPresets.size(); j++) {
+                    if (CropPresets.get(j).TexLocation.equals(Description)) {
+                        temp.add(new FarmTile(X,Y,Z, CropPresets.get(j).SeedItemID));
+                        break;
+                    }
+                }
             } else if (Name.equals("Firepit")) {
                 temp.add(new Firepit(X,Y,Z));
             } else {

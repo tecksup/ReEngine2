@@ -54,7 +54,7 @@ public class GameStateManager {
 
     private OrthographicCamera MainCam;
 
-    public UIFSM UI;
+    public static UIFSM UI;
 
     private FrameBuffer WorldFBO;
     private FrameBuffer UIFBO;
@@ -75,6 +75,7 @@ public class GameStateManager {
     public CursorType Cursor = CursorType.Normal;
 
     public static HashMap<Integer, Item> ItemPresets;
+    public static HashMap<Integer, CropType> CropPresets;
 
     //screen
     private int Width;
@@ -109,6 +110,23 @@ public class GameStateManager {
                 tempItem.setMax(Max);
                 ItemPresets.put(ID, tempItem);
             }
+        }
+
+        //Load Itemes.dat file and populate the hashmap
+        CropPresets = new HashMap<>();
+        JsonArray temp2Json = temp.parse(Gdx.files.internal("Crops.dat").readString()).getAsJsonArray();
+        for (int i = 0; i < temp2Json.size(); i++) {
+            String Name = temp2Json.get(i).getAsJsonObject().get("Name").getAsString();
+            String TexLocation = temp2Json.get(i).getAsJsonObject().get("TexLocation").getAsString();
+            int SeedItemID = temp2Json.get(i).getAsJsonObject().get("SeedItemID").getAsInt();
+            int GrowingTimeMin = temp2Json.get(i).getAsJsonObject().get("GrowingTimeMin").getAsInt();
+            int GrowingTimeMax = temp2Json.get(i).getAsJsonObject().get("GrowingTimeMax").getAsInt();
+            int MinDrops = temp2Json.get(i).getAsJsonObject().get("MinDrops").getAsInt();
+            int MaxDrops = temp2Json.get(i).getAsJsonObject().get("MaxDrops").getAsInt();
+            int ItemDropID = temp2Json.get(i).getAsJsonObject().get("ItemDropID").getAsInt();
+            int ID = temp2Json.get(i).getAsJsonObject().get("ID").getAsInt();
+            CropType tempItem = new CropType(Name, ID, TexLocation, SeedItemID, GrowingTimeMin, GrowingTimeMax, MinDrops, MaxDrops, ItemDropID);
+            CropPresets.put(ID, tempItem);
         }
 
         Width = W;

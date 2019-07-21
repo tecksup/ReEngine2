@@ -22,23 +22,16 @@ import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.*;
-import com.thecubecast.reengine.worldobjects.entityprefabs.Dummy;
-import com.thecubecast.reengine.worldobjects.entityprefabs.Firepit;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Hank;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.thecubecast.reengine.data.GameStateManager.AudioM;
-import static com.thecubecast.reengine.data.GameStateManager.ItemPresets;
-import static com.thecubecast.reengine.data.GameStateManager.ctm;
+import static com.thecubecast.reengine.data.GameStateManager.*;
 import static com.thecubecast.reengine.graphics.Draw.FillColorShader;
 import static com.thecubecast.reengine.graphics.Draw.setFillColorShaderColor;
 
 public class PlayState extends DialogStateExtention {
-
-    //GUI
-    boolean MenuOpen = true;
-    boolean HudOpen = true;
 
     //Camera
     OrthographicCamera GuiCam;
@@ -96,6 +89,14 @@ public class PlayState extends DialogStateExtention {
             }
         }
 
+        for (int x = 0; x < WorldMap.getWidth(); x++) {
+            for (int y = 0; y < WorldMap.getHeight(); y++) {
+                if (WorldMap.getGround()[x][y] == 3) {
+                    Entities.add(new FarmTile(x*16, y*16, 0, -1));
+                }
+            }
+        }
+
         //Setup Dialog Instance
         MenuInit(GameStateManager.UIWidth, GameStateManager.UIHeight);
 
@@ -118,6 +119,8 @@ public class PlayState extends DialogStateExtention {
         //Particles
         Particles = new ParticleHandler();
 
+        Entities.add(new Hank(500, 580, 0));
+
         //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
 
     }
@@ -132,7 +135,7 @@ public class PlayState extends DialogStateExtention {
                     if (Entities.get(i) instanceof NPC) {
                         NPC Entitemp = (NPC) Entities.get(i);
 
-                        System.out.println("Got Hit");
+                        //Got hit
 
                         Particles.AddParticleEffect("sparkle", Entitemp.getPosition().x + 8, Entitemp.getPosition().y + 8);
 
@@ -181,7 +184,7 @@ public class PlayState extends DialogStateExtention {
             } else if (Entities.get(i) instanceof NPC) {
                 if (!((NPC) Entities.get(i)).isAlive()) {
                     Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
-                    Particles.AddParticleEffect("Leaf", player.getIntereactBox().getCenterX(), player.getIntereactBox().getCenterY());
+                    Particles.AddParticleEffect("Leaf", player.getAttackBox().getCenterX(), player.getAttackBox().getCenterY());
                     Entities.remove(i);
                 }
             } else if (Entities.get(i) instanceof Interactable) {
@@ -190,10 +193,11 @@ public class PlayState extends DialogStateExtention {
                 Entitemp.Trigger(player, shaker, this, null, Particles, Entities);
                 Vector3 pos = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
                 camera.unproject(pos);
+
                 if (Entitemp.getImageHitbox().contains(new Vector3(pos.x, pos.y, player.getPosition().z))) {
                     ((Interactable) Entities.get(i)).Highlight = true;
-                    ((Interactable) Entities.get(i)).HighlightColor = Color.YELLOW;
-                    if (Gdx.input.isTouched() && MenuOpen) {
+                    ((Interactable) Entities.get(i)).HighlightColor = Color.WHITE;
+                    if (Gdx.input.isTouched() && AllowMovement()) {
                         //Trigger the action, mine it, open it, trigger the event code
                         ((Interactable) Entities.get(i)).HighlightColor = Color.RED;
                         if (((Interactable) Entities.get(i)).getActivationType().equals(Trigger.TriggerType.OnClick) && !((Interactable) Entities.get(i)).JustRan) {
@@ -203,8 +207,7 @@ public class PlayState extends DialogStateExtention {
 
                         if (Entities.get(i) instanceof Storage) {
                             gsm.UI.StorageOpen = (Storage) Entities.get(i);
-                            MenuOpen = !MenuOpen;
-                            HudOpen = !HudOpen;
+                            gsm.UI.setVisable(!gsm.UI.isVisible());
                             gsm.UI.setState(UI_state.InventoryAndStorage);
                             gsm.UI.setVisable(true);
                         } else if (Entities.get(i) instanceof Interactable) {
@@ -217,6 +220,32 @@ public class PlayState extends DialogStateExtention {
                 }
             } else {
                 Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
+            }
+        }
+
+        if (gsm.UI.LastUsedSeedType != null && player.getItemQuant(gsm.UI.LastUsedSeedType.getID()) >= 1) {
+            for (int i = 0; i < Entities.size(); i++) {
+                if (Entities.get(i).getHitbox().intersects(player.getIntereactBox())) {
+                    if (Entities.get(i) instanceof FarmTile) {
+                        if (((FarmTile) Entities.get(i)).Description.equals("")) {
+                            ((FarmTile) Entities.get(i)).Highlight = true;
+                            ((FarmTile) Entities.get(i)).HighlightColor = Color.BLUE;
+                            break;
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < Entities.size(); i++) {
+                if (Entities.get(i).getHitbox().intersects(player.getIntereactBox())) {
+                    if (Entities.get(i) instanceof FarmTile) {
+                        if (((FarmTile) Entities.get(i)).Description.equals("")) {
+                            ((FarmTile) Entities.get(i)).Highlight = true;
+                            ((FarmTile) Entities.get(i)).HighlightColor = Color.GREEN;
+                            break;
+                        }
+                    }
+                }
             }
         }
 
@@ -247,10 +276,10 @@ public class PlayState extends DialogStateExtention {
                             if(Entities.get(j) instanceof NPC) {
                                 Remove.add(Entities.get(i));
                                 ((NPC) Entities.get(j)).setHealth(((NPC) Entities.get(j)).getHealth()-10);
-                            } else if (Entities.get(j) instanceof ProtoType_Player) {
-                                if (!((ProtoType_Player) Entities.get(j)).Rolling) {
+                            } else if (Entities.get(j) instanceof SeedPlayer) {
+                                if (!((SeedPlayer) Entities.get(j)).Rolling) {
                                     Remove.add(Entities.get(i));
-                                    ((ProtoType_Player) Entities.get(j)).Health--;
+                                    ((SeedPlayer) Entities.get(j)).Health--;
                                 }
                             }
                         }
@@ -280,6 +309,8 @@ public class PlayState extends DialogStateExtention {
 
         g.setShader(null);
         g.begin();
+
+        WorldMap.Tileset.Update(Gdx.graphics.getDeltaTime());
 
         WorldMap.Draw(camera, g);
 
@@ -311,6 +342,11 @@ public class PlayState extends DialogStateExtention {
                     ((NPC) Entities.get(i)).drawGui(g, Time);
                 }
             }
+            if (Entities.get(i) instanceof Interactable) {
+                if (drawView.overlaps(new Rectangle(Entities.get(i).getPosition().x, Entities.get(i).getPosition().y, Entities.get(i).getSize().x, Entities.get(i).getSize().y))) {
+                    ((Interactable) Entities.get(i)).drawGui(g, Time);
+                }
+            }
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT)) { //KeyHit
@@ -325,7 +361,7 @@ public class PlayState extends DialogStateExtention {
         GameStateManager.Render.debugRenderer.setProjectionMatrix(camera.combined);
         GameStateManager.Render.debugRenderer.begin(ShapeRenderer.ShapeType.Line);
 
-        if (GameStateManager.Debug && MenuOpen) {
+        if (GameStateManager.Debug && AllowMovement()) {
 
             //Gonna make a debug renderer for the MapGraph, or i guess now? changing that fixed the crashing
 
@@ -409,7 +445,11 @@ public class PlayState extends DialogStateExtention {
             GameStateManager.Render.debugRenderer.rect(player.getHitbox().min.x, player.getHitbox().min.y + player.getHitbox().getDepth() / 2 + player.getHitbox().min.z / 2, player.getHitbox().getWidth(), player.getHitbox().getHeight());
 
             GameStateManager.Render.debugRenderer.setColor(Color.PURPLE);
+            GameStateManager.Render.debugRenderer.box(player.getAttackBox().min.x, player.getAttackBox().min.y, player.getAttackBox().min.z, player.getAttackBox().getWidth(), player.getAttackBox().getHeight(), player.getAttackBox().getDepth());
+
+            GameStateManager.Render.debugRenderer.setColor(Color.CYAN);
             GameStateManager.Render.debugRenderer.box(player.getIntereactBox().min.x, player.getIntereactBox().min.y, player.getIntereactBox().min.z, player.getIntereactBox().getWidth(), player.getIntereactBox().getHeight(), player.getIntereactBox().getDepth());
+
 
             //Item Collection
             gsm.Render.debugRenderer.setColor(Color.DARK_GRAY);
@@ -453,6 +493,19 @@ public class PlayState extends DialogStateExtention {
             GameStateManager.Render.debugRenderer.rect(((int) pos.x / 16) * 16 + 1, ((int) pos.y / 16) * 16 + 1, 15, 15);
         }
 
+        /*
+        for (int i = 0; i < Entities.size(); i++) {
+            if (Entities.get(i).getHitbox().intersects(player.getIntereactBox())) {
+                if (Entities.get(i) instanceof FarmTile) {
+                    Trigger Ent = (Trigger) Entities.get(i);
+                    GameStateManager.Render.debugRenderer.setColor(Color.BROWN);
+                    GameStateManager.Render.debugRenderer.rect(((int) Ent.getPosition().x / 16) * 16 + 1, ((int) Ent.getPosition().y / 16) * 16 + 1, 15, 15);
+                    break;
+                }
+
+            }
+        }*/
+
 
         GameStateManager.Render.debugRenderer.end();
 
@@ -460,31 +513,17 @@ public class PlayState extends DialogStateExtention {
 
     public void drawUI(SpriteBatch g, int height, int width, float Time) {
 
-        if(MenuOpen) {
-            if (!gsm.UI.getState().equals(UI_state.INGAMEUI)) {
-                gsm.UI.setState(UI_state.INGAMEUI);
-                gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
-                Gdx.input.setInputProcessor(gsm.UI.stage);
-            }
-            HudOpen = true;
-        } else {
-            if (HudOpen) {
-                if (!gsm.UI.getState().equals(UI_state.InGameHome)) {
-                    gsm.UI.setState(UI_state.InGameHome);
-                    gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
-                    Gdx.input.setInputProcessor(gsm.UI.stage);
-                }
-            } else {
-                gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
-                Gdx.input.setInputProcessor(gsm.UI.stage);
-            }
+        gsm.UI.player = player;
+
+        if(gsm.UI.isVisible()) {
+            gsm.UI.stage.setViewport(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));
+            Gdx.input.setInputProcessor(gsm.UI.stage);
         }
 
         //Draws things on the screen, and not the world positions
         g.setProjectionMatrix(GuiCam.combined);
         g.begin();
-        if (MenuOpen)
-            MenuDraw(g, Gdx.graphics.getDeltaTime());
+        MenuDraw(g, Gdx.graphics.getDeltaTime());
         g.end();
         gsm.UI.Draw();
 
@@ -509,22 +548,62 @@ public class PlayState extends DialogStateExtention {
     private void handleInput() {
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE) || ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_START)) {
-            MenuOpen = !MenuOpen;
-            HudOpen = true;
+            if (gsm.UI.getState().equals(UI_state.InGameHome)) {
+                gsm.UI.setState(UI_state.INGAMEUI);
+            } else {
+                if (!gsm.UI.getState().equals(UI_state.InGameHome) && !gsm.UI.getState().equals(UI_state.INGAMEUI)) {
+                    gsm.UI.setState(UI_state.INGAMEUI);
+                } else
+                    gsm.UI.setState(UI_state.InGameHome);
+            }
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.O)) {
-            Entities.add(new WorldItem(100, 100, 5, ItemPresets.get(4)));
+            player.AddToInventory(ItemPresets.get(0).setQuantity(1));
+            player.AddToInventory(ItemPresets.get(2).setQuantity(1));
+            player.AddToInventory(ItemPresets.get(5).setQuantity(1));
         }
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.P)) {
-            gsm.UI.setState(UI_state.Inventory);
-            MenuOpen = !MenuOpen;
-            HudOpen = !HudOpen;
+            if (gsm.UI.getState().equals(UI_state.Inventory)) {
+                gsm.UI.setState(UI_state.INGAMEUI);
+            } else {
+                gsm.UI.setState(UI_state.Inventory);
+            }
         }
 
-        if (MenuOpen) {
-            if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.C) || Gdx.input.justTouched()) { // ATTACK
+        if (Gdx.input.isKeyJustPressed(Input.Keys.U) || ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_X)) {
+
+            if (gsm.UI.LastUsedSeedType != null && player.getItemQuant(gsm.UI.LastUsedSeedType.getID()) >= 1) {
+                for (int i = 0; i < Entities.size(); i++) {
+                    if (Entities.get(i).getHitbox().intersects(player.getIntereactBox())) {
+                        if (Entities.get(i) instanceof FarmTile) {
+                            if (((FarmTile) Entities.get(i)).Description.equals("")) {
+                                if (player.getItemQuant(gsm.UI.LastUsedSeedType.getID()) >= 1) {
+                                    if (TryToPlantSeed(gsm.UI.LastUsedSeedType.getID()))
+                                        player.DeductFromInventory(gsm.UI.LastUsedSeedType.getID(), 1);
+                                } else {
+                                    //Vibrate Controller
+
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.I) || ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_Y)) {
+            if (gsm.UI.getState().equals(UI_state.SeedInventory)) {
+                gsm.UI.setState(UI_state.INGAMEUI);
+            } else {
+                gsm.UI.setState(UI_state.SeedInventory);
+            }
+        }
+
+        if (AllowMovement()) {
+            if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.justTouched()) { // ATTACK
                 if (DialogOpen) {
                     DialogNext();
                 } else {
@@ -532,13 +611,14 @@ public class PlayState extends DialogStateExtention {
                         if (Entities.get(i).getHitbox().intersects(player.getIntereactBox())) {
                             if (Entities.get(i) instanceof NPC) {
                                 NPC Entitemp = (NPC) Entities.get(i);
-                                Entitemp.interact();
+                                Entitemp.interact(this);
                             }
 
                             if (Entities.get(i) instanceof Trigger) {
                                 Trigger Ent = (Trigger) Entities.get(i);
                                 Ent.Interact(player, shaker, this, null, Particles, Entities);
                             }
+
                         }
                     }
 
@@ -652,6 +732,39 @@ public class PlayState extends DialogStateExtention {
         cam.position.set((int) (FocalPoint.x), (int) (FocalPoint.y), 0);
 
         cam.update();
+    }
+
+    public boolean AllowMovement() {
+        if (gsm.UI.isVisible()) {
+            if (gsm.UI.getState().equals(UI_state.INGAMEUI) && !DialogOpen) {
+                return true;
+            } else if (DialogOpen) {
+                return false;
+            } else {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public boolean TryToPlantSeed(int type) {
+        for (int i = 0; i < Entities.size(); i++) {
+            if (Entities.get(i).getHitbox().intersects(player.getIntereactBox())) {
+                if (Entities.get(i) instanceof FarmTile) {
+                    if (((FarmTile) Entities.get(i)).Description.equals("")) {
+                        FarmTile Ent = (FarmTile) Entities.get(i);
+                        for (int j = 0; j < CropPresets.size(); j++) {
+                            if (CropPresets.get(j).SeedItemID == type) {
+                                Ent.SetupCrop(CropPresets.get(j));
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+
     }
 
     @Override

@@ -90,18 +90,6 @@ public class Pawn extends PathfindingWorldObject {
     }
 
     @Override
-    public void drawHighlight(SpriteBatch batch, float Time) {
-        //TextureRegion currentFrame = idle.getKeyFrame(Time, true);
-
-        //setOutlineShaderColor(Color.YELLOW, 0.8f);
-
-        //batch.setShader(OutlineShader);
-        //batch.draw(currentFrame, getPosition().x-6, getPosition().y-4);
-        //batch.setShader(null);
-
-    }
-
-    @Override
     public void drawGui(SpriteBatch batch, float Time) {
         stage.draw(batch, 1);
         //batch.draw(Exclamation, (int) getPosition().x + 6, (int) getPosition().y + 63 + (float) (Math.sin(Time) * 2));

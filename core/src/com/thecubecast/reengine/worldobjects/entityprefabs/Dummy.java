@@ -1,5 +1,6 @@
 package com.thecubecast.reengine.worldobjects.entityprefabs;
 
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -99,7 +100,7 @@ public class Dummy extends NPC {
     }
 
     @Override
-    public void interact() {
+    public void interact(GameState G) {
 
     }
 

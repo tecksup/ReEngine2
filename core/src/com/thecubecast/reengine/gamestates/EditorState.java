@@ -1203,7 +1203,7 @@ public class EditorState extends GameState {
                         if (tempObj.Name.equals("Text")) {
                             tempObj = new TextWorldObject(0,0,0, "Text", Render.font);
                         } else if (tempObj.Name.equals("Crop")) {
-                            tempObj = new FarmTile(0,0,0, "Wheat");
+                            tempObj = new FarmTile(0,0,0, -1);
                             ((FarmTile)tempObj).setCropLife(1);
                         }
 

@@ -9,7 +9,10 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.gamestates.GameState;
+import com.thecubecast.reengine.gamestates.PlayState;
+import com.thecubecast.reengine.graphics.Draw;
 import com.thecubecast.reengine.graphics.scene2d.TkLabel;
 import com.thecubecast.reengine.worldobjects.NPC;
 
@@ -18,7 +21,7 @@ import static com.thecubecast.reengine.graphics.Draw.loadAnim;
 public class Hank extends NPC {
 
     Texture sprite;
-    Texture Exclamation = new Texture(Gdx.files.internal("Sprites/Yellow_Marker.png"));
+    TextureRegion Exclamation = GameStateManager.Render.getTexture("Yellow_Marker");
 
     private Animation<TextureRegion> idle;
     TkLabel NameLabel;
@@ -27,6 +30,8 @@ public class Hank extends NPC {
 
     public Hank(int x, int y, int z) {
         super("[YELLOW]H[GREEN]a[BLUE]n[RED]k", x, y, z, new Vector3(32, 32, 4), .1f, 100);
+
+        setInteract(intractability.Talk);
 
         FocusStrength = 0.15f;
 
@@ -79,8 +84,10 @@ public class Hank extends NPC {
     }
 
     @Override
-    public void interact() {
-
+    public void interact(GameState G) {
+        if (G instanceof PlayState) {
+            ((PlayState) G).AddDialog("Hank", "Wow, Looks like things still work",10, new Texture(Gdx.files.internal("Sprites/Gunter.png")));
+        }
     }
 
     @Override

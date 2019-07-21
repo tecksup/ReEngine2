@@ -145,7 +145,7 @@ public abstract class NPC extends WorldObject {
 
     }
 
-    public abstract void interact();
+    public abstract void interact(GameState G);
 
     public void heal(int heal) {
         health += heal;

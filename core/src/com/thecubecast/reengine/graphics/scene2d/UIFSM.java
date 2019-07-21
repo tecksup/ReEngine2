@@ -21,9 +21,10 @@ public class UIFSM implements Telegraph {
     public Storage StorageOpen;
     public static Item CursorItem;
     public boolean ClickedOutsideInventory = true;
+    public Item LastUsedSeedType;
 
     //-1 if nothing selected, positive numbers including 0 are for actual crafting ids
-    public static int CraftingIDSelected = -1;
+    public static int InventorySlotSelected = -1;
 
     public boolean inGame = false;
     public boolean Visible = true;

@@ -1,38 +1,38 @@
 [
   {
-    "Name": "Evil",
+    "Name": "Wheat Seeds",
     "ID": 0,
-    "TexLocation": "Sprites/evil.png",
+    "TexLocation": "Sprites/Wheat_Seed.png",
     "Equipment": false,
     "Structure": false,
-    "Description": "Will Kill you",
+    "Description": "These will help grow some wheat!",
     "Max": 64
   },
   {
-    "Name": "{color=green}Green",
+    "Name": "Wheat",
     "ID": 1,
-    "TexLocation": "Sprites/green.png",
+    "TexLocation": "Sprites/Wheat.png",
     "Equipment": false,
     "Structure": false,
-    "Description": "{color=green}Legendary color,{CLEARCOLOR} This is also a test of how {WAVE}long{ENDWAVE} i can make text before it gets REALLY fucked up. Now i will make it that much longer, we need that scroll!!!",
+    "Description": "Wow, what will we do with this?",
     "Max": 64
   },
   {
-    "Name": "Blue",
+    "Name": "Potato Eye",
     "ID": 2,
-    "TexLocation": "Sprites/blue.png",
+    "TexLocation": "Sprites/Potatoe_Seed.png",
     "Equipment": false,
     "Structure": false,
-    "Description": "Blue",
+    "Description": "Will [WAVE]probably[ENDWAVE] give rise to a mighty crop!",
     "Max": 64
   },
   {
-    "Name": "Happy",
+    "Name": "Potato",
     "ID": 3,
-    "TexLocation": "Sprites/face.png",
+    "TexLocation": "Sprites/Potatoe.png",
     "Equipment": false,
     "Structure": false,
-    "Description": "",
+    "Description": "Wow, a fully grown potato!",
     "Max": 64
   },
   {
@@ -45,12 +45,21 @@
     "Max": 64
   },
   {
-    "Name": "Wood",
+    "Name": "Orange Seed",
     "ID": 5,
-    "TexLocation": "Sprites/Resource_Wood.png",
+    "TexLocation": "Sprites/Orange_Seed.png",
     "Equipment": false,
     "Structure": false,
-    "Description": "Great for carpentry... or setting fires!",
+    "Description": "Will grow the mighty Orange!",
+    "Max": 64
+  },
+  {
+    "Name": "Orange",
+    "ID": 6,
+    "TexLocation": "Sprites/Orange.png",
+    "Equipment": false,
+    "Structure": false,
+    "Description": "Is it named after a color, or is the color named after it?",
     "Max": 64
   }
 ]

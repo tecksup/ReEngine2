@@ -29,7 +29,7 @@ public class PathfindingWorldObject extends NPC {
     }
 
     @Override
-    public void interact() {
+    public void interact(GameState G) {
     }
 
     public Vector3 getDestination() {

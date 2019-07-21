@@ -1,0 +1,35 @@
+[
+  {
+    "Name": "Wheat",
+    "ID": 0,
+    "TexLocation": "Wheat",
+	"SeedItemID":0,
+    "GrowingTimeMin": 15,
+    "GrowingTimeMax": 20,
+    "MinDrops": 1,
+    "MaxDrops": 4,
+	"ItemDropID": 1
+  },
+  {
+    "Name": "Potato",
+    "ID": 1,
+    "TexLocation": "Potatoe",
+	"SeedItemID":2,
+    "GrowingTimeMin": 18,
+    "GrowingTimeMax": 22,
+    "MinDrops": 2,
+    "MaxDrops": 5,
+	"ItemDropID": 3
+  },
+  {
+    "Name": "Orange",
+    "ID": 2,
+    "TexLocation": "Orange",
+	"SeedItemID":5,
+    "GrowingTimeMin": 30,
+    "GrowingTimeMax": 40,
+    "MinDrops": 1,
+    "MaxDrops": 1,
+	"ItemDropID": 6
+  }
+]
