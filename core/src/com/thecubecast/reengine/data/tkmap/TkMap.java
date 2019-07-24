@@ -466,12 +466,15 @@ public class TkMap {
                 }
             } else if (Name.equals("Firepit")) {
                 temp.add(new Firepit(X,Y,Z));
-            } else {
-
-                if (Name.equals("Player")) {
-                    gsm.PlayerSpawn = new Vector3(X,Y,Z);
-                    break;
+            } else if (Name.equals("Player")) {
+                gsm.PlayerSpawn = new Vector3(X,Y,Z);
+                if (gsm.gameState instanceof EditorState) {
+                    Interactable temptempPlayer = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);
+                    temptempPlayer.Name = Name;
+                    temptempPlayer.setTexLocation(tempImgLoc);
+                    temp.add(temptempPlayer);
                 }
+            } else {
 
                 Interactable tempObj = new Interactable(X, Y, Z, new Vector3(W, H, D), Type, Collidable, RawEvents, TriggerType);
                 tempObj.setTexLocation(tempImgLoc);
