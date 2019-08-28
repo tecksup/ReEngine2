@@ -1,4 +1,4 @@
-package com.thecubecast.reengine.data;
+package com.thecubecast.reengine.data.control;
 
 import com.badlogic.gdx.controllers.Controller;
 import com.badlogic.gdx.controllers.ControllerListener;

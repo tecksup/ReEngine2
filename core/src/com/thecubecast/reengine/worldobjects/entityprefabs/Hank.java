@@ -33,6 +33,8 @@ public class Hank extends NPC {
 
         setInteract(intractability.Talk);
 
+        setInvulnerable(true);
+
         FocusStrength = 0.15f;
 
         idle = new Animation<TextureRegion>(0.1f, loadAnim(sprite, "Sprites/8direct/south.png", 4, 1));

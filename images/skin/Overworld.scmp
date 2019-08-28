@@ -674,6 +674,22 @@ atlasData: {
 			minHeight: 0
 			customized: false
 		}
+		{
+			file: D:/GitHub/ReEngine2/images/skin/Raw/Window_blank.9.png
+			bgColor: {
+				r: 1
+				g: 1
+				b: 1
+				a: 1
+			}
+			tint: null
+			tintName: null
+			name: Window_blank
+			tiled: false
+			minWidth: 0
+			minHeight: 0
+			customized: false
+		}
 	]
 	fontDrawables: [
 		{
@@ -3301,6 +3317,10 @@ preferences: {
 	maxUndos: {
 		class: java.lang.Integer
 		value: 30
+	}
+	last-import-export-path: {
+		class: java.lang.String
+		value: D:/GitHub/ReEngine2/core/assets/Skins/test1/skin.json
 	}
 	id: {
 		class: java.lang.Integer

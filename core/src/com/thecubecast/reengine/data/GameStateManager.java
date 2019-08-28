@@ -16,6 +16,7 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonParser;
+import com.thecubecast.reengine.data.control.ControlerManager;
 import com.thecubecast.reengine.gamestates.*;
 import com.thecubecast.reengine.graphics.Draw;
 import com.thecubecast.reengine.graphics.scene2d.UIFSM;
@@ -206,6 +207,22 @@ public class GameStateManager {
             System.out.println("Loaded State " + gameState.getClass().getName());
         }
 
+    }
+
+    public void setStateForced(GameState State) {
+        Gdx.input.setInputProcessor(UI.stage);
+        UI.setState(UI_state.Home);
+
+        previousState = currentState;
+        unloadState();
+        gameState = State; 
+        gameState.init();
+
+        UI.inGame = false;
+
+        if (Debug) {
+            System.out.println("Loaded State " + gameState.getClass().getName());
+        }
     }
 
     /**

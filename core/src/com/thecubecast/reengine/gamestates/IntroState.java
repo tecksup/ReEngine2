@@ -8,8 +8,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.thecubecast.reengine.data.GameStateManager;
-import com.thecubecast.reengine.data.ControlerManager;
+import com.thecubecast.reengine.data.control.ControlerManager;
 import sun.security.ssl.Debug;
+
+import static com.thecubecast.reengine.data.GameStateManager.AudioM;
 
 public class IntroState extends GameState {
 
@@ -17,9 +19,6 @@ public class IntroState extends GameState {
 
     private int alpha;
     private int ticks = 0;
-
-    static final int WORLD_WIDTH = 100;
-    static final int WORLD_HEIGHT = 100;
 
     Texture Splash;
 
@@ -37,8 +36,7 @@ public class IntroState extends GameState {
 
         camera = new OrthographicCamera();
 
-        //JukeBox.load("/Music/bgmusic.wav", "LogoSound");
-        //JukeBox.play("LogoSound");
+        AudioM.playS("");
 
 
     }

@@ -1,4 +1,4 @@
-package com.thecubecast.reengine.worldobjects.ai;
+package com.thecubecast.reengine.worldobjects.ai.aistates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.fsm.State;
@@ -10,13 +10,12 @@ import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.gamestates.PlayState;
 import com.thecubecast.reengine.worldobjects.Bullet;
 import com.thecubecast.reengine.worldobjects.ai.Smart;
-import com.thecubecast.reengine.worldobjects.entityprefabs.Pawn;
-
-import java.util.Random;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Grass_Tuft;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Grass_Tuft;
 
 import static com.thecubecast.reengine.data.GameStateManager.AudioM;
 
-public enum PawnStates implements State<Smart> {
+public enum Grass_Tuft_States implements State<Smart> {
 
     IDLE() {
         @Override
@@ -73,7 +72,7 @@ public enum PawnStates implements State<Smart> {
                 //Angle from CenterOfEntity to PlayerCenter for gun aiming
                 Vector3 Angle = new Vector3(CenterOfEntity).sub(PlayerCenter);
 
-                ((Pawn) ParrentAI.WorldObject).Facing = !(Angle.x < 0);
+                ((Grass_Tuft) ParrentAI.WorldObject).Facing = !(Angle.x < 0);
 
                 Vector2 Loc = new Vector2(ParrentAI.WorldObject.getPosition().x, ParrentAI.WorldObject.getPosition().y);
                 Vector2 Dest = new Vector2(ParrentAI.getPath().get(2).x * 16, ParrentAI.getPath().get(2).y * 16);
@@ -135,7 +134,7 @@ public enum PawnStates implements State<Smart> {
             //Angle from CenterOfEntity to PlayerCenter for gun aiming
             Vector3 Angle = new Vector3(CenterOfEntity).sub(PlayerCenter);
 
-            ((Pawn) ParrentAI.WorldObject).Facing = !(Angle.x < 0);
+            ((Grass_Tuft) ParrentAI.WorldObject).Facing = !(Angle.x < 0);
 
             Angle.clamp(0, MaxBulletSpeed);
 
@@ -173,7 +172,7 @@ public enum PawnStates implements State<Smart> {
                         ReloadTime = 0.5f;
                         ShotsFired = 0;
                     }
-                    if (!((Pawn)ParrentAI.WorldObject).Facing) {
+                    if (!((Grass_Tuft)ParrentAI.WorldObject).Facing) {
                         GameState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x + 14, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
                         AudioM.play("gun");
                     } else {
@@ -188,7 +187,7 @@ public enum PawnStates implements State<Smart> {
                         ReloadTime = 0.7f;
                         ShotsFired = 0;
                     }
-                    if (!((Pawn)ParrentAI.WorldObject).Facing) {
+                    if (!((Grass_Tuft)ParrentAI.WorldObject).Facing) {
                         GameState.Entities.add(new Bullet((int) ParrentAI.WorldObject.getPosition().x + 14, (int) ParrentAI.WorldObject.getPosition().y, (int) ParrentAI.WorldObject.getPosition().z, Angle, ParrentAI.WorldObject));
                         AudioM.play("gun");
                     } else {

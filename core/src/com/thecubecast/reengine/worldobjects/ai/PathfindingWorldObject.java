@@ -1,8 +1,10 @@
-package com.thecubecast.reengine.worldobjects;
+package com.thecubecast.reengine.worldobjects.ai;
 
 import com.badlogic.gdx.ai.fsm.State;
 import com.badlogic.gdx.math.Vector3;
+import com.thecubecast.reengine.data.Item;
 import com.thecubecast.reengine.gamestates.GameState;
+import com.thecubecast.reengine.worldobjects.NPC;
 import com.thecubecast.reengine.worldobjects.ai.Smart;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;

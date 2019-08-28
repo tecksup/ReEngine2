@@ -1,4 +1,4 @@
-package com.thecubecast.reengine.worldobjects;
+package com.thecubecast.reengine.worldobjects.Triggers;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;

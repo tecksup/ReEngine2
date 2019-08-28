@@ -36,6 +36,10 @@ import com.thecubecast.reengine.graphics.scene2d.TkTextButton;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
 import com.thecubecast.reengine.worldobjects.*;
+import com.thecubecast.reengine.worldobjects.Triggers.FarmTile;
+import com.thecubecast.reengine.worldobjects.Triggers.Interactable;
+import com.thecubecast.reengine.worldobjects.Triggers.TextWorldObject;
+import com.thecubecast.reengine.worldobjects.Triggers.Trigger;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

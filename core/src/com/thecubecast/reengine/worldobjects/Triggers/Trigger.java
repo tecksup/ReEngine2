@@ -1,4 +1,4 @@
-package com.thecubecast.reengine.worldobjects;
+package com.thecubecast.reengine.worldobjects.Triggers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
@@ -9,6 +9,7 @@ import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.gamestates.DialogStateExtention;
 import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
+import com.thecubecast.reengine.worldobjects.WorldObject;
 
 import java.util.List;
 

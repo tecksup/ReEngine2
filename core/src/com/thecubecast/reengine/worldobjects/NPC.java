@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.thecubecast.reengine.data.Cube;
+import com.thecubecast.reengine.data.Item;
 import com.thecubecast.reengine.data.ParticleHandler;
 import com.thecubecast.reengine.gamestates.GameState;
 
@@ -21,6 +22,8 @@ public abstract class NPC extends WorldObject {
     private float health;
     private boolean invulnerable = false;
     public String name;
+
+    Item DropOnDeath;
 
     public float VelDrag = -1;
 
@@ -245,6 +248,14 @@ public abstract class NPC extends WorldObject {
 
     public long getLastDamagedTime() {
         return LastDamagedTime;
+    }
+
+    public Item getDropOnDeath() {
+        return DropOnDeath;
+    }
+
+    public void setDropOnDeath(Item dropOnDeath) {
+        DropOnDeath = dropOnDeath;
     }
 
 }

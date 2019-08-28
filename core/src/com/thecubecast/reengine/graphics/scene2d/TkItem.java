@@ -13,9 +13,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 import com.thecubecast.reengine.data.Item;
-import com.thecubecast.reengine.gamestates.PlayState;
 import com.thecubecast.reengine.worldobjects.SeedPlayer;
-import com.thecubecast.reengine.worldobjects.Storage;
+import com.thecubecast.reengine.worldobjects.Triggers.Storage;
 
 import static com.thecubecast.reengine.graphics.scene2d.UIFSM.CursorItem;
 

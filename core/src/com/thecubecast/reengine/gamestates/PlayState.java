@@ -15,13 +15,20 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.thecubecast.reengine.data.*;
+import com.thecubecast.reengine.data.control.ControlerManager;
 import com.thecubecast.reengine.data.dcputils.DcpTilKt;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
+import com.thecubecast.reengine.worldobjects.Triggers.FarmTile;
+import com.thecubecast.reengine.worldobjects.Triggers.Interactable;
+import com.thecubecast.reengine.worldobjects.Triggers.Storage;
+import com.thecubecast.reengine.worldobjects.Triggers.Trigger;
+import com.thecubecast.reengine.worldobjects.ai.PathfindingWorldObject;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.*;
+import com.thecubecast.reengine.worldobjects.entityprefabs.Grass_Tuft;
 import com.thecubecast.reengine.worldobjects.entityprefabs.Hank;
 
 import java.util.ArrayList;
@@ -121,6 +128,8 @@ public class PlayState extends DialogStateExtention {
 
         Entities.add(new Hank(500, 580, 0));
 
+        Entities.add(new Grass_Tuft(350, 200, 0, 0, 100, NPC.intractability.Silent, false, MapGraph, gsm));
+
         //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
 
     }
@@ -176,15 +185,9 @@ public class PlayState extends DialogStateExtention {
                         Entities.remove(i);
                     }
                 }
-            } else if (Entities.get(i) instanceof PathfindingWorldObject) {
-                Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
-                if (!((NPC) Entities.get(i)).isAlive()) {
-                    Entities.remove(i);
-                }
             } else if (Entities.get(i) instanceof NPC) {
                 if (!((NPC) Entities.get(i)).isAlive()) {
-                    Entities.get(i).update(Gdx.graphics.getDeltaTime(), this);
-                    Particles.AddParticleEffect("Leaf", player.getAttackBox().getCenterX(), player.getAttackBox().getCenterY());
+                    Entities.add(new WorldItem((int)Entities.get(i).getPosition().x, (int)Entities.get(i).getPosition().y, (int)Entities.get(i).getPosition().z, ((NPC) Entities.get(i)).getDropOnDeath()));
                     Entities.remove(i);
                 }
             } else if (Entities.get(i) instanceof Interactable) {

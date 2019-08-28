@@ -1,6 +1,5 @@
 package com.thecubecast.reengine.worldobjects.entityprefabs;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -11,28 +10,20 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.thecubecast.reengine.data.GameStateManager;
-import com.thecubecast.reengine.data.dcputils.StuffUtilsKt;
+import com.thecubecast.reengine.data.Item;
 import com.thecubecast.reengine.data.dcputils.TextureAnimation;
 import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.graphics.scene2d.TkLabel;
-import com.thecubecast.reengine.worldobjects.NPC;
-import com.thecubecast.reengine.worldobjects.PathfindingWorldObject;
-import com.thecubecast.reengine.worldobjects.ai.PawnStates;
+import com.thecubecast.reengine.worldobjects.ai.PathfindingWorldObject;
+import com.thecubecast.reengine.worldobjects.ai.aistates.Grass_Tuft_States;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 
-public class Dummy extends NPC {
-
+public class Grass_Tuft extends PathfindingWorldObject {
     //True is left, False is right
     public boolean Facing = true;
 
-    int RotateStrength = 0;
-
-    Vector3 Size = new Vector3(10,8,16);
-
     TextureAnimation<TextureAtlas.AtlasRegion> Walking;
     TextureAnimation<TextureAtlas.AtlasRegion> Idle;
-
-    TextureAnimation<TextureAtlas.AtlasRegion> Sword;
 
     TextureRegion Shadow;
 
@@ -40,14 +31,14 @@ public class Dummy extends NPC {
     Group stage;
     ProgressBar HealthBar;
 
-    public Dummy(String name, int x, int y, int z, Vector3 size, float knockbackResistance, float health, intractability interact, boolean invincible) {
-        super(name,x,y,z, size, knockbackResistance,health, interact, invincible);
-        setSize(Size);
+    public Grass_Tuft(int x, int y, int z, float knockbackResistance, float health, intractability interact, boolean invincible, FlatTiledGraph map, GameStateManager gsm) {
+        super("Grass Tuft", x, y, z, new Vector3(4,4,4), knockbackResistance, health, interact, invincible, map, Grass_Tuft_States.IDLE);
         setHitboxOffset(new Vector3(6,0,0));
 
-        Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("pawn"), 0.1f);
-        Idle = new TextureAnimation<>(GameStateManager.Render.getTextures("pawn_idle"), 0.1f);
-        Sword = new TextureAnimation<>(GameStateManager.Render.getTextures("pawn_pistol"), 0.05f);
+        setDropOnDeath(new Item(0, 2));
+
+        Walking = new TextureAnimation<>(GameStateManager.Render.getTextures("Enemy_Grass_Tuft_Moving"), 0.06f);
+        Idle = new TextureAnimation<>(GameStateManager.Render.getTextures("Enemy_Grass_Tuft_Idle"), 0.06f);
         Shadow = GameStateManager.Render.getTexture("Shadow");
 
         FocusStrength = 0.15f;
@@ -74,10 +65,11 @@ public class Dummy extends NPC {
     @Override
     public void draw(SpriteBatch batch, float Time) {
 
-        Sword.update(Gdx.graphics.getDeltaTime());
-
         if(Math.abs(this.getVelocity().y) >= 0.5f || Math.abs(this.getVelocity().x) >= 0.5f) {
             batch.draw(Shadow, Facing ? (int)getPosition().x + 3: (int)getPosition().x + 3, (int)getPosition().y - 2 + (int)getZFloor() / 2);
+
+            Walking.update(Gdx.graphics.getDeltaTime());
+
             //running animation
             batch.draw(Walking.getFrame(), Facing ? (int)getPosition().x + 2 + (Walking.getFrame().getRegionWidth()) : (int)getPosition().x, (int)getPosition().y + (int)getPosition().z / 2, Facing ? -(Walking.getFrame().getRegionHeight()) : (Walking.getFrame().getRegionHeight()), (Walking.getFrame().getRegionHeight()));
         } else if(this.getVelocity().y < 0.5f || this.getVelocity().x < 0.5f) {
@@ -89,19 +81,8 @@ public class Dummy extends NPC {
     }
 
     @Override
-    public void drawHighlight(SpriteBatch batch, float Time) {
-
-    }
-
-    @Override
     public void drawGui(SpriteBatch batch, float Time) {
         stage.draw(batch, 1);
-        //batch.draw(Exclamation, (int) getPosition().x + 6, (int) getPosition().y + 63 + (float) (Math.sin(Time) * 2));
-    }
-
-    @Override
-    public void interact(GameState G) {
-
     }
 
     public void update(float delta, GameState G) {

@@ -1,4 +1,4 @@
-package com.thecubecast.reengine.data;
+package com.thecubecast.reengine.data.control;
 
 public class ControllerType {
 

@@ -15,17 +15,16 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.utils.Array;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 import com.thecubecast.reengine.data.Common;
 import com.thecubecast.reengine.data.GameStateManager;
-import com.thecubecast.reengine.data.ControlerManager;
+import com.thecubecast.reengine.data.control.ControlerManager;
 import com.thecubecast.reengine.data.tkmap.TkMap;
 import com.thecubecast.reengine.gamestates.PlayState;
-import com.thecubecast.reengine.worldobjects.Storage;
+import com.thecubecast.reengine.worldobjects.Triggers.Storage;
 import com.thecubecast.reengine.worldobjects.WorldItem;
 import com.thecubecast.reengine.worldobjects.WorldObject;
 
@@ -1272,6 +1271,8 @@ public enum UI_state implements State<UIFSM> {
         int SelectedIndex = 0;
         int TotalRows = 1;
 
+        TkTextButton Close;
+
         int ControllerDelay = 0;
 
         @Override
@@ -1369,12 +1370,13 @@ public enum UI_state implements State<UIFSM> {
                 int tempi = i;
 
                 Table ItemGroup = new Table(entity.skin);
+                ItemGroup.setBackground("Window_blank");
 
                 TkItemIcon ItemIcon = new TkItemIcon(entity.skin, entity.player.Inventory[i].getID());
-                ItemGroup.add(new Label(entity.player.Inventory[i].getQuantity() + "", entity.skin)).padRight(5);
-                ItemGroup.add(ItemIcon).size(16);
-                ItemGroup.add(new Label(entity.player.Inventory[i].getName(), entity.skin)).size(16).padLeft(5);
-                Container.add(ItemGroup).left();
+                ItemGroup.add(new Label(entity.player.Inventory[i].getQuantity() + "", entity.skin)).padRight(5).left();
+                ItemGroup.add(ItemIcon).size(16).left();
+                ItemGroup.add(new Label(entity.player.Inventory[i].getName(), entity.skin)).padLeft(5).left();
+                Container.add(ItemGroup).fillX();
                 ItemGroup.addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -1398,7 +1400,7 @@ public enum UI_state implements State<UIFSM> {
                     @Override
                     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                         super.exit(event, x, y, pointer, toActor);
-                        ItemGroup.setBackground((Drawable) null);
+                        ItemGroup.setBackground("Window_blank");
                     }
                 });
                 ItemGroup.pack();
@@ -1420,7 +1422,7 @@ public enum UI_state implements State<UIFSM> {
             Screen.add(UIWindow);
 
             UIWindow.row();
-            final TkTextButton Close = new TkTextButton("Close", entity.skin);
+            Close = new TkTextButton("Close", entity.skin);
             UIWindow.add(Close).padTop(2);
 
             Close.addListener(new ClickListener() {
@@ -1436,15 +1438,16 @@ public enum UI_state implements State<UIFSM> {
         public void update(UIFSM entity) {
             ControllerDelay++;
             Screen.setVisible(entity.Visible);
-            if (ControllerDelay >= 5)
-                SelectedIndex = ControllerCheckSeed(Container, SelectedIndex, TotalRows, entity);
+            if (ControllerDelay >= 10) {
+                SelectedIndex = ControllerCheckSeed(Container, SelectedIndex, TotalRows, Close, entity);
+            }
             entity.stage.act(Gdx.graphics.getDeltaTime());
 
             for (int i = 0; i < Container.getCells().size; i++) {
                 if (i == SelectedIndex) {
                     ((Table)Container.getCells().get(i).getActor()).setBackground("Window_grey");
                 } else {
-                    ((Table)Container.getCells().get(i).getActor()).setBackground((Drawable) null);
+                    ((Table)Container.getCells().get(i).getActor()).setBackground("Window_blank");
                 }
             }
 
@@ -1478,6 +1481,8 @@ public enum UI_state implements State<UIFSM> {
         int TotalRows = 1;
 
         int ControllerDelay = 0;
+
+        TkTextButton Close;
 
         ClickListener StageListener;
 
@@ -1515,11 +1520,12 @@ public enum UI_state implements State<UIFSM> {
                 }
 
                 Table ItemGroup = new Table(entity.skin);
+                ItemGroup.setBackground("Window_blank");
 
                 TkItemIcon ItemIcon = new TkItemIcon(entity.skin, entity.player.Inventory[i].getID());
                 ItemGroup.add(new Label(entity.player.Inventory[i].getQuantity() + "", entity.skin)).padRight(5);
                 ItemGroup.add(ItemIcon).size(16);
-                ItemGroup.add(new Label(entity.player.Inventory[i].getName(), entity.skin)).size(16).padLeft(5);
+                ItemGroup.add(new Label(entity.player.Inventory[i].getName(), entity.skin)).padLeft(5);
                 InventoryTable.add(ItemGroup).left();
                 ItemGroup.addListener(new ClickListener() {
 
@@ -1527,6 +1533,7 @@ public enum UI_state implements State<UIFSM> {
                     public void clicked(InputEvent event, float x, float y) {
                         //Plant the seed
                         if (entity.gsm.gameState instanceof PlayState) {
+                            System.out.println("Clicked");
                             if (((PlayState) entity.gsm.gameState).TryToPlantSeed(entity.player.Inventory[tempi].getID())) {
                                 entity.player.DeductFromInventory(entity.player.Inventory[tempi].getID(), 1);
                                 entity.LastUsedSeedType = entity.player.Inventory[tempi];
@@ -1547,7 +1554,7 @@ public enum UI_state implements State<UIFSM> {
                     @Override
                     public void exit(InputEvent event, float x, float y, int pointer, Actor toActor) {
                         super.exit(event, x, y, pointer, toActor);
-                        ItemGroup.setBackground((Drawable) null);
+                        ItemGroup.setBackground("Window_blank");
                     }
                 });
                 ItemGroup.pack();
@@ -1558,11 +1565,11 @@ public enum UI_state implements State<UIFSM> {
 
             InventoryWindow.add(InventoryTable).row();
 
-            Screen.add(InventoryWindow).size(80, 160).row();
+            Screen.add(InventoryWindow).height(160).row();
 
             //__________________________________________________________
 
-            final TkTextButton Close = new TkTextButton("Close", entity.skin);
+            Close = new TkTextButton("Close", entity.skin);
             InventoryWindow.add(Close);
 
             Close.addListener(new ClickListener() {
@@ -1580,15 +1587,16 @@ public enum UI_state implements State<UIFSM> {
         public void update(UIFSM entity) {
             ControllerDelay++;
             Screen.setVisible(entity.Visible);
-            if (ControllerDelay >= 5)
-                SelectedIndex = ControllerCheckSeed(InventoryTable, SelectedIndex, TotalRows, entity);
+            if (ControllerDelay >= 5) {
+                SelectedIndex = ControllerCheckSeed(InventoryTable, SelectedIndex, TotalRows, Close, entity);
+            }
             entity.stage.act(Gdx.graphics.getDeltaTime());
 
             for (int i = 0; i < InventoryTable.getCells().size; i++) {
                 if (i == SelectedIndex) {
                     ((Table)InventoryTable.getCells().get(i).getActor()).setBackground("Window_grey");
                 } else {
-                    ((Table)InventoryTable.getCells().get(i).getActor()).setBackground((Drawable) null);
+                    ((Table)InventoryTable.getCells().get(i).getActor()).setBackground("Window_blank");
                 }
             }
 
@@ -1676,7 +1684,7 @@ public enum UI_state implements State<UIFSM> {
         }
     }
 
-    public int ControllerCheckSeed(Table Inventorytable, int Index, int Size, UIFSM entity) {
+    public int ControllerCheckSeed(Table Inventorytable, int Index, int Size, TkTextButton Back, UIFSM entity) {
         if (ctm.controllers.size() > 0) {
 
             if (ctm.getAxis(0, ControlerManager.axisies.AXIS_LEFT_Y) < -0.2f || Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) {
@@ -1717,6 +1725,12 @@ public enum UI_state implements State<UIFSM> {
             Index = Size - 1;
         if (Index >= Size)
             Index = 0;
+
+        if (Index+1 != Size) {
+            Back.Selected = false;
+        } else {
+            Back.Selected = true;
+        }
 
         if (ctm.controllers.size() > 0) {
             if (ctm.isButtonJustDown(0, ControlerManager.buttons.BUTTON_A) || Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {

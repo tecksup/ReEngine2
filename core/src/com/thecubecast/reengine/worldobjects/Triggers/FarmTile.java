@@ -1,15 +1,9 @@
-package com.thecubecast.reengine.worldobjects;
+package com.thecubecast.reengine.worldobjects.Triggers;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.Group;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.ProgressBar;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.thecubecast.reengine.data.CropType;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.data.Item;
@@ -19,8 +13,11 @@ import com.thecubecast.reengine.gamestates.DialogStateExtention;
 import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.gamestates.PlayState;
 import com.thecubecast.reengine.graphics.ScreenShakeCameraController;
-import com.thecubecast.reengine.graphics.scene2d.TkLabel;
 import com.thecubecast.reengine.graphics.scene2d.UI_state;
+import com.thecubecast.reengine.worldobjects.NPC;
+import com.thecubecast.reengine.worldobjects.SeedPlayer;
+import com.thecubecast.reengine.worldobjects.WorldItem;
+import com.thecubecast.reengine.worldobjects.WorldObject;
 
 import java.util.List;
 import java.util.Random;

@@ -6,8 +6,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEffect;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector3;
 import com.thecubecast.reengine.gamestates.GameState;
-import com.thecubecast.reengine.worldobjects.Interactable;
-import com.thecubecast.reengine.worldobjects.WorldObject;
+import com.thecubecast.reengine.worldobjects.Triggers.Interactable;
 
 public class Firepit extends Interactable {
     ParticleEffect Particles;

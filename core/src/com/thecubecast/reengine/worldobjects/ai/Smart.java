@@ -13,7 +13,6 @@ import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledNode;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.TiledManhattanDistance;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.TiledSmoothableGraphPath;
-import com.thecubecast.reengine.worldobjects.PathfindingWorldObject;
 
 import static com.badlogic.gdx.utils.TimeUtils.nanoTime;
 

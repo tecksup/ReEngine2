@@ -298,6 +298,41 @@ Eggplant
   orig: 16, 16
   offset: 0, 0
   index: 5
+Enemy_Grass_Tuft_Idle
+  rotate: false
+  xy: 481, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+Enemy_Grass_Tuft_Moving
+  rotate: false
+  xy: 499, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 0
+Enemy_Grass_Tuft_Moving
+  rotate: false
+  xy: 517, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+Enemy_Grass_Tuft_Moving
+  rotate: false
+  xy: 535, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+Enemy_Grass_Tuft_Moving
+  rotate: false
+  xy: 553, 33
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
 Gunter
   rotate: false
   xy: 111, 2
@@ -307,140 +342,140 @@ Gunter
   index: -1
 Hoe
   rotate: false
-  xy: 481, 33
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 0
-Orange
-  rotate: false
-  xy: 499, 33
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 0
-Orange
-  rotate: false
-  xy: 517, 33
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 1
-Orange
-  rotate: false
-  xy: 535, 33
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 2
-Orange
-  rotate: false
-  xy: 553, 33
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 3
-Orange
-  rotate: false
   xy: 571, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
+  index: 0
 Orange
   rotate: false
   xy: 589, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 5
-Pinnaple
+  index: 0
+Orange
   rotate: false
   xy: 607, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
-Pinnaple
+  index: 1
+Orange
   rotate: false
   xy: 625, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 1
-Pinnaple
+  index: 2
+Orange
   rotate: false
   xy: 643, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 2
-Pinnaple
+  index: 3
+Orange
   rotate: false
   xy: 661, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 3
-Pinnaple
+  index: 4
+Orange
   rotate: false
   xy: 679, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
+  index: 5
 Pinnaple
   rotate: false
   xy: 697, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 5
-Potatoe
+  index: 0
+Pinnaple
   rotate: false
   xy: 715, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
-Potatoe
+  index: 1
+Pinnaple
   rotate: false
   xy: 733, 33
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 1
-Potatoe
+  index: 2
+Pinnaple
   rotate: false
   xy: 283, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 2
-Potatoe
+  index: 3
+Pinnaple
   rotate: false
   xy: 301, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 3
-Potatoe
+  index: 4
+Pinnaple
   rotate: false
   xy: 319, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
+  index: 5
 Potatoe
   rotate: false
   xy: 337, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
+  index: 0
+Potatoe
+  rotate: false
+  xy: 355, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+Potatoe
+  rotate: false
+  xy: 373, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+Potatoe
+  rotate: false
+  xy: 391, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+Potatoe
+  rotate: false
+  xy: 409, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+Potatoe
+  rotate: false
+  xy: 427, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
   index: 5
 Red_Marker
   rotate: false
-  xy: 355, 15
+  xy: 445, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -454,168 +489,168 @@ Shadow
   index: -1
 Strawberry
   rotate: false
-  xy: 373, 15
+  xy: 463, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Strawberry
-  rotate: false
-  xy: 391, 15
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 1
-Strawberry
-  rotate: false
-  xy: 409, 15
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 2
-Strawberry
-  rotate: false
-  xy: 427, 15
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 3
-Strawberry
-  rotate: false
-  xy: 445, 15
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 4
-Strawberry
-  rotate: false
-  xy: 463, 15
-  size: 16, 16
-  orig: 16, 16
-  offset: 0, 0
-  index: 5
-Tomato
   rotate: false
   xy: 481, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
-Tomato
+  index: 1
+Strawberry
   rotate: false
   xy: 499, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 1
-Tomato
+  index: 2
+Strawberry
   rotate: false
   xy: 517, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 2
-Tomato
+  index: 3
+Strawberry
   rotate: false
   xy: 535, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 3
-Tomato
+  index: 4
+Strawberry
   rotate: false
   xy: 553, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
+  index: 5
 Tomato
   rotate: false
   xy: 571, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 5
-Turnip
+  index: 0
+Tomato
   rotate: false
   xy: 589, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 0
-Turnip
+  index: 1
+Tomato
   rotate: false
   xy: 607, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 1
-Turnip
+  index: 2
+Tomato
   rotate: false
   xy: 625, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 2
-Turnip
+  index: 3
+Tomato
   rotate: false
   xy: 643, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 3
-Turnip
+  index: 4
+Tomato
   rotate: false
   xy: 661, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
-  index: 4
+  index: 5
 Turnip
   rotate: false
   xy: 679, 15
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
+  index: 0
+Turnip
+  rotate: false
+  xy: 697, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 1
+Turnip
+  rotate: false
+  xy: 715, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 2
+Turnip
+  rotate: false
+  xy: 733, 15
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 3
+Turnip
+  rotate: false
+  xy: 751, 24
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: 4
+Turnip
+  rotate: false
+  xy: 769, 24
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
   index: 5
 Wheat
   rotate: false
-  xy: 697, 15
+  xy: 787, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 Wheat
   rotate: false
-  xy: 715, 15
+  xy: 805, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 Wheat
   rotate: false
-  xy: 733, 15
+  xy: 823, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 Wheat
   rotate: false
-  xy: 751, 24
+  xy: 841, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 Wheat
   rotate: false
-  xy: 769, 24
+  xy: 859, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 Wheat
   rotate: false
-  xy: 787, 24
+  xy: 877, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -636,7 +671,7 @@ Xprompt_Up
   index: -1
 Yellow_Marker
   rotate: false
-  xy: 805, 24
+  xy: 895, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
@@ -867,7 +902,7 @@ bloodSplatter1
   index: -1
 bloodSplatter2
   rotate: false
-  xy: 931, 32
+  xy: 787, 14
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -930,7 +965,7 @@ brute_pistol
   index: -1
 bullet
   rotate: false
-  xy: 751, 14
+  xy: 797, 14
   size: 8, 8
   orig: 8, 8
   offset: 0, 0
@@ -951,42 +986,42 @@ face
   index: -1
 melon
   rotate: false
-  xy: 823, 24
+  xy: 913, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 0
 melon
   rotate: false
-  xy: 841, 24
+  xy: 931, 24
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 1
 melon
   rotate: false
-  xy: 859, 24
+  xy: 949, 25
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 2
 melon
   rotate: false
-  xy: 877, 24
+  xy: 967, 25
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 3
 melon
   rotate: false
-  xy: 895, 24
+  xy: 751, 6
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: 4
 melon
   rotate: false
-  xy: 913, 24
+  xy: 769, 6
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

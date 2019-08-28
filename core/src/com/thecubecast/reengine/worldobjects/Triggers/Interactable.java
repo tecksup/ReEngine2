@@ -1,4 +1,4 @@
-package com.thecubecast.reengine.worldobjects;
+package com.thecubecast.reengine.worldobjects.Triggers;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
 import com.thecubecast.reengine.gamestates.GameState;
+import com.thecubecast.reengine.worldobjects.WorldObject;
 
 import static com.thecubecast.reengine.data.GameStateManager.Render;
 

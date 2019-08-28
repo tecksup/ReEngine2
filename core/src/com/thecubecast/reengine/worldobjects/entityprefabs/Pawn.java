@@ -13,9 +13,9 @@ import com.thecubecast.reengine.data.dcputils.TextureAnimation;
 import com.thecubecast.reengine.data.GameStateManager;
 import com.thecubecast.reengine.gamestates.GameState;
 import com.thecubecast.reengine.graphics.scene2d.TkLabel;
-import com.thecubecast.reengine.worldobjects.PathfindingWorldObject;
+import com.thecubecast.reengine.worldobjects.ai.PathfindingWorldObject;
 import com.thecubecast.reengine.worldobjects.ai.pathfinding.FlatTiledGraph;
-import com.thecubecast.reengine.worldobjects.ai.PawnStates;
+import com.thecubecast.reengine.worldobjects.ai.aistates.PawnStates;
 
 public class Pawn extends PathfindingWorldObject {
 
