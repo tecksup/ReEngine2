@@ -42,10 +42,6 @@ public class MultiplayerTestState extends GameState {
 
     public MultiplayerTestState(GameStateManager gsm) {
         super(gsm);
-    }
-
-    public void init() {
-
         gsm.DiscordManager.setPresenceDetails("Multiplayer Demo - Level 1");
         gsm.DiscordManager.setPresenceState("In Game");
         gsm.DiscordManager.getPresence().largeImageText = "Level 1";
@@ -270,10 +266,5 @@ public class MultiplayerTestState extends GameState {
         super.dispose();
         if (network != null)
             network.Disconnect();
-    }
-
-    @Override
-    public void Shutdown() {
-
     }
 }

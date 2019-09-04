@@ -113,7 +113,7 @@ public enum UI_state implements State<UIFSM> {
                     //Lwjgl3Window window = ((Lwjgl3Graphics)Gdx.graphics).getWindow();
                     //window.iconifyWindow(); // iconify the window
 
-                    Common.ProperShutdown();
+                    Common.ProperShutdown(entity.gsm);
                 }
             });
         }

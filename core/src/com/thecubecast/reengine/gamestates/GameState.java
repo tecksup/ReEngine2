@@ -24,8 +24,6 @@ public abstract class GameState {
         this.gsm = gsm;
     }
 
-    public abstract void init();
-
     public abstract void update();
 
     public abstract void draw(SpriteBatch g, int height, int width, float Time);
@@ -34,8 +32,6 @@ public abstract class GameState {
 
     public void reSize(SpriteBatch g, int h, int w) {
     }
-
-    public abstract void Shutdown();
 
     public void dispose() {
 

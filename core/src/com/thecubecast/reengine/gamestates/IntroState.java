@@ -28,17 +28,12 @@ public class IntroState extends GameState {
 
     public IntroState(GameStateManager gsm) {
         super(gsm);
-    }
-
-    public void init() {
 
         Splash = new Texture(Gdx.files.internal("Images/image_00.png"));
 
         camera = new OrthographicCamera();
 
         AudioM.playS("");
-
-
     }
 
     public void update() {
@@ -89,11 +84,6 @@ public class IntroState extends GameState {
             Splash = null;
             gsm.setState(GameStateManager.State.MENU);
         }
-
-    }
-
-    @Override
-    public void Shutdown() {
 
     }
 

@@ -7,6 +7,7 @@
 package com.thecubecast.reengine.data;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
@@ -29,20 +30,9 @@ import static com.badlogic.gdx.graphics.GL20.GL_COLOR_BUFFER_BIT;
 public class GameStateManager {
     public static boolean Debug = false;
 
-    public Vector3 PlayerSpawn = new Vector3(0,0,0);
-
-    public String SaveSelected = "";
-
-    public String Username = "username";
-    public String IP = "localhost";
-    public String ErrorMessages = "";
-
     public enum State {
         INTRO, MENU, PLAY, LOADING, EDITOR, MULTI
     }
-
-    public State currentState;
-    private State previousState;
 
     public GameState gameState;
 
@@ -51,12 +41,9 @@ public class GameStateManager {
 
     //Public render function object
     public static Draw Render;
-    public int ticks = 0;
-
-    private OrthographicCamera MainCam;
-
     public static UIFSM UI;
 
+    private OrthographicCamera MainCam;
     private FrameBuffer WorldFBO;
     private FrameBuffer UIFBO;
 
@@ -66,6 +53,13 @@ public class GameStateManager {
     public static ControlerManager ctm;
 
     public Discord DiscordManager;
+
+    //The global variables
+    public Vector3 PlayerSpawn = new Vector3(0,0,0);
+    public String SaveSelected = "";
+    public String Username = "username";
+    public String IP = "localhost";
+    public String ErrorMessages = "";
 
     //The cursor image
     public enum CursorType {
@@ -113,7 +107,7 @@ public class GameStateManager {
             }
         }
 
-        //Load Itemes.dat file and populate the hashmap
+        //Load Crops.dat file and populate the hashmap
         CropPresets = new HashMap<>();
         JsonArray temp2Json = temp.parse(Gdx.files.internal("Crops.dat").readString()).getAsJsonArray();
         for (int i = 0; i < temp2Json.size(); i++) {
@@ -150,22 +144,16 @@ public class GameStateManager {
         Render = new Draw();
         AudioM = new SoundManager();
 
-        Render.Init();
-        AudioM.init();
-
         UI = new UIFSM(this);
 
         LoadState("STARTUP"); //THIS IS THE STATE WERE WE START WHEN THE GAME IS RUN
     }
 
     public void LoadState(String LoadIt) {
-        previousState = currentState;
         unloadState();
-        currentState = State.LOADING;
         //Set up the loading state
         gameState = new LoadingState(this);
         ((LoadingState) gameState).setLoad(LoadIt);
-        gameState.init();
     }
 
     public void setState(State i) {
@@ -173,31 +161,24 @@ public class GameStateManager {
         Gdx.input.setInputProcessor(UI.stage);
         UI.setState(UI_state.Home);
 
-        previousState = currentState;
         unloadState();
-        currentState = i;
-        switch (currentState) {
+        switch (i) {
             case INTRO:
                 gameState = new IntroState(this);
-                gameState.init();
                 break;
             case MENU:
                 gameState = new MainMenuState(this);
-                gameState.init();
                 break;
             case PLAY:
                 gameState = new PlayState(this);
-                gameState.init();
                 break;
             case LOADING:
                 break;
             case EDITOR:
                 gameState = new EditorState(this);
-                gameState.init();
                 break;
             case MULTI:
                 gameState = new MultiplayerTestState(this);
-                gameState.init();
                 break;
         }
 
@@ -213,10 +194,8 @@ public class GameStateManager {
         Gdx.input.setInputProcessor(UI.stage);
         UI.setState(UI_state.Home);
 
-        previousState = currentState;
         unloadState();
-        gameState = State; 
-        gameState.init();
+        gameState = State;
 
         UI.inGame = false;
 
@@ -237,6 +216,11 @@ public class GameStateManager {
     }
 
     public void update() {
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.GRAVE)) {Common.ProperShutdown(this);}
+
+        if (Gdx.input.isKeyPressed(Input.Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Input.Keys.SHIFT_LEFT) && Gdx.input.isKeyJustPressed(Input.Keys.D)) { GameStateManager.Debug = !GameStateManager.Debug ;}
+
         if (Cursor != OldCursor) {
             OldCursor = Cursor;
             int CursorID = 0;
@@ -334,7 +318,7 @@ public class GameStateManager {
 
     }
 
-    public void reSize(SpriteBatch bbg, int H, int W) {
+    public void reSize(SpriteBatch bbg, int W, int H) {
         Matrix4 matrix = new Matrix4();
         matrix.setToOrtho2D(0, 0, W, H);
         bbg.setProjectionMatrix(matrix);
@@ -427,11 +411,6 @@ public class GameStateManager {
 
     public void dispose() {
         DiscordManager.dispose();
-        gameState.dispose();
-    }
-
-    public void Shutdown() {
-        gameState.Shutdown();
         gameState.dispose();
     }
 }

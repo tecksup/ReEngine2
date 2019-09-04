@@ -31,9 +31,6 @@ public class LoadingState extends GameState {
 
     public LoadingState(GameStateManager gsm) {
         super(gsm);
-    }
-
-    public void init() {
 
         Gdx.graphics.setVSync(false);
 
@@ -41,7 +38,6 @@ public class LoadingState extends GameState {
 
         //Common.print("Loading " + Load);
         MenuInit();
-
     }
 
     public void setupSkin() {
@@ -115,8 +111,4 @@ public class LoadingState extends GameState {
         MenuInit();
     }
 
-    @Override
-    public void Shutdown() {
-
-    }
 }

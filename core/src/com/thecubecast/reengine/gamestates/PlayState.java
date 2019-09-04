@@ -61,9 +61,6 @@ public class PlayState extends DialogStateExtention {
     public PlayState(GameStateManager gsm) {
         super(gsm);
         gsm.setWorldScale(3);
-    }
-
-    public void init() {
 
         WorldMap = new TkMap("Saves/Fight.cube");
         MapGraph = new FlatTiledGraph(WorldMap);
@@ -131,6 +128,7 @@ public class PlayState extends DialogStateExtention {
         Entities.add(new Grass_Tuft(350, 200, 0, 0, 100, NPC.intractability.Silent, false, MapGraph, gsm));
 
         //MusicID = AudioM.playMusic("TimeBroke.wav", true, true);
+
 
     }
 
@@ -776,10 +774,4 @@ public class PlayState extends DialogStateExtention {
         Entities.clear();
         AudioM.stopMusic(MusicID);
     }
-
-    @Override
-    public void Shutdown() {
-        AudioM.stopMusic(MusicID);
-    }
-
 }

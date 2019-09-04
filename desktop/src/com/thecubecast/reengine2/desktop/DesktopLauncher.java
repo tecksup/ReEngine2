@@ -11,15 +11,13 @@ import com.thecubecast.reengine.MainClass;
 public class DesktopLauncher {
     public static void main(String[] args) {
 
+        MainClass TheBigclass = new MainClass();
+
         //TexturePacker.process("../../images/atlas-T", "../../../core/assets/", "Tiles");
 
-
+        //The Image Packing that happens on startup
         DcpTexturePackerManager texturePackerManager = new DcpTexturePackerManager();
         texturePackerManager.checkWhetherToPackImages();
-
-        //set variables from the settings file
-        boolean Display_Fullscreen = false;
-        boolean Display_WindowedFull = true;
 
         final Lwjgl3ApplicationConfiguration config = new Lwjgl3ApplicationConfiguration();
 
@@ -54,7 +52,7 @@ public class DesktopLauncher {
             @Override
             public boolean closeRequested() {
                 //Common.print("clicked X");
-                Common.ProperShutdown();
+                Common.ProperShutdown(TheBigclass.gsm);
                 return true;
             }
 
@@ -76,6 +74,6 @@ public class DesktopLauncher {
         config.setWindowIcon("icon.png");
         config.setTitle("ReEngine 2");
         config.useVsync(true);
-        new Lwjgl3Application(new MainClass(), config);
+        new Lwjgl3Application(TheBigclass, config);
     }
 }

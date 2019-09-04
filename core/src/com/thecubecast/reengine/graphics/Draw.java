@@ -41,7 +41,7 @@ public class Draw {
 
     }
 
-    public void Init() {
+    public Draw() {
 
         LoadShaders();
 

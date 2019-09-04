@@ -127,9 +127,6 @@ public class EditorState extends GameState {
         super(gsm);
         gsm.setUIScale(2);
         gsm.setWorldScale(3);
-    }
-
-    public void init() {
 
         //double Started = System.nanoTime();
 
@@ -1707,11 +1704,6 @@ public class EditorState extends GameState {
     public void dispose() {
         Collisions.clear();
         Entities.clear();
-    }
-
-    @Override
-    public void Shutdown() {
-
     }
 
 

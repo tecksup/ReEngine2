@@ -26,7 +26,7 @@ public class SoundManager {
 
     Map<String, Long> SoundIds = new HashMap<String, Long>();
 
-    public void init() { //Create the folders that hold everything neatly
+    public SoundManager() { //Create the folders that hold everything neatly
 
         if (Gdx.app.getPreferences("properties").contains("MasterVolume")) {
             MasterVolume = Gdx.app.getPreferences("properties").getFloat("MasterVolume");

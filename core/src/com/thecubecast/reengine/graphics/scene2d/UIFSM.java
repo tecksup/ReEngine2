@@ -36,7 +36,6 @@ public class UIFSM implements Telegraph {
 
     public UIFSM(GameStateManager gsm) {
 
-
         this.gsm = gsm;
 
         stage = new Stage(new FitViewport(GameStateManager.UIWidth, GameStateManager.UIHeight));

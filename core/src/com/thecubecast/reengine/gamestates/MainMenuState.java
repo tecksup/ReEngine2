@@ -17,8 +17,6 @@ public class MainMenuState extends GameState {
 
     OrthographicCamera cameraGui;
 
-    int BGMusicID;
-
     Texture Background = new Texture(Gdx.files.internal("Images/image_04.png"));
 
     //Particles
@@ -26,9 +24,6 @@ public class MainMenuState extends GameState {
 
     public MainMenuState(GameStateManager gsm) {
         super(gsm);
-    }
-
-    public void init() {
 
         //Particles
         Particles = new ParticleHandler();
@@ -91,11 +86,6 @@ public class MainMenuState extends GameState {
         //stage.getViewport().update(Gdx.graphics.getWidth(),Gdx.graphics.getHeight(), true);
         cameraGui.setToOrtho(false);
         gsm.UI.reSize();
-    }
-
-    @Override
-    public void Shutdown() {
-        //AudioM.stopMusic(BGMusicID);
     }
 
     @Override

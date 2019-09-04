@@ -34,6 +34,7 @@ public class MainClass extends ApplicationAdapter{
     @Override
     public void create() { // INIT FUNCTION
 
+        //Loads the Chosen resolutuon from the settings, or chooses default
         String[] temp = new String[]{"", ""};
         if (Gdx.app.getPreferences("properties").contains("Resolution")) {
             temp = Gdx.app.getPreferences("properties").getString("Resolution").split("X");
@@ -42,17 +43,21 @@ public class MainClass extends ApplicationAdapter{
             temp[1] = "720";
         }
 
+        //Set the windowed mode resolution from preset
         Gdx.graphics.setWindowedMode(Integer.parseInt(temp[0]), Integer.parseInt(temp[1]));
 
+        //Centers the window in the screen
         Lwjgl3Window window = ((Lwjgl3Graphics) Gdx.graphics).getWindow();
         window.setPosition(GetMonitorSizeW() / 2 - Gdx.graphics.getWidth() / 2, GetMonitorSizeH() / 2 - Gdx.graphics.getHeight() / 2);
 
+        //Sets the window to fullscreen if the settings preset is true
         if (Gdx.app.getPreferences("properties").contains("FullScreen")) {
             if (Gdx.app.getPreferences("properties").getBoolean("FullScreen")) {
                 Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
             }
         }
 
+        //Sets the default cursor on startup
         Cursor customCursor = Gdx.graphics.newCursor(new Pixmap(Gdx.files.internal("cursor0.png")), 0, 0);
         Gdx.graphics.setCursor(customCursor);
 
@@ -71,43 +76,18 @@ public class MainClass extends ApplicationAdapter{
     @Override
     public void render() { // UPDATE Runs every frame. 60FPS
 
-        //Gdx.gl.glClearColor( 1, 1, 1, 1 );
         Gdx.gl.glClear(GL_COLOR_BUFFER_BIT);
 
-        //Code goes here
-
-        UpdateInput();
-        Update(); //UPDATE
-
+        gsm.update();
 
         stateTime += Gdx.graphics.getDeltaTime(); // Accumulate elapsed animation time
 
-        Draw(batch); //DRAW
+        gsm.draw(batch, W, H, stateTime);
+
+        //Draws the FPS
         batch.begin();
         GameStateManager.Render.GUIDrawText(batch, 0, H, Gdx.graphics.getFramesPerSecond() + "", Color.YELLOW);
         batch.end();
-    }
-
-    public void UpdateInput() {
-
-        if (Gdx.input.isKeyJustPressed(Keys.GRAVE)) { //KeyHit
-            Common.ProperShutdown(gsm);
-        }
-
-        if (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) && Gdx.input.isKeyPressed(Keys.SHIFT_LEFT) && Gdx.input.isKeyJustPressed(Keys.D)) { //KeyHit
-            GameStateManager.Debug = !GameStateManager.Debug;
-        }
-    }
-
-    public void Update() {
-
-        //Figure out how to do this before you start exporting things to external files
-        gsm.update();
-    }
-
-    public void Draw(SpriteBatch bbg) {
-        //Figure out how to do this before you start exporting things to external files
-        gsm.draw(bbg, W, H, stateTime);
     }
 
     @Override
@@ -118,7 +98,7 @@ public class MainClass extends ApplicationAdapter{
             Common.print("Ran Resize!");
             Common.print("" + width + " and H: " + height);
         }
-        gsm.reSize(batch, H, W);
+        gsm.reSize(batch, W, H);
     }
 
 
